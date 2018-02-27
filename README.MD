@@ -8,32 +8,32 @@ TypeScript
 Vue.js?
 
 ## Data structures (Objs)
-### Classroom
+### [ ] Classroom
 - Map (x,y) // Rows and columns, assuming evenly distributed classes.
 - Stations[] : Station
 - Doubts [] : Doubt
 
-### Station
-- Group
-- Progress // Group.AssigmnentProgress
+### [x] WorkStation
+extends WorkGroup
 - Doubt : bool
 - PositionInClass (x,y)
 
-### Group
+### [x] StudentGroup
 - Students[] : Student
 - ProfessorTime
 - Assignment : Assignment
 - AssigmentProgress
 - Doubts[] : Doubt
+- classroom : Classroom // Needed to put doubts there too
 
-### Student
+### [x] Student
 - Name
 - LastName
 - SecondLastName?
 - NIA
 - Picture
 
-### Doubt
+### [x] Doubt
 - DoubtText
 - Section : Assignment.Section
 - Answer? : string
@@ -41,10 +41,16 @@ Vue.js?
 - UnanswerdTime // When answered, statistic purposes
 - PostTime
 
-### Assignment
+### [x] Assignment
 - Sections[] : Section
+- Course : Course
 
-### Section
+### [x] Course
+- Degree
+- CourseName
+- Year
+
+### [x] Section
 - AssignmentOrder
 - Name
 - Text // MD, HTML...?
