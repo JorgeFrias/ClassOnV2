@@ -5,5 +5,9 @@ from typing import List
 
 class Assigment:
     'Defines an assigment'
-    sections : List[Section]
-    course : Course
+    sections = None
+    course = None
+
+    def __init__(self, sections : List[sections], course : course):
+        self.sections = sections
+        self.course = course

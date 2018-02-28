@@ -13,19 +13,19 @@ class StudentGroup:
     - AssigmentProgress
     - Doubts[] : Doubt'''
 
-    students : List[Student] = []
-    assigment : Assigment
+    students = []
+    assigment = None
     assigmentProgress = 0
     professorTime = 0
-    doubts : List[int] = []
-    doubtsSolved : List[int] = []
-    _classroom : Classroom
+    doubts = []
+    doubtsSolved = []
+    _classroom  = None
 
     unansweredDoubt = False
     positionInClass = (0,0)        # (x, y) position
 
 
-    def __init__(self, students : [Student], assigment : Assigment, classRoom : Classroom, position : (int, int) = (0,0)):
+    def __init__(self, students : [Student], assigment : assigment, classRoom : Classroom, position : (int, int) = (0, 0)):
         self.students = students
         self.assigment = assigment
         self._classroom = classRoom

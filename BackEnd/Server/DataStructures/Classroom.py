@@ -5,10 +5,10 @@ from typing import List
 
 class Classroom:
     classSize = (0,0)        # (X,Y) size
-    studentGroups : [StudentGroup] = []             # Groups in class
-    doubts : (Doubt, StudentGroup)  = []            # Doubt and Group with doubt
+    studentGroups = []             # Groups in class
+    doubts = []            # Doubt and Group with doubt
 
-    doubtsSolved : (Doubt, StudentGroup)  = []
+    doubtsSolved = []
     __doubtsIdCounter = 0
 
     def __init__(self, classSize : (int,int)):
@@ -28,5 +28,3 @@ class Classroom:
                 self.doubtsSolved.append(tupleDoubt)
                 self.doubtsSolved.remove(tupleDoubt)
                 break
-
-

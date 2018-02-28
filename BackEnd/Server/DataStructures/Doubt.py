@@ -10,15 +10,15 @@ class Doubt:
     id = -1
     doubtText = ''
     answerText = ''
-    section : Section
+    section = None
     # Protected attributes
     _answered = False
-    _postTime : time
+    _postTime = None
     _unanswerdTime = -1             # When answered, statistic purposes
-    _studentGroup : StudentGroup
-    _classroom : Classroom
+    _studentGroup  = None
+    _classroom = None
 
-    def __init__(self, doubtText, section : Section, studentGroup : StudentGroup, classroom : Classroom):
+    def __init__(self, doubtText, section : section, studentGroup : StudentGroup, classroom : Classroom):
         self.id = classroom.newDoubtID()
         self._classroom = classroom
         self.doubtText = doubtText
