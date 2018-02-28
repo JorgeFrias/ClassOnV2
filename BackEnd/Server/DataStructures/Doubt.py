@@ -1,9 +1,13 @@
 from DataStructures import Section
+from DataStructures import Classroom
+from DataStructures import StudentGroup
+
 import time
 import datetime
 
 class Doubt:
     'Defines a group\'s doubt'
+    id = -1
     doubtText = ''
     answerText = ''
     section : Section
@@ -11,11 +15,16 @@ class Doubt:
     _answered = False
     _postTime : time
     _unanswerdTime = -1             # When answered, statistic purposes
+    _studentGroup : StudentGroup
+    _classroom : Classroom
 
-    def __init__(self, doubtText, section : Section):
+    def __init__(self, doubtText, section : Section, studentGroup : StudentGroup, classroom : Classroom):
+        self.id = classroom.newDoubtID()
+        self._classroom = classroom
         self.doubtText = doubtText
         self._section = section
         self._postTime = time.time()
+        self._studentGroup = studentGroup
 
     def set_Answer(self, answerText):
         self._answerText = answerText
