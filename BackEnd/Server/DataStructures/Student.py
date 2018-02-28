@@ -9,7 +9,7 @@ class Student:
     picture : Image
 
     def __init__(self, nia, name, lastName, seccondLastName = '', pictureSrc = ''):
-        self._NIA = nia
+        self.NIA = nia
         self.name = name
         self.lastName = lastName
         self.secondLastName = seccondLastName
