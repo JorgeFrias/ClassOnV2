@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <div class="jumbotron text-center">
+        <h1>Bienvenido a ClassOn</h1>
+        <p>Donec sed egestas odio. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+            turpis egestas. Nullam sollicitudin ante a odio rutrum, iaculis pulvinar dolor ultricies.</p>
+        {% if session.logged_in == NULL %}
+            <br>
+            <a href="/register" class="btn btn-primary">Register</a>
+            <a href="/login" class="btn btn-success">Login</a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1>Login</h1>
+    <!--{% include 'includes/_messages.html' %} This makes the messages appear one more time-->
+    <form action="" method="POST">
+        <div class="form-group">
+            <label>NIA</label>
+            <!--if the user refresh we want the user to stay-->
+            <input type="text" name="nia" class="form-control" value="{{request.form.nia}}">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <!--if the user refresh we want the user to stay-->
+            <input type="password" name="password" class="form-control" value="{{request.form.password}}">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
