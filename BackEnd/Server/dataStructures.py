@@ -1,3 +1,4 @@
+from typing import Mapping, Sequence
 import time
 from PIL import Image
 
@@ -85,6 +86,27 @@ class StudentGroup:
             # No doubts
             self.unansweredDoubt = False
 
+class Course:
+    'Defines a course'
+    def __init__(self, degree = 'na', courseName = 'na', year = 'na'):
+        self.degree = degree
+        self.name = courseName
+        self.year = year
+
+class Section:
+    'Defines a section of an Assigment'
+    name = ''
+    assigmentOrder = 0
+    text = ''
+
+    def __init__(self, name, orderInAssigment, sectionText):
+        self.name = name
+        if (orderInAssigment > 0):
+            self.assigmentOrder = orderInAssigment
+        else:
+            raise ValueError('orderInAssigment must be bigger than zero')
+        self.text = sectionText
+
 class Assigment:
     'Defines an assigment'
 
@@ -92,9 +114,18 @@ class Assigment:
     #     self.sections = sections
     #     self.course = course
 
-    def __init__(self, sections, course):
+    def __init__(self, sections : Sequence[Section], course : Course):
         self.sections = sections            # : List[Sections]
         self.course = course                # : String
+
+    def sections_dict(self):
+        # sectionsDict = {x.assigmentOrder: vars(x) for x in self.sections}
+        # return sectionsDict
+        result = []
+        for section in self.sections:
+            result.append(vars(section))
+
+        return result
 
 class Doubt:
     'Defines a group\'s doubt'
@@ -129,28 +160,6 @@ class Doubt:
         'Calculates the difference between port time and now'
         self._unanswerdTime = time.time() - self._postTime
 
-class Course:
-    'Defines a course'
-    degree = ''
-    courseName = ''
-    year = ''
 
-    def __init__(self, degree, courseName, year):
-        self.degree = degree
-        self.courseName = courseName
-        self.year = year
 
-class Section:
-    'Defines a section of an Assigment'
-    name = ''
-    assigmentOrder = 0
-    text = ''
-
-    def __init__(self, name, orderInAssigment, sectionText):
-        self.name = name
-        if (orderInAssigment > 0):
-            self.assigmentOrder = orderInAssigment
-        else:
-            raise ValueError('orderInAssigment must be bigger than zero')
-        self.text = sectionText
 

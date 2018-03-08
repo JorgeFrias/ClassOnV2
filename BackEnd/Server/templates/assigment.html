@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1>{{ assigment.course.name }}</h1>
+    <!--<a class="btn btn-success" href="/add_article">Add article</a>-->
+    <hr>
+    <div class="progress">
+      <div class="progress-bar" style="width:{{ progress }}%"></div>
+    </div>
+    <h2>{{ section.name }}</h2>
+    <p>
+        {{ section.text }}
+    </p>
+{% endblock %}

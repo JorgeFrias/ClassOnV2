@@ -7,12 +7,13 @@ from passlib.hash import sha256_crypt
 from functools import wraps
 # from DataStructures import assigment, Section
 import dataStructures
+import copy
 
 ''' Flask app '''
 app = Flask(__name__)
 
 ''' Global variables'''
-_assigment = None
+global assigment_global
 
 ''' MySQL '''
 # Config MySQL
@@ -94,6 +95,7 @@ def login():
                 # Passed verification
                 session['logged_in'] = True
                 session['nia'] = nia
+                session['progress'] = 0
 
                 flash('You are now logged in', 'success')
                 # $$$$ video minuto 15:49
@@ -129,29 +131,8 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-# Dashboard
-@app.route('/assigment')
-@is_logged_in                   # Uses the flask decorator to check if is logged in
-def Assigment():
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Check if the global variable for assigment is loaded
-    if (_assigment is None):
-        setAssigment()
-
-    # Get articles
-    result = cur.execute("SELECT * FROM articles")
-    articles = cur.fetchall() # Dictionaty
-    if result > 0:
-        return render_template('dashboard.html', articles=articles)
-    else:
-        msg = 'No articles found'
-        return render_template('dashboard.html', msg=msg)
-    #close connection
-    cur.close()
-
 def setAssigment():
+    # global assigment_global                 # Used in this scope
     DB_Assigment = None
     cur = mysql.connection.cursor()
     assig_query = cur.execute("SELECT * FROM assigments")
@@ -175,7 +156,49 @@ def setAssigment():
             DB_Assigment = dataStructures.Assigment(tmpSections, assig['course'])
 
     cur.close()
+    # _assigment = copy.deepcopy(DB_Assigment)
     return DB_Assigment
+
+# Dashboard
+@app.route('/assigment')
+@is_logged_in                   # Uses the flask decorator to check if is logged in
+def Assigment():
+    global assigment_global                 # Used in this scope
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Check if the global variable for assigment is loaded
+    try:
+        assigment_global
+    except:
+        assigment_global = setAssigment()
+
+    # if (_assigment is None):
+    #     _assigment = copy.deepcopy(setAssigment())
+
+    if len(assigment_global.sections) > 0:
+        progress = session['progress']
+        return render_template(
+            'assigment.html',
+            assigment=assigment_global,
+            progress=progress,
+            section=assigment_global.sections_dict()[progress]
+        )
+
+    ## Por debajo popó del programa anterior, pero vale de ejemplo
+    ## Por debajo popó del programa anterior, pero vale de ejemplo
+    # Get articles
+    result = cur.execute("SELECT * FROM articles")
+    articles = cur.fetchall() # Dictionary
+    if result > 0:
+        return render_template('dashboard.html', articles=articles)
+    else:
+        msg = 'No articles found'
+        return render_template('dashboard.html', msg=msg)
+    #close connection
+    cur.close()
+
 
 ''' Custom initialization at startup - Begin '''
 app.debug = True
