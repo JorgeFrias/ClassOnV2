@@ -11,4 +11,30 @@
     <p>
         {{ section.text }}
     </p>
+
+    <ul class="pagination">
+        <!--Previous page-->
+        {% if (progress - 1) < 1 %}
+            <li class="page-item disabled"><a class="page-link" href="assigment/{{ progress - 1 }}">Previous</a></li>
+        {% else %}
+            <li class="page-item"><a class="page-link" href="assigment/{{ progress - 1 }}">Previous</a></li>
+        {% endif %}
+
+        <!--Middle pages-->
+        {% for section in assigment.sections_dict() %}
+            {% if section.order == (progress + 1) %}
+                <li class="page-item active"><a class="page-link" href="assigment/{{ section.order }}">{{ section.order }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="assigment/{{ section.order }}">{{ section.order }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        <!--Next page-->
+        {% if (progress + 1) > assigment.sections_dict()|length %}
+            <li class="page-item disable"><a class="page-link" href="assigment/{{ progress + 1 }}">Next</a></li>
+        {% else %}
+            <li class="page-item"><a class="page-link" href="assigment/{{ progress + 1 }}">Next</a></li>
+        {% endif %}
+    </ul>
+
 {% endblock %}

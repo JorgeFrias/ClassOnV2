@@ -95,7 +95,7 @@ def login():
                 # Passed verification
                 session['logged_in'] = True
                 session['nia'] = nia
-                session['progress'] = 0
+                session['progress'] = 1
 
                 flash('You are now logged in', 'success')
                 # $$$$ video minuto 15:49
@@ -183,7 +183,7 @@ def Assigment():
             'assigment.html',
             assigment=assigment_global,
             progress=progress,
-            section=assigment_global.sections_dict()[progress]
+            section=assigment_global.sections_dict()[   progress]
         )
 
     ## Por debajo popó del programa anterior, pero vale de ejemplo
