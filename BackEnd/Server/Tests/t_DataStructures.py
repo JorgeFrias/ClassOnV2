@@ -1,12 +1,12 @@
 # Simulation of data structures to check functionality
 def test_LoadInfo():
     # ASSIGMENT
-    from DataStructures import Course, Section, Assigment
+    from DataStructures import Course, Section, assigment
     course = Course.Course('Computer Science', 'Programing', '2018')
     sections = []
     sections.append(Section.Section('Chapter one', 1, 'Some text about programning'))
     sections.append(Section.Section('Chapter two', 2, 'Some text about something else'))
-    assigment = Assigment.Assigment(sections, course)
+    assigment = assigment.Assigment(sections, course)
 
     # CLASSROOM
     from DataStructures import Classroom

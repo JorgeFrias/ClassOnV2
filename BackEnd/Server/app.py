@@ -1,15 +1,15 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask_script import Manager, Server
 # from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, IntegerField
 from passlib.hash import sha256_crypt
 from functools import wraps
+# from DataStructures import assigment, Section
+import dataStructures
 
-from DataStructures import Assigment, Section
-
+''' Flask app '''
 app = Flask(__name__)
-app.debug = True
-
 
 ''' Global variables'''
 _assigment = None
@@ -136,6 +136,10 @@ def Assigment():
     # Create cursor
     cur = mysql.connection.cursor()
 
+    # Check if the global variable for assigment is loaded
+    if (_assigment is None):
+        setAssigment()
+
     # Get articles
     result = cur.execute("SELECT * FROM articles")
     articles = cur.fetchall() # Dictionaty
@@ -152,29 +156,76 @@ def setAssigment():
     cur = mysql.connection.cursor()
     assig_query = cur.execute("SELECT * FROM assigments")
     #close connection
-    cur.close()
     if assig_query > 0:
         # Just get's one supports just one assigment in DB
         assig = cur.fetchone()                       # Dictionaty
         # Get sections
         id = assig['id']
-        sections_query = cur.execute("SELECT * FROM sections WHERE id = %d", [id])
+        sections_query = cur.execute("SELECT * FROM sections WHERE assigment = %s", [id])
         if sections_query > 0:
             tmpSections = []
             sections = cur.fetchall()
             for section in sections:
-                tmpSection = Section.Section(
+                tmpSection = dataStructures.Section(
                     section['title'],
-                    section['order'],
+                    section['order_in_assigment'],
                     section['content']
                 )
                 tmpSections.append(tmpSection)
-            DB_Assigment = Assigment.Assigment(tmpSections ,assig['course'])
+            DB_Assigment = dataStructures.Assigment(tmpSections, assig['course'])
 
+    cur.close()
     return DB_Assigment
 
+''' Custom initialization at startup - Begin '''
+app.debug = True
+# manager = Manager(app)
+#
+# def custom_calls():
+#     # setAssigment()
+#     pass
+#
+# class CustomServer(Server):
+#     def __call__(self, app, *args, **kwargs):
+#         custom_calls()
+#         app.secret_key = 'secret123'
+#         # Hint: Here you could manipulate app
+#         # - Threaded true allow multiple users
+#         return Server.__call__(self, app, *args, **kwargs, threaded=True)
+#
+# # app = Flask(__name__)
+#
+# # Remember to add the command to your Manager instance
+# manager.add_command('runserver', CustomServer())
+#
+# if __name__ == "__main__":
+#     manager.run()          # Allow multiple users
 
+# No debug with pycharm
 if __name__ == '__main__':
-    _assigment = setAssigment()         # Set the assigment
+    # _assigment = setAssigment()         # Set the assigment
     app.secret_key = 'secret123'
-    app.run(threaded=True)              # Allow multiple users
+    # app.run(threaded=True)              # Allow multiple users
+    app.run()              # Allow one user
+
+# Debug with pycharm
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Development Server Help')
+    parser.add_argument("-d", "--debug", action="store_true", dest="debug_mode",
+                        help="run in debug mode (for use with PyCharm)", default=False)
+    parser.add_argument("-p", "--port", dest="port",
+                        help="port of server (default:%(default)s)", type=int, default=5000)
+
+    cmd_args = parser.parse_args()
+    app_options = {"port": cmd_args.port}
+
+    if cmd_args.debug_mode:
+        app_options["debug"] = True
+        app_options["use_debugger"] = False
+        app_options["use_reloader"] = False
+
+    app.run(**app_options)
+
+''' Custom initialization at startup - End '''

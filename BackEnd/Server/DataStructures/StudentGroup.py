@@ -1,5 +1,5 @@
 from DataStructures import Student
-from DataStructures import Assigment
+from DataStructures import assigment
 from DataStructures import Doubt
 from DataStructures import Classroom
 
