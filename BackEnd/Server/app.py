@@ -99,7 +99,7 @@ def login():
 
                 flash('You are now logged in', 'success')
                 # $$$$ video minuto 15:49
-                return redirect(url_for('Assigment'))
+                return redirect(url_for('Assigment_page', page=1))
 
             else:
                 error = 'Password Not matched'
@@ -159,7 +159,6 @@ def setAssigment():
     # _assigment = copy.deepcopy(DB_Assigment)
     return DB_Assigment
 
-# Dashboard
 '''
 Pages start at 1
 if 0 render last one visited
@@ -209,7 +208,6 @@ def Assigment_page(page):
 
 def ProgressPercentaje(currentPage, totalPages):
     return 100/totalPages * currentPage
-
 
 ''' Custom initialization at startup - Begin '''
 app.debug = True
