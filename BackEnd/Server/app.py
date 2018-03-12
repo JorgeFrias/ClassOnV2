@@ -160,11 +160,50 @@ def setAssigment():
     return DB_Assigment
 
 # Dashboard
-@app.route('/assigment')
-@is_logged_in                   # Uses the flask decorator to check if is logged in
-def Assigment():
-    global assigment_global                 # Used in this scope
+# @app.route('/assigment')
+# @is_logged_in                   # Uses the flask decorator to check if is logged in
+# def Assigment():
+#     global assigment_global                 # Used in this scope
+#
+#     # Create cursor
+#     cur = mysql.connection.cursor()
+#
+#     # Check if the global variable for assigment is loaded
+#     try:
+#         assigment_global
+#     except:
+#         assigment_global = setAssigment()
+#
+#     # if (_assigment is None):
+#     #     _assigment = copy.deepcopy(setAssigment())
+#
+#     if len(assigment_global.sections) > 0:
+#         progress = session['progress']
+#         return render_template(
+#             'assigment.html',
+#             assigment=assigment_global,
+#             progress=progress,
+#             section=assigment_global.sections_dict()[progress]
+#         )
+#
+#     ## Por debajo popó del programa anterior, pero vale de ejemplo
+#     ## Por debajo popó del programa anterior, pero vale de ejemplo
+#     # Get articles
+#     result = cur.execute("SELECT * FROM articles")
+#     articles = cur.fetchall() # Dictionary
+#     #close connection with DB
+#     cur.close()
+#     if result > 0:
+#         return render_template('dashboard.html', articles=articles)
+#     else:
+#         msg = 'No articles found'
+#         return render_template('dashboard.html', msg=msg)
 
+@app.route('/assigment/<string:page>', methods=['GET', 'POST'])
+@is_logged_in                   # Uses the flask decorator to check if is logged in
+def Assigment_page(page):
+    global assigment_global                 # Used in this scope
+    page_no = int(page)
     # Create cursor
     cur = mysql.connection.cursor()
 
@@ -176,28 +215,29 @@ def Assigment():
 
     # if (_assigment is None):
     #     _assigment = copy.deepcopy(setAssigment())
-
-    if len(assigment_global.sections) > 0:
-        progress = session['progress']
-        return render_template(
-            'assigment.html',
-            assigment=assigment_global,
-            progress=progress,
-            section=assigment_global.sections_dict()[   progress]
-        )
-
-    ## Por debajo popó del programa anterior, pero vale de ejemplo
-    ## Por debajo popó del programa anterior, pero vale de ejemplo
-    # Get articles
-    result = cur.execute("SELECT * FROM articles")
-    articles = cur.fetchall() # Dictionary
-    if result > 0:
-        return render_template('dashboard.html', articles=articles)
+    totalSections = len(assigment_global.sections)
+    progress = ProgressPercentaje(page_no, totalSections)
+    if  totalSections > 0:
+        if page_no > 0 and page_no <= len(assigment_global.sections):
+            # The requested page exists
+            # progress = session['progress']
+            return render_template(
+                'assigment.html',
+                assigment=assigment_global,
+                progress=progress,
+                page=page_no,
+                totalSections=totalSections,
+                section=assigment_global.sections_dict()[page_no - 1]
+            )
+        else:
+            # Error
+            flash('Requested page out of bounds', 'danger')
     else:
-        msg = 'No articles found'
-        return render_template('dashboard.html', msg=msg)
-    #close connection
-    cur.close()
+        # Error
+        flash('No sections in current assigment', 'danger')
+
+def ProgressPercentaje(currentPage, totalPages):
+    return 100/totalPages * currentPage
 
 
 ''' Custom initialization at startup - Begin '''
