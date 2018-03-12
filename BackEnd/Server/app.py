@@ -95,7 +95,7 @@ def login():
                 # Passed verification
                 session['logged_in'] = True
                 session['nia'] = nia
-                session['progress'] = 1
+                session['page'] = 1
 
                 flash('You are now logged in', 'success')
                 # $$$$ video minuto 15:49
@@ -160,45 +160,10 @@ def setAssigment():
     return DB_Assigment
 
 # Dashboard
-# @app.route('/assigment')
-# @is_logged_in                   # Uses the flask decorator to check if is logged in
-# def Assigment():
-#     global assigment_global                 # Used in this scope
-#
-#     # Create cursor
-#     cur = mysql.connection.cursor()
-#
-#     # Check if the global variable for assigment is loaded
-#     try:
-#         assigment_global
-#     except:
-#         assigment_global = setAssigment()
-#
-#     # if (_assigment is None):
-#     #     _assigment = copy.deepcopy(setAssigment())
-#
-#     if len(assigment_global.sections) > 0:
-#         progress = session['progress']
-#         return render_template(
-#             'assigment.html',
-#             assigment=assigment_global,
-#             progress=progress,
-#             section=assigment_global.sections_dict()[progress]
-#         )
-#
-#     ## Por debajo popó del programa anterior, pero vale de ejemplo
-#     ## Por debajo popó del programa anterior, pero vale de ejemplo
-#     # Get articles
-#     result = cur.execute("SELECT * FROM articles")
-#     articles = cur.fetchall() # Dictionary
-#     #close connection with DB
-#     cur.close()
-#     if result > 0:
-#         return render_template('dashboard.html', articles=articles)
-#     else:
-#         msg = 'No articles found'
-#         return render_template('dashboard.html', msg=msg)
-
+'''
+Pages start at 1
+if 0 render last one visited
+'''
 @app.route('/assigment/<string:page>', methods=['GET', 'POST'])
 @is_logged_in                   # Uses the flask decorator to check if is logged in
 def Assigment_page(page):
@@ -213,8 +178,14 @@ def Assigment_page(page):
     except:
         assigment_global = setAssigment()
 
-    # if (_assigment is None):
-    #     _assigment = copy.deepcopy(setAssigment())
+    # If zero last one visited in session
+    if page_no == 0:
+        # Render last visited
+        page_no = session['page']
+    else:
+        #Update session
+        session['page'] = page_no
+
     totalSections = len(assigment_global.sections)
     progress = ProgressPercentaje(page_no, totalSections)
     if  totalSections > 0:
