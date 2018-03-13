@@ -6,7 +6,7 @@ import dataStructures
 from classOn.decorators import is_logged_in
 
 '''Register blueprint'''
-assigment = Blueprint('home',
+assigment = Blueprint('assigment',
                  __name__,
                  template_folder='templates',
                  static_folder='static'
@@ -23,7 +23,7 @@ def setAssigment():
     #close connection
     if assig_query > 0:
         # Just get's one supports just one assigment in DB
-        assig = cur.fetchone()                       # Dictionaty
+        assig = cur.fetchone()                       # Dictionary
         # Get sections
         id = assig['id']
         sections_query = cur.execute("SELECT * FROM sections WHERE assigment = %s", [id])
@@ -43,7 +43,7 @@ def setAssigment():
     # _assigment = copy.deepcopy(DB_Assigment)
     return DB_Assigment
 
-@assigment.route('/assigment/<string:page>', methods=['GET', 'POST'])
+@assigment.route('/<string:page>', methods=['GET', 'POST'])
 @is_logged_in                   # Uses the flask decorator to check if is logged in
 def Assigment_page(page):
     global assigment_global                 # Used in this scope

@@ -60,7 +60,7 @@ def register():
 
         flash('You are now registerd and can log in', 'success')
 
-        return redirect(url_for('login'))
+        return redirect(url_for('home.login'))
 
     return render_template('register.html', form=form)
 
@@ -91,7 +91,7 @@ def login():
 
                 flash('You are now logged in', 'success')
                 # $$$$ video minuto 15:49
-                return redirect(url_for('Assigment_page', page=1))
+                return redirect(url_for('assigment.Assigment_page', page=1))
 
             else:
                 error = 'Password Not matched'
@@ -110,6 +110,6 @@ def login():
 def logout():
     session.clear()
     flash('You are now logged out', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('home.login'))
 
 
