@@ -9,5 +9,5 @@ def is_logged_in(f):
             return f(*args, **kwargs)
         else:
             flash('Unauthorized, please login', 'danger')
-            return redirect(url_for('login'))
+            return redirect(url_for('home.login'))
     return wrap
