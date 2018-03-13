@@ -20,8 +20,6 @@ mysql = MySQL(app)
 ''' Blueprints - register '''
 app.register_blueprint(home)
 
-
-
 ''' Routing '''
 @app.route('/')
 def index():

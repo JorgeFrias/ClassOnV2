@@ -1,11 +1,9 @@
-from flask import Blueprint, render_template
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
-from flask_script import Manager, Server
-from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators, IntegerField
+from flask import render_template, flash, redirect, url_for, session, request, Blueprint
+from wtforms import Form, StringField, PasswordField, validators
 from passlib.hash import sha256_crypt
-from functools import wraps
 import dataStructures
+
+from classOn.decorators import is_logged_in
 
 
 '''Register blueprint'''
@@ -16,7 +14,7 @@ home = Blueprint('home',
                  )
 
 ''' MySQL import '''
-from app import mysql
+from classOn import mysql
 
 ''' Page routes and interactions '''
 # Index
@@ -101,22 +99,11 @@ def login():
             # # Close connection
             # cur.close()
         else:
-            home.logger.info('No user')
+            # home.logger.info('No user')
             error = 'NIA not found'
             return render_template('login.html', error=error)
 
     return render_template('login.html')
-
-# Check if user logged in
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, please login', 'danger')
-            return redirect(url_for('login'))
-    return wrap
 
 @home.route('/logout')
 @is_logged_in                   # Uses the flask decorator to check if is logged in
@@ -125,30 +112,4 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-def setAssigment():
-    # global assigment_global                 # Used in this scope
-    DB_Assigment = None
-    cur = mysql.connection.cursor()
-    assig_query = cur.execute("SELECT * FROM assigments")
-    #close connection
-    if assig_query > 0:
-        # Just get's one supports just one assigment in DB
-        assig = cur.fetchone()                       # Dictionaty
-        # Get sections
-        id = assig['id']
-        sections_query = cur.execute("SELECT * FROM sections WHERE assigment = %s", [id])
-        if sections_query > 0:
-            tmpSections = []
-            sections = cur.fetchall()
-            for section in sections:
-                tmpSection = dataStructures.Section(
-                    section['title'],
-                    section['order_in_assigment'],
-                    section['content']
-                )
-                tmpSections.append(tmpSection)
-            DB_Assigment = dataStructures.Assigment(tmpSections, assig['course'])
 
-    cur.close()
-    # _assigment = copy.deepcopy(DB_Assigment)
-    return DB_Assigment

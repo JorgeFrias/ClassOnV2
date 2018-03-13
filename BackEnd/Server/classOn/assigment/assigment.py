@@ -1,17 +1,49 @@
-from flask import Blueprint
+from flask import render_template, flash, redirect, url_for, session, request, Blueprint
+from wtforms import Form, StringField, PasswordField, validators
+from passlib.hash import sha256_crypt
+from functools import wraps
+import dataStructures
+from classOn.decorators import is_logged_in
 
 '''Register blueprint'''
-home = Blueprint('home',
+assigment = Blueprint('home',
                  __name__,
                  template_folder='templates',
                  static_folder='static'
                  )
 
 ''' MySQL import '''
-from app import mysql
+from classOn import mysql
 
+def setAssigment():
+    # global assigment_global                 # Used in this scope
+    DB_Assigment = None
+    cur = mysql.connection.cursor()
+    assig_query = cur.execute("SELECT * FROM assigments")
+    #close connection
+    if assig_query > 0:
+        # Just get's one supports just one assigment in DB
+        assig = cur.fetchone()                       # Dictionaty
+        # Get sections
+        id = assig['id']
+        sections_query = cur.execute("SELECT * FROM sections WHERE assigment = %s", [id])
+        if sections_query > 0:
+            tmpSections = []
+            sections = cur.fetchall()
+            for section in sections:
+                tmpSection = dataStructures.Section(
+                    section['title'],
+                    section['order_in_assigment'],
+                    section['content']
+                )
+                tmpSections.append(tmpSection)
+            DB_Assigment = dataStructures.Assigment(tmpSections, assig['course'])
 
-@app.route('/assigment/<string:page>', methods=['GET', 'POST'])
+    cur.close()
+    # _assigment = copy.deepcopy(DB_Assigment)
+    return DB_Assigment
+
+@assigment.route('/assigment/<string:page>', methods=['GET', 'POST'])
 @is_logged_in                   # Uses the flask decorator to check if is logged in
 def Assigment_page(page):
     global assigment_global                 # Used in this scope
