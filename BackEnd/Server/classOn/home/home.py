@@ -4,7 +4,7 @@ from passlib.hash import sha256_crypt
 import dataStructures
 
 from classOn.decorators import is_logged_in
-
+from classOn.home.forms import RegisterFormStudent, RegisterFormProfessor
 
 '''Register blueprint'''
 home = Blueprint('home',
@@ -22,30 +22,30 @@ from classOn import mysql
 def index():
     return render_template('home.html')
 
-# Register form class
-class RegisterForm(Form):
-    name = StringField('Nombre', [validators.Length(min = 1, max=100)])
-    lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
-    lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
-    nia = StringField('NIA', [validators.Length(min = 9, max=9)])
-    email = StringField('Email', [validators.Length(min=1, max=100)])
-    password = PasswordField('Contraseña',[
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Las contraseñas no coinciden')
-    ])
-    confirm = PasswordField('Confirm Password')
-
-# Register form class
-class RegisterFormProfessor(Form):
-    name = StringField('Nombre', [validators.Length(min = 1, max=100)])
-    lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
-    lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
-    email = StringField('Email', [validators.Length(min=1, max=100)])
-    password = PasswordField('Contraseña',[
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Las contraseñas no coinciden')
-    ])
-    confirm = PasswordField('Confirm Password')
+# # Register form class
+# class RegisterForm(Form):
+#     name = StringField('Nombre', [validators.Length(min = 1, max=100)])
+#     lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
+#     lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
+#     nia = StringField('NIA', [validators.Length(min = 9, max=9)])
+#     email = StringField('Email', [validators.Length(min=1, max=100)])
+#     password = PasswordField('Contraseña',[
+#         validators.DataRequired(),
+#         validators.EqualTo('confirm', message='Las contraseñas no coinciden')
+#     ])
+#     confirm = PasswordField('Confirm Password')
+#
+# # Register form class
+# class RegisterFormProfessor(Form):
+#     name = StringField('Nombre', [validators.Length(min = 1, max=100)])
+#     lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
+#     lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
+#     email = StringField('Email', [validators.Length(min=1, max=100)])
+#     password = PasswordField('Contraseña',[
+#         validators.DataRequired(),
+#         validators.EqualTo('confirm', message='Las contraseñas no coinciden')
+#     ])
+#     confirm = PasswordField('Confirm Password')
 
 def singInStudent(name, lastName, lastNameSecond, nia, email, password):
     # DB access
@@ -81,7 +81,7 @@ def singInProfessor(name, lastName, lastNameSecond, email, password):
 @home.route('/register', methods=['GET', 'POST'])
 def registerGeneral():
 
-    formStudent = RegisterForm(request.form)
+    formStudent = RegisterFormStudent(request.form)
     formProfessor = RegisterFormProfessor(request.form)
     if (request.method == 'POST'):
         if request.form['btn'] == 'Submit student' and formStudent.validate():
