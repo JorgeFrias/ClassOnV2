@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, redirect, url_for
 
-
+''' Flask application '''
 app = Flask(__name__, instance_relative_config=True)
 
 ''' Configurations '''
@@ -12,7 +12,7 @@ app.config.from_pyfile('config.py')
 # Variables defined here will override those in the default configuration
 app.config.from_envvar('APP_CONFIG_FILE')
 
-# SQL
+''' Database '''
 from flask_mysqldb import MySQL
 mysql = MySQL(app)
 
@@ -26,4 +26,3 @@ app.register_blueprint(assigment, url_prefix='/assigment')
 @app.route('/')
 def index():
     return redirect(url_for('home.index'))
-    # return render_template('home.html')
