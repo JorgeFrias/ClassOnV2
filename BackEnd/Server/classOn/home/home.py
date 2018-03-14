@@ -35,34 +35,108 @@ class RegisterForm(Form):
     ])
     confirm = PasswordField('Confirm Password')
 
+# Register form class
+class RegisterFormProfessor(Form):
+    name = StringField('Nombre', [validators.Length(min = 1, max=100)])
+    lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
+    lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
+    email = StringField('Email', [validators.Length(min=1, max=100)])
+    password = PasswordField('Contraseña',[
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Las contraseñas no coinciden')
+    ])
+    confirm = PasswordField('Confirm Password')
+
+def singInStudent(name, lastName, lastNameSecond, nia, email, password):
+    # DB access
+    # Create the cursor
+    cur = mysql.connection.cursor()
+    # Execute query
+    cur.execute(
+        "INSERT INTO students(name, last_name, last_name_second, NIA, email, password) VALUES(%s, %s, %s, %s, %s, %s)",
+        (name, lastName, lastNameSecond, nia, email, password))
+    # Commit to DB
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+    flash('You are now registerd as student and can log in', 'success')
+
+def singInProfessor(name, lastName, lastNameSecond, email, password):
+    # DB access
+    # Create the cursor
+    cur = mysql.connection.cursor()
+    # Execute query
+    cur.execute(
+        "INSERT INTO professors(name, last_name, last_name_second, email, password) VALUES(%s, %s, %s, %s, %s)",
+        (name, lastName, lastNameSecond, email, password))
+    # Commit to DB
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+    flash('You are now registerd as professor and can log in', 'success')
+
 # Register
 @home.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm(request.form)
-    if(request.method == 'POST' and form.validate()):
-        #Submited
-        name = form.name.data
-        lastName = form.lastName.data
-        lastNameSecond = form.lastNameSecond.data
-        nia = form.nia.data
-        email = form.email.data
-        password = sha256_crypt.encrypt(str(form.password.data))
+def registerGeneral():
 
-        # DB access
-        # Create the cursor
-        cur = mysql.connection.cursor()
-        # Execute query
-        cur.execute("INSERT INTO students(name, last_name, last_name_second, NIA, email, password) VALUES(%s, %s, %s, %s, %s, %s)", (name, lastName, lastNameSecond, nia, email, password))
-        # Commit to DB
-        mysql.connection.commit()
-        # Close connection
-        cur.close()
+    formStudent = RegisterForm(request.form)
+    formProfessor = RegisterFormProfessor(request.form)
+    if (request.method == 'POST'):
+        if request.form['btn'] == 'Submit student' and formStudent.validate():
+            # flash('Student', 'success')
+            singInStudent(
+                formStudent.name.data,
+                formStudent.lastName.data,
+                formStudent.lastNameSecond.data,
+                formStudent.nia.data,
+                formStudent.email.data,
+                sha256_crypt.encrypt(str(formStudent.password.data))
+            )
+            return redirect(url_for('home.login'))
+        elif request.form['btn'] == 'Submit professor' and formProfessor.validate():
+            # flash('Professor', 'success')
+            singInProfessor(
+                formProfessor.name.data,
+                formProfessor.lastName.data,
+                formProfessor.lastNameSecond.data,
+                formProfessor.email.data,
+                sha256_crypt.encrypt(str(formProfessor.password.data))
+            )
+            return redirect(url_for('home.login'))
 
-        flash('You are now registerd and can log in', 'success')
+    return render_template('register.html', formStudent=formStudent, formProfessor=formProfessor)
 
-        return redirect(url_for('home.login'))
 
-    return render_template('register.html', form=form)
+# # Register
+# @home.route('/register', methods=['GET', 'POST'])
+# def register():
+#     form = RegisterForm(request.form)
+#     if(request.method == 'POST' and form.validate()):
+#         #Submited
+#         name = form.name.data
+#         lastName = form.lastName.data
+#         lastNameSecond = form.lastNameSecond.data
+#         nia = form.nia.data
+#         email = form.email.data
+#         password = sha256_crypt.encrypt(str(form.password.data))
+#
+#         # DB access
+#         # Create the cursor
+#         cur = mysql.connection.cursor()
+#         # Execute query
+#         cur.execute("INSERT INTO students(name, last_name, last_name_second, NIA, email, password) VALUES(%s, %s, %s, %s, %s, %s)", (name, lastName, lastNameSecond, nia, email, password))
+#         # Commit to DB
+#         mysql.connection.commit()
+#         # Close connection
+#         cur.close()
+#
+#         flash('You are now registerd and can log in', 'success')
+#
+#         return redirect(url_for('home.login'))
+#
+#     return render_template('register.html', form=form)
 
 # User login
 @home.route('/login', methods=['GET', 'POST'])

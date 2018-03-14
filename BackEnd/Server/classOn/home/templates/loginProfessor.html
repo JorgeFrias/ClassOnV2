@@ -1,0 +1,18 @@
+
+{% block professor %}
+    <h2>I'm a professor</h2>
+    <!--{% include 'includes/_messages.html' %} This makes the messages appear one more time-->
+    <form action="" method="POST">
+        <div class="form-group">
+            <label>Email</label>
+            <!--if the user refresh we want the user to stay-->
+            <input type="text" name="email" class="form-control" value="{{request.formProfessor.email}}">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <!--if the user refresh we want the user to stay-->
+            <input type="password" name="password" class="form-control" value="{{request.formProfessor.password}}">
+        </div>
+        <button type="submit" name="professor" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
