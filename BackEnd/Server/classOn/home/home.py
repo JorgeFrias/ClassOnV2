@@ -22,31 +22,6 @@ from classOn import mysql
 def index():
     return render_template('home.html')
 
-# # Register form class
-# class RegisterForm(Form):
-#     name = StringField('Nombre', [validators.Length(min = 1, max=100)])
-#     lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
-#     lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
-#     nia = StringField('NIA', [validators.Length(min = 9, max=9)])
-#     email = StringField('Email', [validators.Length(min=1, max=100)])
-#     password = PasswordField('Contraseña',[
-#         validators.DataRequired(),
-#         validators.EqualTo('confirm', message='Las contraseñas no coinciden')
-#     ])
-#     confirm = PasswordField('Confirm Password')
-#
-# # Register form class
-# class RegisterFormProfessor(Form):
-#     name = StringField('Nombre', [validators.Length(min = 1, max=100)])
-#     lastName = StringField('Apellido', [validators.Length(min = 1, max=100)])
-#     lastNameSecond = StringField('Segundo apellido', [validators.Length(min = 0, max=100)])
-#     email = StringField('Email', [validators.Length(min=1, max=100)])
-#     password = PasswordField('Contraseña',[
-#         validators.DataRequired(),
-#         validators.EqualTo('confirm', message='Las contraseñas no coinciden')
-#     ])
-#     confirm = PasswordField('Confirm Password')
-
 def singInStudent(name, lastName, lastNameSecond, nia, email, password):
     # DB access
     # Create the cursor
@@ -159,7 +134,7 @@ def login():
 
                     cur.close()                     # Close DB connection
                     flash('You are now logged in professor', 'success')
-                    return redirect(url_for('home.index', page=1))
+                    return redirect(url_for('professor.index'))
 
             else:
                 cur.close()                         # Close DB connection
@@ -172,47 +147,7 @@ def login():
             return render_template('login.html', error=error)
 
     return render_template('login.html')
-#
-# # User login
-# @home.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         # Get form fields
-#         nia = request.form['nia']
-#         password_candidate = request.form['password']
-#
-#         # Create cursor
-#         cur = mysql.connection.cursor()
-#         # Get user by username
-#         result = cur.execute('SELECT * FROM students WHERE nia = %s', [nia])
-#
-#         if (result > 0):
-#             # Get stored hash
-#             data = cur.fetchone()                   # Fetches the first one
-#             password = data['password']             # Dictionary
-#
-#             # Compare passwords
-#             if (sha256_crypt.verify(password_candidate, password)):
-#                 # Passed verification
-#                 session['logged_in'] = True
-#                 session['nia'] = nia
-#                 session['page'] = 1
-#
-#                 flash('You are now logged in', 'success')
-#                 # $$$$ video minuto 15:49
-#                 return redirect(url_for('assigment.Assigment_page', page=1))
-#
-#             else:
-#                 error = 'Password Not matched'
-#                 return render_template('login.html', error=error)
-#             # # Close connection
-#             # cur.close()
-#         else:
-#             # home.logger.info('No user')
-#             error = 'NIA not found'
-#             return render_template('login.html', error=error)
-#
-#     return render_template('login.html')
+
 
 @home.route('/logout')
 @is_logged_in                   # Uses the flask decorator to check if is logged in

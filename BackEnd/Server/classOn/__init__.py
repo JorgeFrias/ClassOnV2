@@ -19,8 +19,10 @@ mysql = MySQL(app)
 ''' Blueprints - register '''
 from classOn.home.home import home
 from classOn.assigment.assigment import assigment
+from classOn.professor.professor import professor
 app.register_blueprint(home)
 app.register_blueprint(assigment, url_prefix='/assigment')
+app.register_blueprint(professor, url_prefix='/professor')
 
 ''' Routing '''
 @app.route('/')

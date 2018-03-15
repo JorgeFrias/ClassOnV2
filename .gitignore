@@ -3,3 +3,5 @@ BackEnd/Server/venv/
 BackEnd/Server/DataStructures/__pycache__/
 BackEnd/Server/classOn/__pycache__/
 BackEnd/Server/classOn/home/__pycache__/
+BackEnd/Server/classOn/professor/__pycache__/
+BackEnd/Server/__pycache__/dataStructures.cpython-36.pyc
