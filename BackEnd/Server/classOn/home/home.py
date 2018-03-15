@@ -108,50 +108,34 @@ def registerGeneral():
 
     return render_template('register.html', formStudent=formStudent, formProfessor=formProfessor)
 
-
-# # Register
-# @home.route('/register', methods=['GET', 'POST'])
-# def register():
-#     form = RegisterForm(request.form)
-#     if(request.method == 'POST' and form.validate()):
-#         #Submited
-#         name = form.name.data
-#         lastName = form.lastName.data
-#         lastNameSecond = form.lastNameSecond.data
-#         nia = form.nia.data
-#         email = form.email.data
-#         password = sha256_crypt.encrypt(str(form.password.data))
-#
-#         # DB access
-#         # Create the cursor
-#         cur = mysql.connection.cursor()
-#         # Execute query
-#         cur.execute("INSERT INTO students(name, last_name, last_name_second, NIA, email, password) VALUES(%s, %s, %s, %s, %s, %s)", (name, lastName, lastNameSecond, nia, email, password))
-#         # Commit to DB
-#         mysql.connection.commit()
-#         # Close connection
-#         cur.close()
-#
-#         flash('You are now registerd and can log in', 'success')
-#
-#         return redirect(url_for('home.login'))
-#
-#     return render_template('register.html', form=form)
-
-# User login
 @home.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        # Get form fields
-        nia = request.form['nia']
-        password_candidate = request.form['password']
+    if (request.method == 'POST'):
+        email = ''
+        password_candidate = ''
+        isProfessor = False
+        isStudent = False
+        if request.form['btn'] == 'isStudent':
+            email = request.form['email']
+            password_candidate = request.form['password']
+            isStudent = True
+        elif request.form['btn'] == 'isProfessor':
+            email = request.form['email']
+            password_candidate = request.form['password']
+            isProfessor = True
+        else:
+            raise IOError('login error')
+            pass
 
-        # Create cursor
+        # Fetch from DB
         cur = mysql.connection.cursor()
-        # Get user by username
-        result = cur.execute('SELECT * FROM students WHERE nia = %s', [nia])
+        result = None
+        if isStudent:
+            result = cur.execute('SELECT * FROM students WHERE email = %s', [email])
+        elif isProfessor:
+            result = cur.execute('SELECT * FROM professors WHERE email = %s', [email])
 
-        if (result > 0):
+        if result > 0:
             # Get stored hash
             data = cur.fetchone()                   # Fetches the first one
             password = data['password']             # Dictionary
@@ -159,25 +143,76 @@ def login():
             # Compare passwords
             if (sha256_crypt.verify(password_candidate, password)):
                 # Passed verification
-                session['logged_in'] = True
-                session['nia'] = nia
-                session['page'] = 1
+                if isStudent:
+                    session['logged_in'] = True
+                    session['isProfessor'] = False
+                    session['nia'] = data['NIA']
+                    session['page'] = 1             # Assigment starts from first page
 
-                flash('You are now logged in', 'success')
-                # $$$$ video minuto 15:49
-                return redirect(url_for('assigment.Assigment_page', page=1))
+                    cur.close()                     # Close DB connection
+                    flash('You are now logged in', 'success')
+                    return redirect(url_for('assigment.Assigment_page', page=1))
+
+                if isProfessor:
+                    session['logged_in'] = True
+                    session['isProfessor'] = True
+
+                    cur.close()                     # Close DB connection
+                    flash('You are now logged in professor', 'success')
+                    return redirect(url_for('home.index', page=1))
 
             else:
+                cur.close()                         # Close DB connection
                 error = 'Password Not matched'
                 return render_template('login.html', error=error)
-            # # Close connection
-            # cur.close()
+
         else:
-            # home.logger.info('No user')
-            error = 'NIA not found'
+            cur.close()
+            error = 'email not found'
             return render_template('login.html', error=error)
 
     return render_template('login.html')
+#
+# # User login
+# @home.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         # Get form fields
+#         nia = request.form['nia']
+#         password_candidate = request.form['password']
+#
+#         # Create cursor
+#         cur = mysql.connection.cursor()
+#         # Get user by username
+#         result = cur.execute('SELECT * FROM students WHERE nia = %s', [nia])
+#
+#         if (result > 0):
+#             # Get stored hash
+#             data = cur.fetchone()                   # Fetches the first one
+#             password = data['password']             # Dictionary
+#
+#             # Compare passwords
+#             if (sha256_crypt.verify(password_candidate, password)):
+#                 # Passed verification
+#                 session['logged_in'] = True
+#                 session['nia'] = nia
+#                 session['page'] = 1
+#
+#                 flash('You are now logged in', 'success')
+#                 # $$$$ video minuto 15:49
+#                 return redirect(url_for('assigment.Assigment_page', page=1))
+#
+#             else:
+#                 error = 'Password Not matched'
+#                 return render_template('login.html', error=error)
+#             # # Close connection
+#             # cur.close()
+#         else:
+#             # home.logger.info('No user')
+#             error = 'NIA not found'
+#             return render_template('login.html', error=error)
+#
+#     return render_template('login.html')
 
 @home.route('/logout')
 @is_logged_in                   # Uses the flask decorator to check if is logged in

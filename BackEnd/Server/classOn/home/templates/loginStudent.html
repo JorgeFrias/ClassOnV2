@@ -4,15 +4,15 @@
     <!--{% include 'includes/_messages.html' %} This makes the messages appear one more time-->
     <form action="" method="POST">
         <div class="form-group">
-            <label>NIA</label>
+            <label>Email</label>
             <!--if the user refresh we want the user to stay-->
-            <input type="text" name="nia" class="form-control" value="{{request.formStudent.nia}}">
+            <input type="text" name="email" class="form-control" value="{{request.form.email}}">
         </div>
         <div class="form-group">
             <label>Password</label>
             <!--if the user refresh we want the user to stay-->
-            <input type="password" name="password" class="form-control" value="{{request.formStudent.password}}">
+            <input type="password" name="password" class="form-control" value="{{request.form.password}}">
         </div>
-        <button type="submit" name="student" class="btn btn-primary">Submit</button>
+        <button type="submit" name="btn" class="btn btn-primary" value="isStudent">Login as student</button>
     </form>
 {% endblock %}
