@@ -4,7 +4,7 @@ from passlib.hash import sha256_crypt
 import dataStructures
 
 from classOn.decorators import is_logged_in, is_logged_in_professor
-
+from classOn.professor import forms
 
 '''Register blueprint'''
 professor = Blueprint('professor',
@@ -25,3 +25,76 @@ def index():
 @is_logged_in_professor
 def dashboard():
     return render_template('dashboard.html')
+
+@professor.route('/create_assigment', methods=['GET', 'POST'])
+@is_logged_in_professor
+def createAssigment():
+
+    form = forms.CreateAssigmentForm(request.form)
+
+    if (request.method == 'POST' and form.validate()):
+        cur = mysql.connection.cursor()
+
+        course = form['course'].data
+        name = form['name'].data
+        id_professor = session['id_professor']
+
+        # Execute query
+        cur.execute(
+            "INSERT INTO assigments(name, course, id_professor) VALUES(%s, %s, %s)",
+            (name, course, id_professor))
+        mysql.connection.commit()                           # Commit to DB
+        session['id_assigment'] = cur.lastrowid             # Store id to add sections
+        session['order_in_assigment'] = 0                   # To be in control adding sections
+        cur.close()                                         # Close connection
+
+        flash('You created a new assigment', 'success')
+
+        return redirect(url_for('professor.addSections', course=course, name=name))
+
+    return render_template('createAssigment.html', form=form)
+
+@professor.route('/add_sections', methods=['GET', 'POST'])
+@is_logged_in_professor
+def addSections():
+    form = forms.AddSectionForm(request.form)
+    ### Fetch info to render ###
+    order_in_assigment = session['order_in_assigment'] + 1      # Do not update here because user can reload
+    # $$$$ Fetch sections to render
+
+    if (request.method == 'POST' and form.validate()):
+        if request.form['btn'] == 'add' or request.form['btn'] == 'addFinish':
+            session['order_in_assigment'] += 1  # Update order
+
+            id_assigment = session['id_assigment']
+            order_in_assigment = session['order_in_assigment']
+            name = form['name'].data
+            text = form['text'].data
+
+            # Execute query
+            cur = mysql.connection.cursor()
+            cur.execute(
+                "INSERT INTO sections(id_assigment, order_in_assigment, name, text) VALUES(%s, %s, %s, %s)",
+                (id_assigment, order_in_assigment, name, text))
+            mysql.connection.commit()           # Commit to DB
+            cur.close()                         # Close connection
+
+            if request.form['btn'] == 'add':
+                return redirect(url_for('professor.addSections', form=form, order_in_assigment=order_in_assigment, name=name, sections=None))
+            elif request.form['btn'] == 'addFinish':
+                flash('Saved', 'success')
+                return redirect(url_for('professor.dashboard'))
+            else:
+                flash('Something uncontrolled append', 'danger')
+                return redirect(url_for('professor.dashboard'))
+
+        elif request.form['btn'] == 'cancel':
+            flash('Discarded last section', 'danger')
+            flash('Saved all others', 'success')
+            return redirect(url_for('professor.dashboard'))
+        else:
+            flash('Something uncontrolled append', 'danger')
+            return redirect(url_for('professor.dashboard'))
+
+
+    return render_template('addSections.html', form=form, order_in_assigment=order_in_assigment)

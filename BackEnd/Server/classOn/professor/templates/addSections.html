@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1>Register</h1>
+    <hr class="my-4">
+    <div class="row">
+        <div class="col">
+            <!--Already defined sections-->
+            <h3>Sections</h3>
+            <ul class="list-group">
+                {% for section in sections %}
+                    <li class="list-group-item">{{ section.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col">
+            <!--Add new section-->
+            <h2>Add new section</h2>
+            <p>Editing section number {{ order_in_assigment }}</p>
+            <hr class="my-1">
+
+            {% from "includes/_formhelpers.html" import render_field %}
+            <form action="" method="POST">
+                <div class="form-group">
+                    {{render_field(form.name, class_="form-control")}}
+                </div>
+                <div class="form-group">
+                    {{render_field(form.text, class_="form-control")}}
+                </div>
+
+                <div class="container">
+                    <button type="submit" name="btn" class="btn btn-primary" value="add">Add section</button>
+                    <button type="submit" name="btn" class="btn btn-warning" value="addFinish">Add and finish</button>
+                    <button type="submit" name="btn" class="btn btn-danger" value="cancel">Discard section and finish</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

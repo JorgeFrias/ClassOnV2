@@ -131,6 +131,7 @@ def login():
                 if isProfessor:
                     session['logged_in'] = True
                     session['isProfessor'] = True
+                    session['id_professor'] = data['id']
 
                     cur.close()                     # Close DB connection
                     flash('You are now logged in professor', 'success')
