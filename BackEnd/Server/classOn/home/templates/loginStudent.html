@@ -6,12 +6,24 @@
         <div class="form-group">
             <label>Email</label>
             <!--if the user refresh we want the user to stay-->
-            <input type="text" name="email" class="form-control" value="{{request.form.email}}">
+            <!--This check which of the inputs need to be filled professor or student-->
+            {% if request.form['btn'] == 'isStudent' %}
+                <!--if the user refresh we want the user to stay-->
+                <input type="text" name="email" class="form-control" value="{{request.form.email}}">
+            {% else %}
+                <input type="text" name="email" class="form-control">
+            {% endif %}
         </div>
         <div class="form-group">
             <label>Password</label>
             <!--if the user refresh we want the user to stay-->
-            <input type="password" name="password" class="form-control" value="{{request.form.password}}">
+            <!--This check which of the inputs need to be filled professor or student-->
+            {% if request.form['btn'] == 'isStudent' %}
+                <!--if the user refresh we want the user to stay-->
+                <input type="password" name="password" class="form-control" value="{{request.form.password}}">
+            {% else %}
+                <input type="password" name="password" class="form-control">
+            {% endif %}
         </div>
         <button type="submit" name="btn" class="btn btn-primary" value="isStudent">Login as student</button>
     </form>
