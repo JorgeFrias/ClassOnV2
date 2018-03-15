@@ -54,13 +54,24 @@ def createAssigment():
 
     return render_template('createAssigment.html', form=form)
 
+def fetchSections(id_assigment):
+    sections = []
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM sections WHERE id_assigment = %s', [id_assigment])
+    if result > 0:
+        # data = cur.fetchone()  # Fetches the first one
+        # Using the cursor as iterator
+        for row in cur:
+            tmpSection = dataStructures.Section(row['name'], row['order_in_assigment'], row['text'])
+            sections.append(tmpSection)
+
+    return sections
+
+
 @professor.route('/add_sections', methods=['GET', 'POST'])
 @is_logged_in_professor
 def addSections():
     form = forms.AddSectionForm(request.form)
-    ### Fetch info to render ###
-    order_in_assigment = session['order_in_assigment'] + 1      # Do not update here because user can reload
-    # $$$$ Fetch sections to render
 
     if (request.method == 'POST' and form.validate()):
         if request.form['btn'] == 'add' or request.form['btn'] == 'addFinish':
@@ -80,7 +91,7 @@ def addSections():
             cur.close()                         # Close connection
 
             if request.form['btn'] == 'add':
-                return redirect(url_for('professor.addSections', form=form, order_in_assigment=order_in_assigment, name=name, sections=None))
+                return redirect(url_for('professor.addSections'))
             elif request.form['btn'] == 'addFinish':
                 flash('Saved', 'success')
                 return redirect(url_for('professor.dashboard'))
@@ -96,5 +107,11 @@ def addSections():
             flash('Something uncontrolled append', 'danger')
             return redirect(url_for('professor.dashboard'))
 
+    ### Fetch info to render ###
+    order_in_assigment = session['order_in_assigment'] + 1      # Do not update here because user can reload the page
+    # Fetch sections to render
+    sections = fetchSections(session['id_assigment'])           # Get sections
+    tmpAssigment = dataStructures.Assigment(sections)           # Create a temporal
+    dicSections = tmpAssigment.sections_dict()                  # Create dict from temporal to render later
 
-    return render_template('addSections.html', form=form, order_in_assigment=order_in_assigment)
+    return render_template('addSections.html', form=form, order_in_assigment=order_in_assigment, sections=dicSections)

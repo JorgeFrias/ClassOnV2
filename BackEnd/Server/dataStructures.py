@@ -114,7 +114,7 @@ class Assigment:
     #     self.sections = sections
     #     self.course = course
 
-    def __init__(self, sections : Sequence[Section], course : Course, name : str):
+    def __init__(self, sections : Sequence[Section], course : Course = None, name : str = ''):
         self.name = name
         self.sections = sections            # : List[Sections]
         self.course = course                # : String
