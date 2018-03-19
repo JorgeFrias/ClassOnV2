@@ -67,7 +67,6 @@ def fetchSections(id_assigment):
 
     return sections
 
-
 @professor.route('/add_sections', methods=['GET', 'POST'])
 @is_logged_in_professor
 def addSections():
@@ -115,3 +114,43 @@ def addSections():
     dicSections = tmpAssigment.sections_dict()                  # Create dict from temporal to render later
 
     return render_template('addSections.html', form=form, order_in_assigment=order_in_assigment, sections=dicSections)
+
+def assigmentsTupleList(id_professor):
+    '''
+    Creates a list of tuples (id, title) for the assigments of the current professor (session['id_professor']
+    '''
+    # id_professor = session['id_professor']
+
+    assigments = []
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM assigments WHERE id_professor = %s', [id_professor])
+    if result > 0:
+        # data = cur.fetchone()  # Fetches the first one
+        # Using the cursor as iterator
+        for row in cur:
+            tmpTuple = (row['id'], row['name'])
+            # assigments[row['id']] = row['name']
+            assigments.append(tmpTuple)
+
+    return assigments
+
+@professor.route('/create_classroom', methods=['GET', 'POST'])
+@is_logged_in_professor
+def createClassroom():
+    form = forms.CreateClassroom(request.form)
+
+    # Dynamic drop-down menu to choose the available assigments for professor
+    assigments = assigmentsTupleList(session['id_professor'])
+    form.assigment.choices = assigments
+
+    if (request.method == 'POST' and form.validate()):
+
+        rows = form['rows'].data
+        columns = form['columns'].data
+        room = form['room'].data
+        assigment = form['assigment'].data
+
+        flash('Classroom created for assigment id = ' + str(assigment), 'success')
+        return redirect(url_for('professor.dashboard'))
+
+    return render_template('createClassroom.html', form=form)
