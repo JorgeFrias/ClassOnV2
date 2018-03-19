@@ -16,6 +16,10 @@ app.config.from_envvar('APP_CONFIG_FILE')
 from flask_mysqldb import MySQL
 mysql = MySQL(app)
 
+''' Global information '''
+from dataStructures import Classroom
+runningClasses = []
+
 ''' Blueprints - register '''
 from classOn.home.home import home
 from classOn.assigment.assigment import assigment

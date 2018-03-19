@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, session, request, B
 from wtforms import Form, StringField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import dataStructures
-
+from classOn import DBUtils
 from classOn.decorators import is_logged_in, is_logged_in_professor
 from classOn.professor import forms
 
@@ -15,6 +15,9 @@ professor = Blueprint('professor',
 
 ''' MySQL import '''
 from classOn import mysql
+
+''' Global objects import '''
+from classOn import runningClasses
 
 @professor.route('/')
 @is_logged_in_professor
@@ -119,8 +122,6 @@ def assigmentsTupleList(id_professor):
     '''
     Creates a list of tuples (id, title) for the assigments of the current professor (session['id_professor']
     '''
-    # id_professor = session['id_professor']
-
     assigments = []
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM assigments WHERE id_professor = %s', [id_professor])
@@ -148,9 +149,17 @@ def createClassroom():
         rows = form['rows'].data
         columns = form['columns'].data
         room = form['room'].data
-        assigment = form['assigment'].data
+        selectedAssigmentID = form['assigment'].data
 
-        flash('Classroom created for assigment id = ' + str(assigment), 'success')
+        # Object assigment
+        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)
+
+        # Object ClassRoom
+        classroom = dataStructures.Classroom((rows,columns), session['professorObj'], assigmentObj, room)
+        # Add to running classes
+        runningClasses.append(classroom)
+
+        flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')
         return redirect(url_for('professor.dashboard'))
 
     return render_template('createClassroom.html', form=form)

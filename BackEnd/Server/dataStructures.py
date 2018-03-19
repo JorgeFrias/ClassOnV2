@@ -22,18 +22,65 @@ class Student:
             except:
                 raise Exception('error opening picture: ' + pictureSrc)
 
+class Course:
+    'Defines a course'
+    def __init__(self, degree = 'na', courseName = 'na', year = 'na'):
+        self.degree = degree
+        self.name = courseName
+        self.year = year
+
+class Section:
+    'Defines a section of an Assigment'
+    def __init__(self, db_id, name, orderInAssigment, sectionText):
+        self.name = name
+        if (orderInAssigment > 0):
+            self.order = orderInAssigment
+        else:
+            raise ValueError('orderInAssigment must be bigger than zero')
+        self.text = sectionText
+        self.db_id = db_id
+
+class Assigment:
+    'Defines an assigment'
+
+    # def __init__(self, sections : List[sections], course : course):
+    #     self.sections = sections
+    #     self.course = course
+
+    def __init__(self, sections : Sequence[Section], course : Course = None, name : str = ''):
+        self.name = name
+        self.sections = sections            # : List[Sections]
+        self.course = course                # : String
+
+    def sections_dict(self):
+        # sectionsDict = {x.assigmentOrder: vars(x) for x in self.sections}
+        # return sectionsDict
+        result = []
+        for section in self.sections:
+            result.append(vars(section))
+
+        return result
+
+
+class Professor():
+    def __init__(self, db_id, name, lastName, lastNameSecond, email):
+        db_id = db_id
+        name = name
+        lastName = lastName
+        lastNameSecond = lastNameSecond
+        email = email
+
 class Classroom:
-    classSize = (0,0)        # (X,Y) size
-    studentGroups = []             # Groups in class
-    doubts = []            # Doubt and Group with doubt
 
-    doubtsSolved = []
-    __doubtsIdCounter = 0
-
-    def __init__(self, classSize : (int,int)):
+    def __init__(self, classSize : (int,int), professor : Professor, assigment : Assigment, room = ''):
         self.classSize = classSize
-        # self.workStations = []
-        # self.doubts = []
+        self.professor = professor
+        self.assigment = assigment
+        self.studentGroups = []             # Groups in class
+        self.doubts = []
+        self.doubtsSolved = []
+        self.__doubtsIdCounter = 0
+        self.room = room
 
     def newDoubtID(self) -> int:
         self.__doubtsIdCounter += 1
@@ -86,48 +133,6 @@ class StudentGroup:
             # No doubts
             self.unansweredDoubt = False
 
-class Course:
-    'Defines a course'
-    def __init__(self, degree = 'na', courseName = 'na', year = 'na'):
-        self.degree = degree
-        self.name = courseName
-        self.year = year
-
-class Section:
-    'Defines a section of an Assigment'
-    name = ''
-    order = 0
-    text = ''
-
-    def __init__(self, name, orderInAssigment, sectionText):
-        self.name = name
-        if (orderInAssigment > 0):
-            self.order = orderInAssigment
-        else:
-            raise ValueError('orderInAssigment must be bigger than zero')
-        self.text = sectionText
-
-class Assigment:
-    'Defines an assigment'
-
-    # def __init__(self, sections : List[sections], course : course):
-    #     self.sections = sections
-    #     self.course = course
-
-    def __init__(self, sections : Sequence[Section], course : Course = None, name : str = ''):
-        self.name = name
-        self.sections = sections            # : List[Sections]
-        self.course = course                # : String
-
-    def sections_dict(self):
-        # sectionsDict = {x.assigmentOrder: vars(x) for x in self.sections}
-        # return sectionsDict
-        result = []
-        for section in self.sections:
-            result.append(vars(section))
-
-        return result
-
 class Doubt:
     'Defines a group\'s doubt'
     id = -1
@@ -160,7 +165,4 @@ class Doubt:
     def _set_UnanseredTime(self):
         'Calculates the difference between port time and now'
         self._unanswerdTime = time.time() - self._postTime
-
-
-
 
