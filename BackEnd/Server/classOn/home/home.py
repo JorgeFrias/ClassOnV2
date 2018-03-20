@@ -124,10 +124,10 @@ def login():
                     session['nia'] = data['NIA']
                     session['page'] = 1             # Assigment starts from first page
 
-                    session['studentObj'] = dataStructures.Student(data['nia'],
-                                                                   data['name'],
-                                                                   data['last_name'],
-                                                                   data['last_name_second'])
+                    # session['studentObj'] = dataStructures.Student(data['nia'],
+                    #                                                data['name'],
+                    #                                                data['last_name'],
+                    #                                                data['last_name_second'])
 
                     cur.close()                     # Close DB connection
                     flash('You are now logged in', 'success')
@@ -138,11 +138,11 @@ def login():
                     session['isProfessor'] = True
                     session['id_professor'] = data['id']
 
-                    session['professorObj'] = dataStructures.Professor(data['id'],
-                                                                       data['name'],
-                                                                       data['last_name'],
-                                                                       data['last_name_second'],
-                                                                       data['email'])
+                    # session['professorObj'] = dataStructures.Professor(data['id'],
+                    #                                                    data['name'],
+                    #                                                    data['last_name'],
+                    #                                                    data['last_name_second'],
+                    #                                                    data['email'])
 
                     cur.close()                     # Close DB connection
                     flash('You are now logged in professor', 'success')

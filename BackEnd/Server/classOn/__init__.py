@@ -18,7 +18,7 @@ mysql = MySQL(app)
 
 ''' Global information '''
 from dataStructures import Classroom
-runningClasses = []
+runningClasses = {}
 
 ''' Blueprints - register '''
 from classOn.home.home import home

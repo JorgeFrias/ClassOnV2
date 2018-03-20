@@ -5,6 +5,7 @@ import dataStructures
 from classOn import DBUtils
 from classOn.decorators import is_logged_in, is_logged_in_professor
 from classOn.professor import forms
+import uuid
 
 '''Register blueprint'''
 professor = Blueprint('professor',
@@ -151,15 +152,20 @@ def createClassroom():
         room = form['room'].data
         selectedAssigmentID = form['assigment'].data
 
-        # Object assigment
-        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)
+        # Classroom objects initialization
+        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                            # Object assigment
+        currentProfessor = DBUtils.getProfessor(session['id_professor'])                                    # Object professor
+        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)   # Object ClassRoom
 
-        # Object ClassRoom
-        classroom = dataStructures.Classroom((rows,columns), session['professorObj'], assigmentObj, room)
-        # Add to running classes
-        runningClasses.append(classroom)
+        id = uuid.uuid4()                   # Classroom Universally Unique IDentifier (UUID) URN Namespace
+        runningClasses[id] = classroom      # Add to runningClasses with id to be able to track different courses
 
+        session['id_class'] = id            # Add to session
+
+        # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')
+        flash('Internal classroom id = '+ str(id), 'success')
+
         return redirect(url_for('professor.dashboard'))
 
     return render_template('createClassroom.html', form=form)

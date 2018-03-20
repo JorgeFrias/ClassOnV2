@@ -1,7 +1,19 @@
-from dataStructures import Assigment, Section
+from dataStructures import Assigment, Section, Professor
 
 ''' MySQL import '''
 from classOn import mysql
+
+def getProfessor(id):
+    professor = None
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM professors WHERE id = %s', [id])
+    if result > 0:
+        data = cur.fetchone()  # Fetches the first one "should be just one"
+        professor = Professor(id, data['name'], data['last_name'], data['last_name_second'], data['email'])
+    else:
+        raise RuntimeError('No assigment with id: ' + str(id))
+        pass
+    return professor
 
 def getAssigment(id):
     assigment = None
