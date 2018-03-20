@@ -155,7 +155,7 @@ def createClassroom():
         currentProfessor = DBUtils.getProfessor(session['id_professor'])                                    # Object professor
         classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)   # Object ClassRoom
 
-        id = uuid.uuid4()                   # Classroom Universally Unique IDentifier (UUID) URN Namespace
+        id = str(uuid.uuid4())              # Classroom Universally Unique IDentifier (UUID) URN Namespace
         runningClasses[id] = classroom      # Add to runningClasses with id to be able to track different courses
 
         session['id_class'] = id            # Add to professor's session

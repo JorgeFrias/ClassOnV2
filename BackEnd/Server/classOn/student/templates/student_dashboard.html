@@ -4,4 +4,26 @@
     <h1>Welcome student</h1>
     <p>We are going to learn.</p>
     <hr class="my-4">
+    <h2>Running classes you can join:</h2>
+
+    <ul class="list-group">
+        {% if runningClasses|length > 0 %}
+        <!--{#-->
+            <!--{% for id, runningClass in runningClasses %}-->
+                <!--<li class="list-group-item">{{ runningClass.course }} in {{ runningClass.room }} </li>-->
+            <!--{% endfor %}-->
+        <!--#}-->
+            {% for id in runningClasses %}
+                <!--<div class="link">-->
+                {%- set runningClass=runningClasses[id] %}
+                <a href="#" class="list-group-item">{{ runningClass['course'] }}, {{ runningClass['assigment'] }} in room: {{ runningClass['room'] }}</a>
+                <!--</div>-->
+            {% endfor %}
+
+
+        {% else %}
+            <p>There aren't classes to join right now.</p>
+        {% endif %}
+    </ul>
+
 {% endblock %}
