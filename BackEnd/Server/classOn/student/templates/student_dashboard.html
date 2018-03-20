@@ -11,9 +11,14 @@
             {% for id in runningClasses %}
                 <!--<div class="link">-->
                 {%- set runningClass=runningClasses[id] %}
-                <a href="/assigment/{{ runningClass['assigment_id'] }}/1" class="list-group-item">
+                <!--<a href="/assigment/{{ runningClass['assigment_id'] }}/1" class="list-group-item">-->
+                    <!--{{ runningClass['course'] }}, {{ runningClass['assigment'] }} in room: {{ runningClass['room'] }}-->
+                <!--</a>-->
+
+                <input type="submit" name="btn" class="list-group-item" value="{{ id }}">
                     {{ runningClass['course'] }}, {{ runningClass['assigment'] }} in room: {{ runningClass['room'] }}
-                </a>
+                </input>
+
                 <!--</div>-->
             {% endfor %}
         {% else %}

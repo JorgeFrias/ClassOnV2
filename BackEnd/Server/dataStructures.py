@@ -100,31 +100,31 @@ class Classroom:
                 self.doubtsSolved.remove(tupleDoubt)
                 break
 
+    def addStudentToPlace(self, student :Student, place : (int, int)):
+        added = False
+        for group in self.studentGroups:                # Look if is a group for the desired place
+            tmpPlace = group.positionInClass
+            if tmpPlace == place:
+                added = True
+                group.students.append(student)          # Add student to group
+                break
+        if added == False:                              # There is no group, create with one student
+            tmpGroup = StudentGroup([student], place)
+
 class StudentGroup:
-    '''- Students[] : student
-    - ProfessorTime
-    - Assignment : Assignment
-    - AssigmentProgress
-    - Doubts[] : Doubt'''
-
-    students = []
-    assigment = None
-    assigmentProgress = 0
-    professorTime = 0
-    doubts = []
-    doubtsSolved = []
-    _classroom  = None
-
-    unansweredDoubt = False
-    positionInClass = (0,0)        # (x, y) position
-
-
-    def __init__(self, students : [Student], assigment : assigment, classRoom : Classroom, position : (int, int) = (0, 0)):
+    def __init__(self, students : [Student], position : (int, int) = (0, 0)):
         self.students = students
-        self.assigment = assigment
-        self._classroom = classRoom
         self.positionInClass = position
-        # self.doubts = classRoom.doubts          # Reference to class doubts
+        self.assigmentProgress = 0
+        self.professorTime = 0
+        self.doubts = []
+        self.doubtsSolved = []
+        self.unansweredDoubt = False
+
+        # students = []
+        # assigment = None
+        # _classroom = None
+        # positionInClass = (0, 0)  # (x, y) position
 
     # def addDoubt(self, doubt : Doubt):
     #     'Adds doubt to groups doubt'

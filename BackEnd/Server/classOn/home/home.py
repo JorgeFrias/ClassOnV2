@@ -86,7 +86,7 @@ def login():
                 session['logged_in'] = True
                 session['isStudent'] = True         # Is a student
                 session['page'] = 1                 # Assigment starts from first page
-                session['nia'] = student.NIA
+                session['db_id'] = student.db_id
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('student.index'))
