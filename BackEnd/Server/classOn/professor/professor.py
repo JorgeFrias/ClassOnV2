@@ -74,7 +74,13 @@ def fetchSections(id_assigment):
 def addSections():
     form = forms.AddSectionForm(request.form)
 
-    if (request.method == 'POST' and form.validate()):
+    if (request.method == 'POST' and request.form['btn'] == 'cancel'):
+        # Not needed to validate the form
+        flash('Discarded last section', 'danger')
+        flash('Saved all others', 'success')
+        return redirect(url_for('professor.dashboard'))
+
+    elif (request.method == 'POST' and form.validate()):
         if request.form['btn'] == 'add' or request.form['btn'] == 'addFinish':
             session['order_in_assigment'] += 1  # Update order
 
@@ -100,10 +106,10 @@ def addSections():
                 flash('Something uncontrolled append', 'danger')
                 return redirect(url_for('professor.dashboard'))
 
-        elif request.form['btn'] == 'cancel':
-            flash('Discarded last section', 'danger')
-            flash('Saved all others', 'success')
-            return redirect(url_for('professor.dashboard'))
+        # elif request.form['btn'] == 'cancel':
+        #     flash('Discarded last section', 'danger')
+        #     flash('Saved all others', 'success')
+        #     return redirect(url_for('professor.dashboard'))
         else:
             flash('Something uncontrolled append', 'danger')
             return redirect(url_for('professor.dashboard'))
