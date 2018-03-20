@@ -123,6 +123,7 @@ def login():
                     # session['isProfessor'] = False
                     session['nia'] = data['NIA']
                     session['page'] = 1             # Assigment starts from first page
+                    session['isStudent'] = True
 
                     cur.close()                     # Close DB connection
                     flash('You are now logged in', 'success')
