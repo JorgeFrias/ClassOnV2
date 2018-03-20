@@ -24,7 +24,7 @@ def getAssigment(id):
 
         ### Create assigment object ###
         sections = getSections(data['id'])                                      # First we need to fetch the sections
-        assigment = Assigment(sections, data['course'], data['name'])           # Second create the assigment object
+        assigment = Assigment(sections, data['course'], data['name'], id)           # Second create the assigment object
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
         pass

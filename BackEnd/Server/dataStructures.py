@@ -47,10 +47,11 @@ class Assigment:
     #     self.sections = sections
     #     self.course = course
 
-    def __init__(self, sections : Sequence[Section], course : Course = None, name : str = ''):
+    def __init__(self, sections : Sequence[Section], course : Course = None, name : str = '', db_id = 0):
         self.name = name
         self.sections = sections            # : List[Sections]
         self.course = course                # : String
+        self.db_id = db_id
 
     def sections_dict(self):
         # sectionsDict = {x.assigmentOrder: vars(x) for x in self.sections}

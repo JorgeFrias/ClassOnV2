@@ -11,7 +11,6 @@ student = Blueprint('student',
 ''' Global objects import '''
 from classOn import runningClasses
 
-
 @student.route('/')
 @is_logged_in
 def index():
@@ -27,6 +26,7 @@ def dashboard():
         for id, runningClass in runningClasses.items():
             viewRuningClasses[id] = {'course': runningClass.assigment.course,
                                      'assigment': runningClass.assigment.name,
-                                     'room': runningClass.room}
+                                     'room': runningClass.room,
+                                     'assigment_id': runningClass.assigment.db_id}
 
     return render_template('student_dashboard.html', runningClasses=viewRuningClasses)
