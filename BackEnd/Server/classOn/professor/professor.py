@@ -111,7 +111,8 @@ def addSections():
     ### Fetch info to render ###
     order_in_assigment = session['order_in_assigment'] + 1      # Do not update here because user can reload the page
     # Fetch sections to render
-    sections = fetchSections(session['id_assigment'])           # Get sections
+    # sections = fetchSections(session['id_assigment'])           # Get sections
+    sections = DBUtils.getSections(session['id_assigment'])     # Get sections
     tmpAssigment = dataStructures.Assigment(sections)           # Create a temporal
     dicSections = tmpAssigment.sections_dict()                  # Create dict from temporal to render later
 
