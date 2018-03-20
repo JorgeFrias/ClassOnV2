@@ -13,6 +13,8 @@ def getProfessor(id):
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
         pass
+
+    cur.close()
     return professor
 
 def getAssigment(id):
@@ -28,6 +30,8 @@ def getAssigment(id):
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
         pass
+
+    cur.close()
     return assigment
 
 def getSections(assigment_id):
@@ -43,4 +47,29 @@ def getSections(assigment_id):
             # assigments[row['id']] = row['name']
             sections.append(tmpSection)
 
+    cur.close()
     return sections
+
+def putSection(id_assigment, order_in_assigment, name, text):
+    # Execute query
+    cur = mysql.connection.cursor()
+    cur.execute(
+        "INSERT INTO sections(id_assigment, order_in_assigment, name, text) VALUES(%s, %s, %s, %s)",
+        (id_assigment, order_in_assigment, name, text))
+    mysql.connection.commit()  # Commit to DB
+    id = cur.lastrowid
+
+    cur.close()
+    return id
+
+def putAssigment(course, name, id_professor):
+    cur = mysql.connection.cursor()
+    # Execute query
+    cur.execute(
+        "INSERT INTO assigments(name, course, id_professor) VALUES(%s, %s, %s)",
+        (name, course, id_professor))
+    mysql.connection.commit()  # Commit to DB
+    id = cur.lastrowid
+
+    cur.close()  # Close connection
+    return id
