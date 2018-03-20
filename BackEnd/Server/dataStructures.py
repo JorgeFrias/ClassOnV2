@@ -10,10 +10,13 @@ class Student:
     NIA = ''
     picture : Image
 
-    def __init__(self, nia, name, lastName, seccondLastName = '', pictureSrc = ''):
+    def __init__(self, db_id, nia, name, lastName, seccondLastName = '', email = '', passwordHash = '', pictureSrc = ''):
+        self.db_id = db_id
         self.NIA = nia
         self.name = name
         self.lastName = lastName
+        self.email = email
+        self.passwordHash = passwordHash
         self.secondLastName = seccondLastName
 
         if (pictureSrc is not ''):
@@ -64,12 +67,13 @@ class Assigment:
 
 
 class Professor():
-    def __init__(self, db_id, name, lastName, lastNameSecond, email):
-        db_id = db_id
-        name = name
-        lastName = lastName
-        lastNameSecond = lastNameSecond
-        email = email
+    def __init__(self, db_id, name, lastName, lastNameSecond, email, passwordHash = ''):
+        self.db_id = db_id
+        self.name = name
+        self.lastName = lastName
+        self.lastNameSecond = lastNameSecond
+        self.email = email
+        self.passwordHash = passwordHash
 
 class Classroom:
 

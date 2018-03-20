@@ -1,7 +1,35 @@
-from dataStructures import Assigment, Section, Professor
+from dataStructures import Assigment, Section, Professor, Student
 
 ''' MySQL import '''
 from classOn import mysql
+
+def putStudent(name, lastName, lastNameSecond, nia, email, password):
+    # DB access
+    # Create the cursor
+    cur = mysql.connection.cursor()
+    # Execute query
+    cur.execute(
+        "INSERT INTO students(name, last_name, last_name_second, NIA, email, password) VALUES(%s, %s, %s, %s, %s, %s)",
+        (name, lastName, lastNameSecond, nia, email, password))
+
+    mysql.connection.commit()       # Commit to DB
+    id = cur.lastrowid              # DB row id
+    cur.close()                     # Close connection
+    return id
+
+def putProfessor(name, lastName, lastNameSecond, email, password):
+    # DB access
+    # Create the cursor
+    cur = mysql.connection.cursor()
+    # Execute query
+    cur.execute(
+        "INSERT INTO professors(name, last_name, last_name_second, email, password) VALUES(%s, %s, %s, %s, %s)",
+        (name, lastName, lastNameSecond, email, password))
+
+    mysql.connection.commit()       # Commit to DB
+    id = cur.lastrowid              # DB row id
+    cur.close()                     # Close connection
+    return id
 
 def getProfessor(id):
     professor = None
@@ -16,6 +44,51 @@ def getProfessor(id):
 
     cur.close()
     return professor
+
+def getStudentBy_id(id):
+    student = None
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM students WHERE id = %s', [id])
+    if result > 0:
+        data = cur.fetchone()  # Fetches the first one "should be just one"
+        student = Student(id, data['nia'], data['name'], data['last_name'],
+                          data['last_name_second'], data['email'], data['password'])
+    else:
+        raise RuntimeError('No assigment with id: ' + str(id))
+        pass
+
+    cur.close()
+    return student
+
+def getStudentBy_email(email):
+    student = None
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM students WHERE email = %s', [email])
+    if result > 0:
+        data = cur.fetchone()   # Fetches the first one "should be just one"
+        student = Student(data['id'], data['nia'], data['name'], data['last_name'],
+                          data['last_name_second'], data['email'], data['password'])
+    else:
+        raise RuntimeError('No student with email: ' + str(email))
+        pass
+
+    cur.close()
+    return student
+
+def getProfessorBy_email(email):
+    student = None
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM professors WHERE email = %s', [email])
+    if result > 0:
+        data = cur.fetchone()  # Fetches the first one "should be just one"
+        student = Professor(data['id'], data['name'], data['last_name'],
+                          data['last_name_second'], data['email'], data['password'])
+    else:
+        raise RuntimeError('No student with email: ' + str(email))
+        pass
+
+    cur.close()
+    return student
 
 def getAssigment(id):
     assigment = None
