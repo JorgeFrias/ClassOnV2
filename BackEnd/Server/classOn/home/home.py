@@ -95,7 +95,7 @@ def login():
                 return render_template('login.html', error=error)
 
         elif professor is not None:
-            if (sha256_crypt.verify(password_candidate, student.passwordHash)):         # Correct password
+            if (sha256_crypt.verify(password_candidate, professor.passwordHash)):         # Correct password
                 # Session variables
                 # Store information while the user is logged in
                 session['logged_in'] = True

@@ -51,7 +51,7 @@ def getStudentBy_id(id):
     result = cur.execute('SELECT * FROM students WHERE id = %s', [id])
     if result > 0:
         data = cur.fetchone()  # Fetches the first one "should be just one"
-        student = Student(id, data['nia'], data['name'], data['last_name'],
+        student = Student(id, data['NIA'], data['name'], data['last_name'],
                           data['last_name_second'], data['email'], data['password'])
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
@@ -66,7 +66,7 @@ def getStudentBy_email(email):
     result = cur.execute('SELECT * FROM students WHERE email = %s', [email])
     if result > 0:
         data = cur.fetchone()   # Fetches the first one "should be just one"
-        student = Student(data['id'], data['nia'], data['name'], data['last_name'],
+        student = Student(data['id'], data['NIA'], data['name'], data['last_name'],
                           data['last_name_second'], data['email'], data['password'])
     else:
         raise RuntimeError('No student with email: ' + str(email))
