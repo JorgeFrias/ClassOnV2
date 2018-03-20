@@ -1,9 +1,7 @@
 from flask import render_template, flash, redirect, url_for, session, request, Blueprint
-from wtforms import Form, StringField, PasswordField, validators
-from passlib.hash import sha256_crypt
 import dataStructures
 from classOn import DBUtils
-from classOn.decorators import is_logged_in, is_logged_in_professor
+from classOn.decorators import is_logged_in_professor
 from classOn.professor import forms
 import uuid
 
@@ -146,7 +144,7 @@ def createClassroom():
     form.assigment.choices = assigments
 
     if (request.method == 'POST' and form.validate()):
-
+        # Form information about the new classroom
         rows = form['rows'].data
         columns = form['columns'].data
         room = form['room'].data
@@ -160,7 +158,7 @@ def createClassroom():
         id = uuid.uuid4()                   # Classroom Universally Unique IDentifier (UUID) URN Namespace
         runningClasses[id] = classroom      # Add to runningClasses with id to be able to track different courses
 
-        session['id_class'] = id            # Add to session
+        session['id_class'] = id            # Add to professor's session
 
         # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')

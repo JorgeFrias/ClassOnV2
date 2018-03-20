@@ -60,7 +60,7 @@ def registerGeneral():
     formProfessor = RegisterFormProfessor(request.form)
     if (request.method == 'POST'):
         if request.form['btn'] == 'Submit student' and formStudent.validate():
-            # flash('Student', 'success')
+            # flash('student', 'success')
             singInStudent(
                 formStudent.name.data,
                 formStudent.lastName.data,
@@ -120,29 +120,18 @@ def login():
                 # Passed verification
                 if isStudent:
                     session['logged_in'] = True
-                    session['isProfessor'] = False
+                    # session['isProfessor'] = False
                     session['nia'] = data['NIA']
                     session['page'] = 1             # Assigment starts from first page
 
-                    # session['studentObj'] = dataStructures.Student(data['nia'],
-                    #                                                data['name'],
-                    #                                                data['last_name'],
-                    #                                                data['last_name_second'])
-
                     cur.close()                     # Close DB connection
                     flash('You are now logged in', 'success')
-                    return redirect(url_for('assigment.Assigment_page', page=1))
+                    return redirect(url_for('student.index'))
 
                 if isProfessor:
                     session['logged_in'] = True
                     session['isProfessor'] = True
                     session['id_professor'] = data['id']
-
-                    # session['professorObj'] = dataStructures.Professor(data['id'],
-                    #                                                    data['name'],
-                    #                                                    data['last_name'],
-                    #                                                    data['last_name_second'],
-                    #                                                    data['email'])
 
                     cur.close()                     # Close DB connection
                     flash('You are now logged in professor', 'success')

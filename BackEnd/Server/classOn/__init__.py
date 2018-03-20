@@ -24,9 +24,12 @@ runningClasses = {}
 from classOn.home.home import home
 from classOn.assigment.assigment import assigment
 from classOn.professor.professor import professor
+from classOn.student.student import student
 app.register_blueprint(home)
 app.register_blueprint(assigment, url_prefix='/assigment')
 app.register_blueprint(professor, url_prefix='/professor')
+app.register_blueprint(student, url_prefix='/student')
+
 
 ''' Routing '''
 @app.route('/')

@@ -96,7 +96,7 @@ class Classroom:
                 break
 
 class StudentGroup:
-    '''- Students[] : Student
+    '''- Students[] : student
     - ProfessorTime
     - Assignment : Assignment
     - AssigmentProgress

@@ -32,6 +32,7 @@ def setAssigment():
             sections = cur.fetchall()
             for section in sections:
                 tmpSection = dataStructures.Section(
+                    section['id'],
                     section['title'],
                     section['order_in_assigment'],
                     section['content']
