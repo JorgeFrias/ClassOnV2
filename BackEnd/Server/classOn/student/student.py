@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for, session, request, Blueprint
 from classOn.decorators import is_logged_in
 from classOn import DBUtils
+from classOn import sessionUtils as su
 
 '''Register blueprint'''
 student = Blueprint('student',
@@ -26,7 +27,7 @@ def dashboard():
         runningClassID = 0
         if "btn" in request.form:                               # Some running class is selected
             runningClassID = request.form['btn']                # Get the id
-            session['runningClassID'] = runningClassID          # Store in session
+            su.set_class_id(session, runningClassID)            # Store in session
 
             return redirect(url_for('student.selectPlace'))     # Go to select place
 
@@ -50,7 +51,7 @@ def selectPlace():
 
     if (request.method == 'POST' and form.validate()):
         # Get running classroom instance
-        selectedRunningClass = runningClasses[session['runningClassID']]
+        selectedRunningClass = runningClasses[su.get_class_id(session)]
         rows = selectedRunningClass.classSize[0]
         cols = selectedRunningClass.classSize[1]
 
@@ -61,20 +62,20 @@ def selectPlace():
         # Check if is out of bounds
         if (row <= rows and column <= cols):
             # Inside of bounds. The student can take the seat.
-            student = DBUtils.getStudentBy_id(session['db_id'])                             # Generate student
+            student_id = su.get_student_id(session)
+            student = DBUtils.getStudentBy_id(student_id)                                   # Generate student
             groupIsIn = selectedRunningClass.addStudentToPlace(student, (row, column))      # Add to selected class
-            session['group_id'] = groupIsIn.groupID                                         # Store id as reference
-
+            su.set_grupo_id(session, groupIsIn.groupID)                                     # Store id as reference
             flash('Place selected', 'success')
 
             assigmentID = selectedRunningClass.assigment.db_id                              # Current assigment id
             startPage = 0 # If there is already an student?
 
-            return redirect(url_for('assigment.assigmentByID', id= assigmentID, page=startPage))
+            # Render de selected assigment at the start page
+            return redirect(url_for('assigment.assigmentByID', id=assigmentID, page=startPage))
             # Go to assigment
         else:
             flash('Place out of bounds', 'danger')
             return redirect(url_for('student.selectPlace'))
-
 
     return render_template('selectPlace.html', form=form)

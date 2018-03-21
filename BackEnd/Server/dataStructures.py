@@ -115,7 +115,8 @@ class Classroom:
             tmpPlace = group.positionInClass
             if tmpPlace == place:
                 added = True
-                group.students.append(student)          # Add student to group
+                # group.students.append(student)          # Add student to
+                group.addStudent(student)
                 return group
 
         if added == False:                              # There is no group, create with one student
@@ -143,6 +144,17 @@ class StudentGroup:
     #     'Adds doubt to groups doubt'
     #     self.doubts.append(doubt.id)
     #     self.unansweredDoubt = True
+
+    def addStudent(self, student : Student):
+        '''
+        Adds an student to the given group if is not in the group
+        :param student: Student to add
+        :return: void
+        '''
+        # any(x.name == "t2" for x in l)
+        if (not any(studentInGroup.db_id == student.db_id for studentInGroup in self.students)):
+            # Is not in the group
+            self.students.append(student)
 
     def solveDoubt(self, doubtID : int):
         self.doubts.remove(id)

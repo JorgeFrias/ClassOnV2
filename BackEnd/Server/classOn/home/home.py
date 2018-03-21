@@ -5,6 +5,7 @@ import dataStructures
 from classOn import DBUtils
 from classOn.decorators import is_logged_in
 from classOn.home.forms import RegisterFormStudent, RegisterFormProfessor
+from classOn import sessionUtils
 
 '''Register blueprint'''
 home = Blueprint('home',
@@ -83,10 +84,7 @@ def login():
             if (sha256_crypt.verify(password_candidate, student.passwordHash)):         # Correct password
                 # Session variables
                 # Store information while the user is logged in
-                session['logged_in'] = True
-                session['isStudent'] = True         # Is a student
-                session['page'] = 1                 # Assigment starts from first page
-                session['db_id'] = student.db_id
+                sessionUtils.studentLogIn(session, student)
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('student.index'))
@@ -98,9 +96,7 @@ def login():
             if (sha256_crypt.verify(password_candidate, professor.passwordHash)):         # Correct password
                 # Session variables
                 # Store information while the user is logged in
-                session['logged_in'] = True
-                session['isProfessor'] = True
-                session['id_professor'] = professor.db_id
+                sessionUtils.professorLogIn(session, professor)
 
                 flash('You are now logged in as professor', 'success')
                 return redirect(url_for('professor.index'))
@@ -118,6 +114,6 @@ def login():
 @home.route('/logout')
 @is_logged_in                   # Uses the flask decorator to check if is logged in
 def logout():
-    session.clear()
+    sessionUtils.logOut(session)
     flash('You are now logged out', 'success')
     return redirect(url_for('home.login'))

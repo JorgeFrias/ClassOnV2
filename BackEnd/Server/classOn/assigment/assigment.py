@@ -5,6 +5,8 @@ from functools import wraps
 import dataStructures
 from classOn.decorators import is_logged_in
 from classOn import DBUtils
+from classOn import sessionUtils as su
+
 
 '''Register blueprint'''
 assigment = Blueprint('assigment',
@@ -45,49 +47,6 @@ def setAssigment():
     # _assigment = copy.deepcopy(DB_Assigment)
     return DB_Assigment
 
-# @assigment.route('/<string:page>', methods=['GET', 'POST'])
-# @is_logged_in                   # Uses the flask decorator to check if is logged in
-# def Assigment_page(page):
-#     global assigment_global                 # Used in this scope
-#     page_no = int(page)
-#     # Create cursor
-#     cur = mysql.connection.cursor()
-#
-#     # Check if the global variable for assigment is loaded
-#     try:
-#         assigment_global
-#     except:
-#         assigment_global = setAssigment()
-#
-#     # If zero last one visited in session
-#     if page_no == 0:
-#         # Render last visited
-#         page_no = session['page']
-#     else:
-#         #Update session
-#         session['page'] = page_no
-#
-#     totalSections = len(assigment_global.sections)
-#     progress = ProgressPercentaje(page_no, totalSections)
-#     if  totalSections > 0:
-#         if page_no > 0 and page_no <= len(assigment_global.sections):
-#             # The requested page exists
-#             # progress = session['progress']
-#             return render_template(
-#                 'assigment.html',
-#                 assigment=assigment_global,
-#                 progress=progress,
-#                 page=page_no,
-#                 totalSections=totalSections,
-#                 section=assigment_global.sections_dict()[page_no - 1]
-#             )
-#         else:
-#             # Error
-#             flash('Requested page out of bounds', 'danger')
-#     else:
-#         # Error
-#         flash('No sections in current assigment', 'danger')
-
 def ProgressPercentaje(currentPage, totalPages):
     return 100/totalPages * currentPage
 
@@ -103,9 +62,9 @@ def assigmentByID(id, page):
     else:
         # If zero last one visited in session
         if page_no == 0:
-            page_no = session['page']               # Render last visited
+            page_no = su.get_page(session)          # Render last visited
         else:
-            session['page'] = page_no               # Update session
+            su.set_page(session, page_no)           # Update session
 
         totalSections = len(assigment.sections)
         progress = ProgressPercentaje(page_no, totalSections)

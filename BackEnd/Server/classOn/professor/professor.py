@@ -4,6 +4,7 @@ from classOn import DBUtils
 from classOn.decorators import is_logged_in_professor
 from classOn.professor import forms
 import uuid
+from classOn import sessionUtils as su
 
 '''Register blueprint'''
 professor = Blueprint('professor',
@@ -39,12 +40,12 @@ def createAssigment():
 
         course = form['course'].data
         name = form['name'].data
-        id_professor = session['id_professor']
 
-        # Execute query
+        # Put information at DB
+        id_professor = su.get_professor_id(session)
         id = DBUtils.putAssigment(course, name, id_professor)
-        session['id_assigment'] = id                        # Store id to add sections
-        session['order_in_assigment'] = 0                   # To be in control adding sections
+        su.set_assigment_id(session, id)          # Store id to add sections
+        su.set_orderInAssigment(session, 0)       # To be in control adding sections
 
         flash('You created a new assigment', 'success')
 
@@ -65,10 +66,11 @@ def addSections():
 
     elif (request.method == 'POST' and form.validate()):
         if request.form['btn'] == 'add' or request.form['btn'] == 'addFinish':
-            session['order_in_assigment'] += 1  # Update order
 
-            id_assigment = session['id_assigment']
-            order_in_assigment = session['order_in_assigment']
+            su.increment_orderInAssigment(session)                    # Update order
+
+            id_assigment = su.get_assigment_id(session)
+            order_in_assigment = su.get_orderInAssigment(session)
             name = form['name'].data
             text = form['text'].data
 
@@ -89,11 +91,12 @@ def addSections():
             return redirect(url_for('professor.dashboard'))
 
     ### Fetch info to render ###
-    order_in_assigment = session['order_in_assigment'] + 1      # Do not update here because user can reload the page
+    order_in_assigment = su.get_orderInAssigment(session) + 1 # Do not update here because user can reload the page
     # Fetch sections to render
-    sections = DBUtils.getSections(session['id_assigment'])     # Get sections
-    tmpAssigment = dataStructures.Assigment(sections)           # Create a temporal
-    dicSections = tmpAssigment.sections_dict()                  # Create dict from temporal to render later
+
+    sections = DBUtils.getSections(su.get_assigment_id(session))        # Get sections
+    tmpAssigment = dataStructures.Assigment(sections)                   # Create a temporal
+    dicSections = tmpAssigment.sections_dict()                          # Create dict from temporal to render later
 
     return render_template('addSections.html', form=form, order_in_assigment=order_in_assigment, sections=dicSections)
 
@@ -131,14 +134,12 @@ def createClassroom():
         selectedAssigmentID = form['assigment'].data
 
         # Classroom objects initialization
-        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                            # Object assigment
-        currentProfessor = DBUtils.getProfessor(session['id_professor'])                                    # Object professor
+        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                     # Object assigment
+        currentProfessor = DBUtils.getProfessor(su.get_professor_id(session))                        # Object professor
         classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)   # Object ClassRoom
-
-        id = str(uuid.uuid4())              # Classroom Universally Unique IDentifier (UUID) URN Namespace
-        runningClasses[id] = classroom      # Add to runningClasses with id to be able to track different courses
-
-        session['id_class'] = id            # Add to professor's session
+        id = str(uuid.uuid4())              # Classroom Universally Unique Identifier (UUID) URN Namespace
+        runningClasses[id] = classroom      # Add to runningClasses (dict) with id to be able to track different courses
+        su.set_class_id(session, id)        # Add to professor's session
 
         # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')

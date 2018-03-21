@@ -98,7 +98,7 @@ def getAssigment(id):
         data = cur.fetchone()  # Fetches the first one "should be just one"
 
         ### Create assigment object ###
-        sections = getSections(data['id'])                                      # First we need to fetch the sections
+        sections = getSections(data['id'])                                          # First we need to fetch the sections
         assigment = Assigment(sections, data['course'], data['name'], id)           # Second create the assigment object
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
