@@ -69,7 +69,7 @@ def selectPlace():
             flash('Place selected', 'success')
 
             assigmentID = selectedRunningClass.assigment.db_id                              # Current assigment id
-            startPage = 0 # If there is already an student?
+            startPage = 0                                                                   # If there is already an student?
 
             # Render de selected assigment at the start page
             return redirect(url_for('assigment.assigmentByID', id=assigmentID, page=startPage))

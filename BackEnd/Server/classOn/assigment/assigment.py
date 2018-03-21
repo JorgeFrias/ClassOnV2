@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, session, request, Blueprint
-from wtforms import Form, StringField, PasswordField, validators
-from passlib.hash import sha256_crypt
-from functools import wraps
+# from wtforms import Form, StringField, PasswordField, validators
+# from passlib.hash import sha256_crypt
+# from functools import wraps
 import dataStructures
 from classOn.decorators import is_logged_in
 from classOn import DBUtils
@@ -19,7 +19,7 @@ assigment = Blueprint('assigment',
 from classOn import mysql
 
 def setAssigment():
-    # global assigment_global                 # Used in this scope
+    # global assigment_global                       # Used in this scope
     DB_Assigment = None
     cur = mysql.connection.cursor()
     assig_query = cur.execute("SELECT * FROM assigments")
@@ -44,7 +44,6 @@ def setAssigment():
             DB_Assigment = dataStructures.Assigment(tmpSections, assig['course'])
 
     cur.close()
-    # _assigment = copy.deepcopy(DB_Assigment)
     return DB_Assigment
 
 def ProgressPercentaje(currentPage, totalPages):

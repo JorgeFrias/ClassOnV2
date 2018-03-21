@@ -47,11 +47,6 @@ class Section:
 
 class Assigment:
     'Defines an assigment'
-
-    # def __init__(self, sections : List[sections], course : course):
-    #     self.sections = sections
-    #     self.course = course
-
     def __init__(self, sections : Sequence[Section], course : Course = None, name : str = '', db_id = 0):
         self.name = name
         self.sections = sections            # : List[Sections]
@@ -59,14 +54,10 @@ class Assigment:
         self.db_id = db_id
 
     def sections_dict(self):
-        # sectionsDict = {x.assigmentOrder: vars(x) for x in self.sections}
-        # return sectionsDict
         result = []
         for section in self.sections:
             result.append(vars(section))
-
         return result
-
 
 class Professor():
     def __init__(self, db_id, name, lastName, lastNameSecond, email, passwordHash = ''):
@@ -134,16 +125,6 @@ class StudentGroup:
         self.doubtsSolved = []
         self.unansweredDoubt = False
         self.groupID = str(uuid.uuid4())        # Generates an ID
-
-        # students = []
-        # assigment = None
-        # _classroom = None
-        # positionInClass = (0, 0)  # (x, y) position
-
-    # def addDoubt(self, doubt : Doubt):
-    #     'Adds doubt to groups doubt'
-    #     self.doubts.append(doubt.id)
-    #     self.unansweredDoubt = True
 
     def addStudent(self, student : Student):
         '''

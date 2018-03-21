@@ -44,11 +44,10 @@ def createAssigment():
         # Put information at DB
         id_professor = su.get_professor_id(session)
         id = DBUtils.putAssigment(course, name, id_professor)
-        su.set_assigment_id(session, id)          # Store id to add sections
-        su.set_orderInAssigment(session, 0)       # To be in control adding sections
+        su.set_assigment_id(session, id)                                        # Store id to add sections
+        su.set_orderInAssigment(session, 0)                                     # To be in control adding sections
 
         flash('You created a new assigment', 'success')
-
         return redirect(url_for('professor.addSections', course=course, name=name))
 
     return render_template('createAssigment.html', form=form)
@@ -67,7 +66,7 @@ def addSections():
     elif (request.method == 'POST' and form.validate()):
         if request.form['btn'] == 'add' or request.form['btn'] == 'addFinish':
 
-            su.increment_orderInAssigment(session)                    # Update order
+            su.increment_orderInAssigment(session)                              # Update order
 
             id_assigment = su.get_assigment_id(session)
             order_in_assigment = su.get_orderInAssigment(session)
@@ -75,7 +74,6 @@ def addSections():
             text = form['text'].data
 
             DBUtils.putSection(id_assigment, order_in_assigment, name, text)    # Add table row
-
 
             if request.form['btn'] == 'add':
                 return redirect(url_for('professor.addSections'))
@@ -91,12 +89,11 @@ def addSections():
             return redirect(url_for('professor.dashboard'))
 
     ### Fetch info to render ###
-    order_in_assigment = su.get_orderInAssigment(session) + 1 # Do not update here because user can reload the page
-    # Fetch sections to render
+    order_in_assigment = su.get_orderInAssigment(session) + 1                   # Do not update here because user can reload the page
 
-    sections = DBUtils.getSections(su.get_assigment_id(session))        # Get sections
-    tmpAssigment = dataStructures.Assigment(sections)                   # Create a temporal
-    dicSections = tmpAssigment.sections_dict()                          # Create dict from temporal to render later
+    sections = DBUtils.getSections(su.get_assigment_id(session))                # Get sections
+    tmpAssigment = dataStructures.Assigment(sections)                           # Create a temporal
+    dicSections = tmpAssigment.sections_dict()                                  # Create dict from temporal to render later
 
     return render_template('addSections.html', form=form, order_in_assigment=order_in_assigment, sections=dicSections)
 
@@ -108,11 +105,9 @@ def assigmentsTupleList(id_professor):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM assigments WHERE id_professor = %s', [id_professor])
     if result > 0:
-        # data = cur.fetchone()  # Fetches the first one
         # Using the cursor as iterator
         for row in cur:
             tmpTuple = (row['id'], row['name'])
-            # assigments[row['id']] = row['name']
             assigments.append(tmpTuple)
 
     return assigments
@@ -134,12 +129,12 @@ def createClassroom():
         selectedAssigmentID = form['assigment'].data
 
         # Classroom objects initialization
-        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                     # Object assigment
-        currentProfessor = DBUtils.getProfessor(su.get_professor_id(session))                        # Object professor
-        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)   # Object ClassRoom
-        id = str(uuid.uuid4())              # Classroom Universally Unique Identifier (UUID) URN Namespace
-        runningClasses[id] = classroom      # Add to runningClasses (dict) with id to be able to track different courses
-        su.set_class_id(session, id)        # Add to professor's session
+        assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                        # Object assigment
+        currentProfessor = DBUtils.getProfessor(su.get_professor_id(session))                           # Object professor
+        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)      # Object ClassRoom
+        id = str(uuid.uuid4())                                                                          # Classroom Universally Unique Identifier (UUID) URN Namespace
+        runningClasses[id] = classroom                                                                  # Add to runningClasses (dict) with id to be able to track different courses
+        su.set_class_id(session, id)                                                                    # Add to professor's session
 
         # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')
