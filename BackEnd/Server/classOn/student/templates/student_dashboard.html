@@ -14,11 +14,12 @@
                 <!--<a href="/assigment/{{ runningClass['assigment_id'] }}/1" class="list-group-item">-->
                     <!--{{ runningClass['course'] }}, {{ runningClass['assigment'] }} in room: {{ runningClass['room'] }}-->
                 <!--</a>-->
-
-                <input type="submit" name="btn" class="list-group-item" value="{{ id }}">
-                    {{ runningClass['course'] }}, {{ runningClass['assigment'] }} in room: {{ runningClass['room'] }}
-                </input>
-
+                {% from "includes/_formhelpers.html" import render_field %}
+                <form action="" method="POST">
+                    <button type="submit" name="btn" class="list-group-item" value="{{ id }}">
+                        {{ runningClass['course'] }}, {{ runningClass['assigment'] }} in room: {{ runningClass['room'] }}
+                    </button>
+                </form>
                 <!--</div>-->
             {% endfor %}
         {% else %}

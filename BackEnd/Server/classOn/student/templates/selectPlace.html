@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <h1>Select your physical place in the room</h1>
+    <h1>Select your physical place in the room.</h1>
+    <p>The form is not beautiful but it works ¯\_(ツ)_/¯.</p>
     <hr class="my-4">
 
     {% from "includes/_formhelpers.html" import render_field %}
@@ -13,6 +14,6 @@
             {{render_field(form.column, class_="form-control")}}
         </div>
 
-        <button type="submit" name="btn" class="btn btn-primary" value="add">submit</button>
+        <button type="submit" name="btn" class="btn btn-primary" value="add">Submit</button>
     </form>
 {% endblock %}

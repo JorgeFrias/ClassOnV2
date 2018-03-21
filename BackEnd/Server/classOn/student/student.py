@@ -48,34 +48,33 @@ def dashboard():
 def selectPlace():
     form = forms.PlaceSelectionForm(request.form)
 
-    # Get running classroom instance
-    selectedRunningClass = runningClasses[session['runningClassID']]
-    rows = selectedRunningClass.classSize[0]
-    cols = selectedRunningClass.classSize[1]
-
     if (request.method == 'POST' and form.validate()):
+        # Get running classroom instance
+        selectedRunningClass = runningClasses[session['runningClassID']]
+        rows = selectedRunningClass.classSize[0]
+        cols = selectedRunningClass.classSize[1]
+
+        # Form info
         row = form['row'].data
         column = form['column'].data
 
         # Check if is out of bounds
         if (row <= rows and column <= cols):
-            # Inside of bounds
-            student = DBUtils.getStudentBy_id(session['db_id'])                 # Generate student
-            selectedRunningClass.addStudentToPlace(student, (row, column))      # Add to selected class
+            # Inside of bounds. The student can take the seat.
+            student = DBUtils.getStudentBy_id(session['db_id'])                             # Generate student
+            groupIsIn = selectedRunningClass.addStudentToPlace(student, (row, column))      # Add to selected class
+            session['group_id'] = groupIsIn.groupID                                         # Store id as reference
+
             flash('Place selected', 'success')
 
-            # $$$$ More work to do
-            # Go to assigment
+            assigmentID = selectedRunningClass.assigment.db_id                              # Current assigment id
+            startPage = 0 # If there is already an student?
 
+            return redirect(url_for('assigment.assigmentByID', id= assigmentID, page=startPage))
+            # Go to assigment
         else:
             flash('Place out of bounds', 'danger')
             return redirect(url_for('student.selectPlace'))
 
-
-
-        # Messages
-        flash('')
-
-        return redirect(url_for('student.dashboard'))
 
     return render_template('selectPlace.html', form=form)

@@ -1,6 +1,8 @@
 from typing import Mapping, Sequence
 import time
 from PIL import Image
+import uuid
+
 
 class Student:
     'Represents a student'
@@ -101,15 +103,25 @@ class Classroom:
                 break
 
     def addStudentToPlace(self, student :Student, place : (int, int)):
+        '''
+        Adds an student to a given place in the classroom, if there is a group already assign the student to the
+        group, if not crates the group.
+        :param student:
+        :param place:
+        :return: The group object the student belongs to.
+        '''
         added = False
         for group in self.studentGroups:                # Look if is a group for the desired place
             tmpPlace = group.positionInClass
             if tmpPlace == place:
                 added = True
                 group.students.append(student)          # Add student to group
-                break
+                return group
+
         if added == False:                              # There is no group, create with one student
             tmpGroup = StudentGroup([student], place)
+            self.studentGroups.append(tmpGroup)         # Add group to global object
+            return tmpGroup
 
 class StudentGroup:
     def __init__(self, students : [Student], position : (int, int) = (0, 0)):
@@ -120,6 +132,7 @@ class StudentGroup:
         self.doubts = []
         self.doubtsSolved = []
         self.unansweredDoubt = False
+        self.groupID = str(uuid.uuid4())        # Generates an ID
 
         # students = []
         # assigment = None
