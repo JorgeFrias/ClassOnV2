@@ -23,7 +23,7 @@ def set_isStudent(session : session, bool):
 def get_isProfessor(session : session):
     return session['isStudent']
 def set_isProfessor(session : session, bool):
-    session['isStudent'] = bool
+    session['isProfessor'] = bool
 
 
 '''   Variable extraction  '''
