@@ -2,9 +2,11 @@ from flask import render_template, flash, redirect, url_for, session, request, B
 # from wtforms import Form, StringField, PasswordField, validators
 # from passlib.hash import sha256_crypt
 # from functools import wraps
-import dataStructures
+from dataStructures import Doubt, Section, Assigment
 from classOn.decorators import is_logged_in
 from classOn import DBUtils
+from classOn import sessionUtils as su
+from classOn.assigment import forms
 from classOn import sessionUtils as su
 
 
@@ -17,6 +19,7 @@ assigment = Blueprint('assigment',
 
 ''' MySQL import '''
 from classOn import mysql
+from classOn import runningClasses
 
 def setAssigment():
     # global assigment_global                       # Used in this scope
@@ -34,14 +37,14 @@ def setAssigment():
             tmpSections = []
             sections = cur.fetchall()
             for section in sections:
-                tmpSection = dataStructures.Section(
+                tmpSection = Section(
                     section['id'],
                     section['title'],
                     section['order_in_assigment'],
                     section['content']
                 )
                 tmpSections.append(tmpSection)
-            DB_Assigment = dataStructures.Assigment(tmpSections, assig['course'])
+            DB_Assigment = Assigment(tmpSections, assig['course'])
 
     cur.close()
     return DB_Assigment
@@ -54,6 +57,21 @@ def ProgressPercentaje(currentPage, totalPages):
 def assigmentByID(id, page):
     page_no = int(page)                             # Conversion to int
     assigment = DBUtils.getAssigment(id)            # Get requested assigment (db_id -> id)
+
+    form = forms.PostDoubtForm(request.form)
+
+    if (request.method == 'POST' and form.validate()):
+        currentClass = runningClasses[su.get_class_id(session)]
+        currentGroup = currentClass.studentGroups[su.get_grupo_id(session)]
+
+        doubtText = form['text'].data
+        doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
+        currentClass.doubts.append(doubt)
+        currentGroup.doubts.append(doubt)
+
+        # Notify code, to refresh views
+
+
 
     if assigment is None:
         # Doesn't exist an assigment with the requested id
@@ -77,7 +95,8 @@ def assigmentByID(id, page):
                     progress=progress,
                     page=page_no,
                     totalSections=totalSections,
-                    section=assigment.sections_dict()[page_no - 1]  # -1 Because the computer starts counting at 0
+                    section=assigment.sections_dict()[page_no - 1],  # -1 Because the computer starts counting at 0
+                    form = form
                 )
             else:
                 # Error

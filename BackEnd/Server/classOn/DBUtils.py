@@ -1,4 +1,4 @@
-from dataStructures import Assigment, Section, Professor, Student
+from dataStructures import Assigment, Section, Professor, Student, Doubt, StudentGroup
 
 ''' MySQL import '''
 from classOn import mysql
@@ -82,7 +82,7 @@ def getProfessorBy_email(email):
     if result > 0:
         data = cur.fetchone()  # Fetches the first one "should be just one"
         student = Professor(data['id'], data['name'], data['last_name'],
-                          data['last_name_second'], data['email'], data['password'])
+                            data['last_name_second'], data['email'], data['password'])
     else:
         raise RuntimeError('No student with email: ' + str(email))
         pass
@@ -123,13 +123,21 @@ def getSections(assigment_id):
     cur.close()
     return sections
 
+def getSection(id):
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM sections WHERE id = %s', [id])
+    row = cur.fetchone()
+    tmpSection = Section(row['id'], row['name'], row['order_in_assigment'], row['text'], )
+    cur.close()
+    return tmpSection
+
 def putSection(id_assigment, order_in_assigment, name, text):
     # Execute query
     cur = mysql.connection.cursor()
     cur.execute(
         "INSERT INTO sections(id_assigment, order_in_assigment, name, text) VALUES(%s, %s, %s, %s)",
         (id_assigment, order_in_assigment, name, text))
-    mysql.connection.commit()  # Commit to DB
+    mysql.connection.commit()               # Commit to DB
     id = cur.lastrowid
 
     cur.close()
@@ -141,8 +149,74 @@ def putAssigment(course, name, id_professor):
     cur.execute(
         "INSERT INTO assigments(name, course, id_professor) VALUES(%s, %s, %s)",
         (name, course, id_professor))
-    mysql.connection.commit()  # Commit to DB
+    mysql.connection.commit()               # Commit to DB
     id = cur.lastrowid
 
-    cur.close()  # Close connection
+    cur.close()                             # Close connection
     return id
+
+def putDoubt(doubt : Doubt, studentGroup : StudentGroup):
+    cur = mysql.connection.cursor()
+
+    # 1. Add to doubt table and fill the gaps in doubt obj
+    cur.execute(
+        "INSERT INTO doubts(text, section) VALUES(%s, %s)",
+        (doubt.doubtText, doubt._section.db_id))
+    mysql.connection.commit()               # Commit to DB
+    doubt.db_id = cur.lastrowid
+    fulfillDoubtInfo(doubt)
+
+    # 2. Add doubt to doubt_student table with the students in the group (each of them posted the doubt)
+    for student in studentGroup.students:
+        cur.execute(
+            "INSERT INTO doubt_student(doubt, student) VALUES(%s, %s)",
+            (doubt.db_id, student.db_id))
+        mysql.connection.commit()           # Commit to DB
+
+    cur.close()                             # Close connection
+
+def getDoubt(id):
+    tmpDoubt = None
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM doubts WHERE id = %s', [id])
+    if result > 0:
+        data = cur.fetchone()               # Fetches the first one "should be just one"
+        ### Complete doubt object ###
+        tmpSection = getSection(data['section'])
+        tmpDoubt = Doubt(data['text'], tmpSection, data['time'])
+    else:
+        raise RuntimeError('No doubt with id: ' + str(id))
+        pass
+
+    cur.close()
+    return tmpDoubt
+
+def fulfillDoubtInfo(doubt : Doubt):
+    id = doubt.db_id
+    tempDoubt = getDoubt(id)
+    doubt._postTime = tempDoubt._postTime
+
+def answerDoubt(doubt : Doubt, resolver):
+    cur = mysql.connection.cursor()
+    cur.execute(
+        "INSERT INTO answers(doubt, text) VALUES(%s, %s)",
+        (doubt.db_id, doubt.answerText))
+    mysql.connection.commit()               # Commit to DB
+    cur.close()                             # Close connection
+    putAnswerResolver(resolver, cur.lastrowid)
+    return cur.lastrowid
+
+def putAnswerResolver(resolver, answer_id):
+    cur = mysql.connection.cursor()
+    if isinstance(resolver, Professor):
+        cur.execute(
+            "INSERT INTO answer_resolvers(answer, professor) VALUES(%s, %s)",
+            (answer_id, resolver.db_id))
+    elif isinstance(resolver, Student):
+        cur.execute(
+            "INSERT INTO answer_resolvers(answer, student) VALUES(%s, %s)",
+            (answer_id, resolver.db_id))
+
+    mysql.connection.commit()               # Commit to DB
+    cur.close()                             # Close connection
+    return cur.lastrowid

@@ -3,7 +3,6 @@ import time
 from PIL import Image
 import uuid
 
-
 class Student:
     'Represents a student'
     name = ''
@@ -70,11 +69,11 @@ class Professor():
 
 class Classroom:
 
-    def __init__(self, classSize : (int,int), professor : Professor, assigment : Assigment, room = ''):
+    def __init__(self, classSize : (int,int), professor : Professor, assigment : Assigment, room =''):
         self.classSize = classSize
         self.professor = professor
         self.assigment = assigment
-        self.studentGroups = []             # Groups in class
+        self.studentGroups = dict()             # Groups in class
         self.doubts = []
         self.doubtsSolved = []
         self.__doubtsIdCounter = 0
@@ -102,17 +101,17 @@ class Classroom:
         :return: The group object the student belongs to.
         '''
         added = False
-        for group in self.studentGroups:                # Look if is a group for the desired place
+        for group in self.studentGroups:                    # Check if is a group for the desired place
             tmpPlace = group.positionInClass
             if tmpPlace == place:
                 added = True
-                # group.students.append(student)          # Add student to
+                # group.students.append(student)            # Add student to
                 group.addStudent(student)
                 return group
 
-        if added == False:                              # There is no group, create with one student
+        if added == False:                                  # There is no group, create with one student
             tmpGroup = StudentGroup([student], place)
-            self.studentGroups.append(tmpGroup)         # Add group to global object
+            self.studentGroups[tmpGroup.groupID] = tmpGroup         # Add group to global object
             return tmpGroup
 
 class StudentGroup:
@@ -145,35 +144,37 @@ class StudentGroup:
             self.unansweredDoubt = False
 
 class Doubt:
-    'Defines a group\'s doubt'
-    id = -1
-    doubtText = ''
-    answerText = ''
-    section = None
-    # Protected attributes
-    _answered = False
-    _postTime = None
-    _unanswerdTime = -1             # When answered, statistic purposes
-    _studentGroup  = None
-    _classroom = None
 
-    def __init__(self, doubtText, section : section, studentGroup : StudentGroup, classroom : Classroom):
-        self.id = classroom.newDoubtID()
-        self._classroom = classroom
+    'Defines a group\'s doubt'
+    def __init__(self, doubtText, section : Section, studentGroup : StudentGroup, postToDB = True, answerText = ''):
+        from classOn import DBUtils
+
+        self.db_id = -1
         self.doubtText = doubtText
         self._section = section
-        self._postTime = time.time()
+        self._postTime = 0
         self._studentGroup = studentGroup
+        self.postTime = 0
+        self.answerText = answerText
+        if (answerText is ''):
+            self._answered = False
+        else:
+            self._answered = True
 
-    def set_Answer(self, answerText):
+        if postToDB:
+            DBUtils.putDoubt(self, self._studentGroup)
+
+
+    def set_Answer(self, answerText, resolver, postToDB = True):
+        from classOn import DBUtils
+
         self._answerText = answerText
         self._answered = True
 
-        # If the professor didn't finish the time we do it
-        if (self._unanswerdTime < 0):
-            self._unanswerdTime = self._set_UnanseredTime()
+        if postToDB:
+            DBUtils.answerDoubt(self, resolver)
 
     def _set_UnanseredTime(self):
-        'Calculates the difference between port time and now'
+        'Calculates the difference between post time and now'
         self._unanswerdTime = time.time() - self._postTime
 
