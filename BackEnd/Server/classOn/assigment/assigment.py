@@ -57,17 +57,21 @@ def ProgressPercentaje(currentPage, totalPages):
 def assigmentByID(id, page):
     page_no = int(page)                             # Conversion to int
     assigment = DBUtils.getAssigment(id)            # Get requested assigment (db_id -> id)
+    currentClass = runningClasses[su.get_class_id(session)]
+    currentGroup = currentClass.studentGroups[su.get_grupo_id(session)]
 
     form = forms.PostDoubtForm(request.form)
 
     if (request.method == 'POST' and form.validate()):
-        currentClass = runningClasses[su.get_class_id(session)]
-        currentGroup = currentClass.studentGroups[su.get_grupo_id(session)]
 
         doubtText = form['text'].data
+        form['text'].data = ''              # Clear
         doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
+        doubt.postToDB()
         currentClass.doubts.append(doubt)
         currentGroup.doubts.append(doubt)
+
+        flash('Doubt sent', 'success')
 
         # Notify code, to refresh views
 
@@ -79,9 +83,10 @@ def assigmentByID(id, page):
     else:
         # If zero last one visited in session
         if page_no == 0:
-            page_no = su.get_page(session)          # Render last visited
+            page_no = su.get_page(session)                  # Render last visited
         else:
-            su.set_page(session, page_no)           # Update session
+            su.set_page(session, page_no)                   # Update session
+            currentGroup.assigmentProgress = page_no        # Update group obj
 
         totalSections = len(assigment.sections)
         progress = ProgressPercentaje(page_no, totalSections)

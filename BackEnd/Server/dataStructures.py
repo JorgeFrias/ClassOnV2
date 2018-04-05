@@ -147,8 +147,6 @@ class Doubt:
 
     'Defines a group\'s doubt'
     def __init__(self, doubtText, section : Section, studentGroup : StudentGroup, postToDB = True, answerText = ''):
-        from classOn import DBUtils
-
         self.db_id = -1
         self.doubtText = doubtText
         self._section = section
@@ -161,8 +159,9 @@ class Doubt:
         else:
             self._answered = True
 
-        if postToDB:
-            DBUtils.putDoubt(self, self._studentGroup)
+    def postToDB(self):
+        from classOn import DBUtils
+        DBUtils.putDoubt(self, self._studentGroup)
 
 
     def set_Answer(self, answerText, resolver, postToDB = True):
