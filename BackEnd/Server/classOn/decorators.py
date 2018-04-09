@@ -21,3 +21,13 @@ def is_logged_in_professor(f):
             flash('Unauthorized, please login', 'danger')
             return redirect(url_for('home.login'))
     return wrap
+
+def defined_session(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'id_class' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, please create classroom session', 'danger')
+            return redirect(url_for('professor.dashboard'))
+    return wrap

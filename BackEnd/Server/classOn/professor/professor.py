@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, session, request, Blueprint
 import dataStructures
 from classOn import DBUtils
-from classOn.decorators import is_logged_in_professor
+from classOn.decorators import is_logged_in_professor, defined_session
 from classOn.professor import forms
 import uuid
 from classOn import sessionUtils as su
@@ -140,6 +140,14 @@ def createClassroom():
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')
         flash('Internal classroom id = '+ str(id), 'success')
 
-        return redirect(url_for('professor.dashboard'))
+        return redirect(url_for('professor.classroom'))
 
     return render_template('createClassroom.html', form=form)
+
+@professor.route('/classroom')
+@is_logged_in_professor
+@defined_session
+def classroom():
+    rows = runningClasses[su.get_class_id(session)].classSize[0]
+    columns = runningClasses[su.get_class_id(session)].classSize[1]
+    return render_template('classroomMap.html', rows=rows, columns=columns)
