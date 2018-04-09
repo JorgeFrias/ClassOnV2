@@ -1,4 +1,5 @@
-from classOn import app
+from classOn import app, socketio
+
 
 # No debug with pycharm
 if __name__ == '__main__':
@@ -25,4 +26,5 @@ if __name__ == '__main__':
         app_options["use_debugger"] = False
         app_options["use_reloader"] = False
 
-    app.run(**app_options)
+    # app.run(**app_options)                    # Run without socket.io
+    socketio.run(app)                           # Run with socket.io

@@ -16,6 +16,10 @@ app.config.from_envvar('APP_CONFIG_FILE')
 from flask_mysqldb import MySQL
 mysql = MySQL(app)
 
+''' Socket.io '''
+from flask_socketio import SocketIO, emit
+socketio = SocketIO(app)
+
 ''' Global information '''
 from dataStructures import Classroom
 runningClasses = {}
