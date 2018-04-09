@@ -6,7 +6,7 @@
 
     <div class="container">
         <h2>Classroom map</h2>
-        <p>This is the map of your classroom, the upper left place is the (0,0)</p>
+        <p>This is the map of your classroom, the upper left place is the (0,0).</p>
         <span class="badge badge-pill badge-secondary text-center w-100 ">Blackboard</span>
         <table class="table text-secondary">
             {% for row in range(rows) %}
@@ -31,5 +31,22 @@
             {% endfor %}
         </table>
     </div>
+    <div class="container">
+        <h2>Doubts</h2>
+
+        <div class="list-group">
+            <div class="list-group-item flex-column align-items-start">
+                <p class="mb-1">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dapibus leo ut suscipit dapibus. Proin dignissim mollis tellus, et condimentum massa convallis et. Vivamus orci nisl, luctus nec dapibus eget, cursus a velit. Nulla eget bibendum libero. Suspendisse ullamcorper vehicula mi in ullamcorper. Mauris quam turpis, lacinia et purus a, tempus hendrerit mauris. Aliquam sed ex quam.
+                </p>
+                <div>
+                    <span class="badge badge-info">Section 1</span>
+                    <button type="button" class="btn btn-primary float-right">Solve doubt</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 {% endblock %}
