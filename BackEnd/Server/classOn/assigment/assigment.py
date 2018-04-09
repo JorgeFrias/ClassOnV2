@@ -53,10 +53,10 @@ def ProgressPercentaje(currentPage, totalPages):
     return 100/totalPages * currentPage
 
 @assigment.route('/<string:id>/<string:page>', methods=['GET', 'POST'])
-@is_logged_in                                       # Uses the flask decorator to check if is logged in
+@is_logged_in                                               # Uses the flask decorator to check if is logged in
 def assigmentByID(id, page):
-    page_no = int(page)                             # Conversion to int
-    assigment = DBUtils.getAssigment(id)            # Get requested assigment (db_id -> id)
+    page_no = int(page)                                     # Conversion to int
+    assigment = DBUtils.getAssigment(id)                    # Get requested assigment (db_id -> id)
     currentClass = runningClasses[su.get_class_id(session)]
     currentGroup = currentClass.studentGroups[su.get_grupo_id(session)]
 
@@ -65,7 +65,7 @@ def assigmentByID(id, page):
     if (request.method == 'POST' and form.validate()):
 
         doubtText = form['text'].data
-        form['text'].data = ''              # Clear
+        form['text'].data = ''                              # Clear
         doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
         doubt.postToDB()
         currentClass.doubts.append(doubt)
