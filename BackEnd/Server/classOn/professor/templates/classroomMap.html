@@ -8,24 +8,22 @@
         <h2>Classroom map</h2>
         <p>This is the map of your classroom, the upper left place is the (0,0)</p>
         <span class="badge badge-pill badge-secondary text-center w-100 ">Blackboard</span>
-        <table class="table">
+        <table class="table text-secondary">
             {% for row in range(rows) %}
             <tr>
                 {% for column in range(columns) %}
                     <td>
                         <div class="card border-secondary" id="{{ row ~ ',' ~ column }}">
-                            <div class="card-body text-secondary">
-                                <h4 class="card-title">Progress:
+                            <div class="card-body">
+                                <!--<h5 class="card-title" >Progress:</h5>-->
+                                <h5>
                                     <span class="badge badge-dark">0</span>
-                                    <!--<span class="badge badge-warning">Doubt</span>-->
-                                </h4>
-                                <h6>Members:</h6>
-                                <ul class="card-text">
-                                    <li>No memebers yet</li>
-                                    <!--<li>Member 1</li>-->
-                                    <!--<li>Member 2</li>-->
-                                </ul>
+                                    <span class="badge badge-warning">Doubt</span>
+                                </h5>
                             </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><small>No members yet</small></li>
+                            </ul>
                         </div>
                     </td>
                 {% endfor %}
