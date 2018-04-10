@@ -17,12 +17,12 @@
                             <div class="card-body">
                                 <!--<h5 class="card-title" >Progress:</h5>-->
                                 <h5>
-                                    <span class="badge badge-dark" id="progress">0</span>
-                                    <span class="badge badge-warning" id="doubt">Doubt</span>
+                                    <span class="badge badge-dark" id="progress_{{row ~ ',' ~ column}}">0</span>
+                                    <span class="badge badge-warning" id="doubt_{{row ~ ',' ~ column}}">Doubt</span>
                                 </h5>
                             </div>
-                            <ul class="list-group list-group-flush" id="members">
-                                <li class="list-group-item" id="noMembers"><small>No members yet</small></li>
+                            <ul class="list-group list-group-flush" id="members_{{row ~ ',' ~ column}}">
+                                <li class="list-group-item" id="noMembers_{{row ~ ',' ~ column}}"><small>No members yet</small></li>
                             </ul>
                         </div>
                     </td>
