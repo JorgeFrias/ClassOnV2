@@ -2,6 +2,8 @@ from flask import render_template, flash, redirect, url_for, session, request, B
 from classOn.decorators import is_logged_in
 from classOn import DBUtils
 from classOn import sessionUtils as su
+from flask_socketio import emit, send
+from dataStructures import StudentGroup
 
 '''Register blueprint'''
 student = Blueprint('student',
@@ -71,6 +73,9 @@ def selectPlace():
             assigmentID = selectedRunningClass.assigment.db_id                              # Current assigment id
             startPage = 0                                                                   # If there is already an student?
 
+            ''' Socket.io notification'''
+            handle_joinGroup(groupIsIn)
+
             # Render de selected assigment at the start page
             return redirect(url_for('assigment.assigmentByID', id=assigmentID, page=startPage))
             # Go to assigment
@@ -79,3 +84,7 @@ def selectPlace():
             return redirect(url_for('student.selectPlace'))
 
     return render_template('selectPlace.html', form=form)
+
+def handle_joinGroup(group : StudentGroup):
+    send('New student joined the party')
+    emit('joinedGroup', group.JSON(), broadcast=True)

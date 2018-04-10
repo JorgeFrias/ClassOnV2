@@ -5,6 +5,8 @@ from classOn.decorators import is_logged_in_professor, defined_session
 from classOn.professor import forms
 import uuid
 from classOn import sessionUtils as su
+from classOn import socketio
+from flask_socketio import send, emit
 
 '''Register blueprint'''
 professor = Blueprint('professor',
@@ -151,3 +153,8 @@ def classroom():
     rows = runningClasses[su.get_class_id(session)].classSize[0]
     columns = runningClasses[su.get_class_id(session)].classSize[1]
     return render_template('classroomMap.html', rows=rows, columns=columns)
+
+''' Socket.io '''
+@socketio.on('my event')
+def handle_myEvent(json):
+    print('received message: ' + str(json))

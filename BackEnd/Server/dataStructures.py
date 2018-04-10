@@ -26,6 +26,21 @@ class Student:
             except:
                 raise Exception('error opening picture: ' + pictureSrc)
 
+    def __dict__(self):
+        result = {}
+        result['db_id'] = self.db_id
+        result['name'] = self.name
+        result['lastName']  = self.lastName
+
+        return result
+
+    def JSON(self):
+        result = '{\n'
+        result += '\"db_id\":\"' + str(self.db_id) + '\", \n'
+        result += '\"name\":\"' + str(self.name) + '\", \n'
+        result += '\"lastName\":\"' + str(self.lastName) + '\", \n'
+        result += '\n}'
+
 class Course:
     'Defines a course'
     def __init__(self, degree = 'na', courseName = 'na', year = 'na'):
@@ -124,6 +139,17 @@ class StudentGroup:
         self.doubtsSolved = []
         self.unansweredDoubt = False
         self.groupID = str(uuid.uuid4())        # Generates an ID
+
+    def JSON(self):
+        result = '{\n'
+        result += '\"position\":\"' + str(self.positionInClass[0]) + ',' + self.positionInClass[1] + '\", \n'
+        result += '\"id\":\"' + str(self.groupID) + '\", \n'
+        result += '\"students\": [ \n'
+        for student in self.students:
+            result += student.JSON() + ','
+        result = result[:-1]                    # Remove last comma
+        result += ' ] \n'
+        result += '}'
 
     def addStudent(self, student : Student):
         '''
