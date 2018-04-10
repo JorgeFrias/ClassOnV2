@@ -4,6 +4,7 @@ from classOn import DBUtils
 from classOn import sessionUtils as su
 from flask_socketio import emit, send
 from dataStructures import StudentGroup
+from classOn import socketio
 
 '''Register blueprint'''
 student = Blueprint('student',
@@ -86,5 +87,5 @@ def selectPlace():
     return render_template('selectPlace.html', form=form)
 
 def handle_joinGroup(group : StudentGroup):
-    send('New student joined the party')
-    emit('joinedGroup', group.JSON(), broadcast=True)
+    socketio.send('New student joined the party', broadcast=True)
+    socketio.emit('joinedGroup', group.JSON(), broadcast=True)

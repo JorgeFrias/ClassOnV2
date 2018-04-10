@@ -40,6 +40,7 @@ class Student:
         result += '\"name\":\"' + str(self.name) + '\", \n'
         result += '\"lastName\":\"' + str(self.lastName) + '\", \n'
         result += '\n}'
+        return result
 
 class Course:
     'Defines a course'
@@ -116,7 +117,7 @@ class Classroom:
         :return: The group object the student belongs to.
         '''
         added = False
-        for group in self.studentGroups:                    # Check if is a group for the desired place
+        for group_id, group in self.studentGroups.items():                    # Check if is a group for the desired place
             tmpPlace = group.positionInClass
             if tmpPlace == place:
                 added = True
@@ -142,7 +143,7 @@ class StudentGroup:
 
     def JSON(self):
         result = '{\n'
-        result += '\"position\":\"' + str(self.positionInClass[0]) + ',' + self.positionInClass[1] + '\", \n'
+        result += '\"position\":\"' + str(self.positionInClass[0]) + ',' + str(self.positionInClass[1]) + '\", \n'
         result += '\"id\":\"' + str(self.groupID) + '\", \n'
         result += '\"students\": [ \n'
         for student in self.students:
@@ -150,6 +151,8 @@ class StudentGroup:
         result = result[:-1]                    # Remove last comma
         result += ' ] \n'
         result += '}'
+
+        return result
 
     def addStudent(self, student : Student):
         '''

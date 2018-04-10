@@ -155,6 +155,6 @@ def classroom():
     return render_template('classroomMap.html', rows=rows, columns=columns)
 
 ''' Socket.io '''
-@socketio.on('my event')
+@socketio.on('connection')
 def handle_myEvent(json):
     print('received message: ' + str(json))
