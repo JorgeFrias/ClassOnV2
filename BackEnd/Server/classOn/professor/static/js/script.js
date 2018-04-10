@@ -1,7 +1,6 @@
 socket.on('joinedGroup', function(group){
-    var element = document.getElementById(group.position);
-    var groupJson = JSON.parse(group);
-
+    var groupJson = JSON.parse(group);                          // To JSON
+    var element = document.getElementById(groupJson.position);
     // Members
     var elem = element.getElementById("noMembers");     // Remove "No members"
     elem.parentNode.removeChild(elem);

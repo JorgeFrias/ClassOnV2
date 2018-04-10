@@ -38,8 +38,8 @@ class Student:
         result = '{\n'
         result += '\"db_id\":\"' + str(self.db_id) + '\", \n'
         result += '\"name\":\"' + str(self.name) + '\", \n'
-        result += '\"lastName\":\"' + str(self.lastName) + '\", \n'
-        result += '\n}'
+        result += '\"lastName\":\"' + str(self.lastName) + '\" \n'
+        result += '}'
         return result
 
 class Course:
