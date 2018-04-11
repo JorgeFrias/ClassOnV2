@@ -145,6 +145,7 @@ class StudentGroup:
         result = '{\n'
         result += '\"position\":\"' + str(self.positionInClass[0]) + ',' + str(self.positionInClass[1]) + '\", \n'
         result += '\"id\":\"' + str(self.groupID) + '\", \n'
+        result += '\"assigmentProgress\":\"' + str(self.assigmentProgress) + '\", \n'
         result += '\"students\": [ \n'
         for student in self.students:
             result += student.JSON() + ','

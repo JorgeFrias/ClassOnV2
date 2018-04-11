@@ -72,7 +72,8 @@ def selectPlace():
             flash('Place selected', 'success')
 
             assigmentID = selectedRunningClass.assigment.db_id                              # Current assigment id
-            startPage = 0                                                                   # If there is already an student?
+            groupIsIn.assigmentProgress = su.get_page(session)                              # Last visited page
+            startPage = su.get_page(session)                                                # Last visited page
 
             ''' Socket.io notification'''
             handle_joinGroup(groupIsIn)

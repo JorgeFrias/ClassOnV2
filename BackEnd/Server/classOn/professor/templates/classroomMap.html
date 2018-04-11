@@ -8,7 +8,7 @@
         <h2>Classroom map</h2>
         <p>This is the map of your classroom, the upper left place is the (0,0).</p>
         <span class="badge badge-pill badge-secondary text-center w-100 ">Blackboard</span>
-        <table class="table text-secondary">
+        <table class="table">
             {% for row in range(rows) %}
             <tr>
                 {% for column in range(columns) %}
@@ -18,11 +18,11 @@
                                 <!--<h5 class="card-title" >Progress:</h5>-->
                                 <h5>
                                     <span class="badge badge-dark" id="progress_{{row ~ ',' ~ column}}">0</span>
-                                    <span class="badge badge-warning" id="doubt_{{row ~ ',' ~ column}}">Doubt</span>
+                                    <!--<span class="badge badge-warning" id="doubt_{{row ~ ',' ~ column}}">Doubt</span>-->
                                 </h5>
                             </div>
                             <ul class="list-group" id="members_{{row ~ ',' ~ column}}">
-                                <li class="list-group-item" id="noMembers_{{row ~ ',' ~ column}}"><small>No members yet</small></li>
+                                <li class="list-group-item" id="noMembers_{{row ~ ',' ~ column}}"><small>Empty</small></li>
                             </ul>
                         </div>
                     </td>
