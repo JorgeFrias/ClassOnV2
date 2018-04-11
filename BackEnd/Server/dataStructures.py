@@ -130,6 +130,31 @@ class Classroom:
             self.studentGroups[tmpGroup.groupID] = tmpGroup         # Add group to global object
             return tmpGroup
 
+    def filledPlaces(self):
+        rows = self.classSize[0]
+        cols = self.classSize[1]
+        result = []
+        for id, group in self.studentGroups.items():
+            result.append(group.positionInClass)
+        return result
+
+    def filledPlacesStrList(self):
+        rows = self.classSize[0]
+        cols = self.classSize[1]
+        result = []
+        for id, group in self.studentGroups.items():
+            result.append(str(group.positionInClass[0]) + '_' + str(group.positionInClass[1]))
+        return result
+
+    def filledPlacesJSON(self):
+        result = '{ \n'
+        filledPlacesList = self.filledPlaces()
+        for place in filledPlacesList:
+            result += str(place[0]) + '_' + str(place[1]) + ',\n'
+        result = result[:-2]                    # Remove ',\n'
+        result += '\n}'
+        return result
+
 class StudentGroup:
     def __init__(self, students : [Student], position : (int, int) = (0, 0)):
         self.students = students

@@ -54,6 +54,7 @@ def selectPlace():
     selectedRunningClass = runningClasses[su.get_class_id(session)]
     rows = selectedRunningClass.classSize[0]
     cols = selectedRunningClass.classSize[1]
+    takenPlaces = selectedRunningClass.filledPlaces()
 
     if (request.method == 'POST'):
         # Get running classroom instance
@@ -91,7 +92,7 @@ def selectPlace():
             flash('Place out of bounds', 'danger')
             return redirect(url_for('student.selectPlace'))
 
-    return render_template('selectPlace.html', rows=rows, columns=cols)
+    return render_template('selectPlace.html', rows=rows, columns=cols, takenPlaces=takenPlaces)
 
 def handle_joinGroup(group : StudentGroup):
     socketio.emit('joinedGroup', group.JSON(), broadcast=True)

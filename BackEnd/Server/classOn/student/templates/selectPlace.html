@@ -4,37 +4,29 @@
     <h1>Select your physical place in the room.</h1>
     <p>The form is not beautiful but it works ¯\_(ツ)_/¯.</p>
     <hr class="my-4">
-
-    <!--{% from "includes/_formhelpers.html" import render_field %}-->
     <form action="" method="POST">
-        {#
-        <!--<div class="form-group">-->
-            <!--{render_field(form.row, class_="form-control")}}-->
-        <!--</div>-->
-        <!--<div class="form-group">-->
-            <!--{{render_field(form.column, class_="form-control")}}-->
-        <!--</div>-->
-
-        <!--<button type="submit" name="btn" class="btn btn-primary" value="add">Submit</button>-->
-        #}
-
-       <div class="container">
-        <h2>Classroom map</h2>
-        <p>This is the map of your classroom, the upper left place is the (0,0).</p>
         <span class="badge badge-pill badge-secondary text-center w-100 ">Blackboard</span>
         <table class="table">
             {% for row in range(rows) %}
             <tr>
                 {% for column in range(columns) %}
                     <td>
-                        <button type="submit" name="place" class="btn btn-primary active" value="{{ row ~ '_' ~ column }}">Select</button>
-                        <!--<button type="button" class="btn btn-primary" disabled>Disabled Primary</button>-->
+                        {% set ns = namespace(repeated=false) %}
+                        {% for place in takenPlaces %}
+                            {% if place[0]|string ~ '_' ~ place[1]|string ==  row ~ '_' ~ column %}
+                                {% set ns.repeated = True %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if ns.repeated %}
+                            <button type="button" class="btn btn-primary" disabled>Took</button>
+                        {% else %}
+                            <button type="submit" name="place" class="btn btn-primary active" value="{{ row ~ '_' ~ column }}">Select</button>
+                        {% endif %}
                     </td>
                 {% endfor %}
             </tr>
             {% endfor %}
         </table>
-       </div>
     </form>
 
 {% endblock %}
