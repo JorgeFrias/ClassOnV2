@@ -50,17 +50,23 @@ def dashboard():
 @student.route('/select_place', methods=['GET', 'POST'])
 @is_logged_in
 def selectPlace():
-    form = forms.PlaceSelectionForm(request.form)
+    # form = forms.PlaceSelectionForm(request.form)
+    selectedRunningClass = runningClasses[su.get_class_id(session)]
+    rows = selectedRunningClass.classSize[0]
+    cols = selectedRunningClass.classSize[1]
 
-    if (request.method == 'POST' and form.validate()):
+    if (request.method == 'POST'):
         # Get running classroom instance
-        selectedRunningClass = runningClasses[su.get_class_id(session)]
-        rows = selectedRunningClass.classSize[0]
-        cols = selectedRunningClass.classSize[1]
+
+        # Form information
+        placeStr = request.form['place']
+        placeList = placeStr.split('_')
+        row = int(placeList[0])
+        column = int(placeList[1])
 
         # Form info
-        row = form['row'].data
-        column = form['column'].data
+        # row = form['row'].data
+        # column = form['column'].data
 
         # Check if is out of bounds
         if (row <= rows and column <= cols):
@@ -85,7 +91,7 @@ def selectPlace():
             flash('Place out of bounds', 'danger')
             return redirect(url_for('student.selectPlace'))
 
-    return render_template('selectPlace.html', form=form)
+    return render_template('selectPlace.html', rows=rows, columns=cols)
 
 def handle_joinGroup(group : StudentGroup):
     socketio.emit('joinedGroup', group.JSON(), broadcast=True)
