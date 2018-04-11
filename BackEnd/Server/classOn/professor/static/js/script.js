@@ -18,12 +18,23 @@ socket.on('joinedGroup', function(group){
     $(jq(groupJson.position)).toggleClass('border-secondary border-dark');
 
     // Assigment progress
-    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
+    changeProgress(groupJson);
+//    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
     // Assigment progress color
     $(jq("progress_" + groupJson.position)).toggleClass('badge-dark badge-success');
 
 });
 
+socket.on('assigment_changeProgress', function(group){
+    var groupJson = JSON.parse(group);                          // To JSON
+    changeProgress(groupJson);
+})
+
 function jq( myid ) {
     return "#" + myid.replace( /(:|\.|\[|\]|,|=|@)/g, "\\$1" );
 }
+
+function changeProgress(groupJson){
+    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
+}
+

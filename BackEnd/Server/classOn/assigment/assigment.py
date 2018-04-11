@@ -20,6 +20,8 @@ assigment = Blueprint('assigment',
 ''' MySQL import '''
 from classOn import mysql
 from classOn import runningClasses
+from classOn import socketio
+from dataStructures import StudentGroup
 
 def setAssigment():
     # global assigment_global                       # Used in this scope
@@ -72,10 +74,7 @@ def assigmentByID(id, page):
         currentGroup.doubts.append(doubt)
 
         flash('Doubt sent', 'success')
-
         # Notify code, to refresh views
-
-
 
     if assigment is None:
         # Doesn't exist an assigment with the requested id
@@ -94,6 +93,7 @@ def assigmentByID(id, page):
         if totalSections > 0:
             if page_no > 0 and page_no <= len(assigment.sections):
                 # The requested page exists
+                updateGroupAssigmentProgress(su.get_grupo_id(session), page_no)     # Notify
                 return render_template(
                     'assigment.html',
                     assigment=assigment,
@@ -109,3 +109,13 @@ def assigmentByID(id, page):
         else:
             # Error
             flash('No sections in current assigment', 'danger')
+
+def updateGroupAssigmentProgress(groupID, progress):
+    selectedRunningClass = runningClasses[su.get_class_id(session)]
+    currentGroup = selectedRunningClass.studentGroups[su.get_grupo_id(session)]
+    currentGroup.assigmentProgress = progress
+    handle_assigmentChangePage(currentGroup)
+
+def handle_assigmentChangePage(group : StudentGroup):
+
+    socketio.emit('assigment_changeProgress', group.JSON(), broadcast=True)
