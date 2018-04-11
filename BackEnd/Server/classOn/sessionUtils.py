@@ -68,3 +68,8 @@ def get_page(session: session):
     return session['page']
 def set_page(session: session, page):
     session['page'] = page
+
+def set_socketioConected(bool : bool):
+    session['socket_io'] = bool
+def get_socketioConected():
+    return session['socket_io']

@@ -87,5 +87,4 @@ def selectPlace():
     return render_template('selectPlace.html', form=form)
 
 def handle_joinGroup(group : StudentGroup):
-    socketio.send('New student joined the party', broadcast=True)
     socketio.emit('joinedGroup', group.JSON(), broadcast=True)
