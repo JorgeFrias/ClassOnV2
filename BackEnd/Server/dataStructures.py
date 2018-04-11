@@ -143,7 +143,7 @@ class StudentGroup:
 
     def JSON(self):
         result = '{\n'
-        result += '\"position\":\"' + str(self.positionInClass[0]) + ',' + str(self.positionInClass[1]) + '\", \n'
+        result += '\"position\":\"' + str(self.positionInClass[0]) + '_' + str(self.positionInClass[1]) + '\", \n'
         result += '\"id\":\"' + str(self.groupID) + '\", \n'
         result += '\"assigmentProgress\":\"' + str(self.assigmentProgress) + '\", \n'
         result += '\"students\": [ \n'

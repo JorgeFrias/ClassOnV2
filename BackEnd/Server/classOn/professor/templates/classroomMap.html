@@ -13,16 +13,16 @@
             <tr>
                 {% for column in range(columns) %}
                     <td>
-                        <div class="card border-secondary" id="{{ row ~ ',' ~ column }}">
+                        <div class="card border-secondary" id="{{ row ~ '_' ~ column }}">
                             <div class="card-body">
                                 <!--<h5 class="card-title" >Progress:</h5>-->
                                 <h5>
-                                    <span class="badge badge-dark" id="progress_{{row ~ ',' ~ column}}">0</span>
+                                    <span class="badge badge-dark" id="progress_{{row ~ '_' ~ column}}">0</span>
                                     <!--<span class="badge badge-warning" id="doubt_{{row ~ ',' ~ column}}">Doubt</span>-->
                                 </h5>
                             </div>
-                            <ul class="list-group" id="members_{{row ~ ',' ~ column}}">
-                                <li class="list-group-item" id="noMembers_{{row ~ ',' ~ column}}"><small>Empty</small></li>
+                            <ul class="list-group" id="members_{{row ~ '_' ~ column}}">
+                                <li class="list-group-item" id="noMembers_{{row ~ '_' ~ column}}"><small>Empty</small></li>
                             </ul>
                         </div>
                     </td>
