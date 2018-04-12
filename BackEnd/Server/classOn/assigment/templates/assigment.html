@@ -42,15 +42,29 @@
             </ul>
         </div>
         <!--Doubts column-->
-        <div class="col" id="doubts">
+        <div class="col">
+            <h2>Doubts</h2>
+            <!--Doubts container-->
+            <div class="list-group" id="doubts">
+                <!--This is a doubt-->
+                <div class="list-group-item flex-column align-items-start" id="doubt_id">
+                    <p class="mb-1">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dapibus leo ut suscipit dapibus. Proin dignissim mollis tellus, et condimentum massa convallis et. Vivamus orci nisl, luctus nec dapibus eget, cursus a velit. Nulla eget bibendum libero. Suspendisse ullamcorper vehicula mi in ullamcorper. Mauris quam turpis, lacinia et purus a, tempus hendrerit mauris. Aliquam sed ex quam.
+                    </p>
+                    <div>
+                        <span class="badge badge-info">Section 1</span>
+                        <button type="button" class="btn btn-primary float-right">Solve doubt</button>
+                    </div>
+                </div>
 
+            </div>
         </div>
     </div>
 
     <hr class="my-4">
     {% include "doubt.html" %}
 
-    <script src="{{url_for('.static', filename='js/script_assigment.js')}}"></script>
 
+    <script src="{{url_for('.static', filename='js/script_assigment.js')}}"></script>
 
 {% endblock %}
