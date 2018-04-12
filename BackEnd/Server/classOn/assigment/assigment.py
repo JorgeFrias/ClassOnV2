@@ -64,6 +64,7 @@ def assigmentByID(id, page):
 
     form = forms.PostDoubtForm(request.form)
 
+    ## DOUBT ###
     if (request.method == 'POST' and form.validate()):
 
         doubtText = form['text'].data
@@ -74,7 +75,11 @@ def assigmentByID(id, page):
         currentGroup.doubts.append(doubt)
 
         flash('Doubt sent', 'success')
-        # Notify code, to refresh views
+
+        # Notify to Professor and Students
+        handle_newDoubt(doubt)
+
+
 
     if assigment is None:
         # Doesn't exist an assigment with the requested id
@@ -117,5 +122,7 @@ def updateGroupAssigmentProgress(groupID, progress):
     handle_assigmentChangePage(currentGroup)
 
 def handle_assigmentChangePage(group : StudentGroup):
-
     socketio.emit('assigment_changeProgress', group.JSON(), broadcast=True)
+
+def handle_newDoubt(doubt : Doubt):
+    socketio.emit('doubt_new', doubt.JSON(), broadcast=True)

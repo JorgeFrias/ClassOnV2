@@ -180,6 +180,9 @@ class StudentGroup:
 
         return result
 
+    def positionInClass_str(self):
+        return str(self.positionInClass[0]) + '_' + str(self.positionInClass[1])
+
     def addStudent(self, student : Student):
         '''
         Adds an student to the given group if is not in the group
@@ -214,10 +217,19 @@ class Doubt:
         else:
             self._answered = True
 
+    def JSON(self):
+        result = '{\n'
+        result += '\"db_id\":\"' + str(self.db_id) + '\", \n'
+        result += '\"text\":\"' + self.doubtText.strip().replace('\n', '\\n').replace('\r', '') + '\", \n'
+        result += '\"section\":\"' + str(self._section.order) + '\", \n'
+        result += '\"postTime\":\"' + str(self._postTime) + '\", \n'
+        result += '\"group\":\"' + self._studentGroup.positionInClass_str() + '\" \n'
+        result += '}'
+        return result
+
     def postToDB(self):
         from classOn import DBUtils
         DBUtils.putDoubt(self, self._studentGroup)
-
 
     def set_Answer(self, answerText, resolver, postToDB = True):
         from classOn import DBUtils
