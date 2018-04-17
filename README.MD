@@ -1,3 +1,3 @@
 To do:  
-[ ] Write a great ReadMe.  
-[ ] Commit great ReadMe.  
+- [ ] Write a great ReadMe.  
+- [ ] Commit great ReadMe.  
