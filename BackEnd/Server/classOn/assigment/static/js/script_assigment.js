@@ -22,3 +22,21 @@ function doubt_click(text)
 {
     socket.emit('doubt_post', text);
 }
+
+function queryDoubts()
+{
+    socket.emit('doubt_query');
+}
+
+socket.on('doubt_query_result', function(doubts)
+{
+    var doubtsJson = JSON.parse(doubts);
+    var doubts = doubtsJson.doubts;
+
+    for(var i in doubts)
+    {
+        appendDoubt(doubts[i]);
+    }
+})
+
+window.onload = queryDoubts();

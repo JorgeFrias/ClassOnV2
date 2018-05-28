@@ -8,7 +8,7 @@ from classOn import DBUtils
 from classOn import sessionUtils as su
 from classOn.assigment import forms
 from classOn import sessionUtils as su
-
+from flask_socketio import SocketIO
 
 '''Register blueprint'''
 assigment = Blueprint('assigment',
@@ -147,3 +147,13 @@ def handle_postDoubt(text):
 
     # Notify to Professor and Students
     handle_newDoubt(doubt)
+
+@socketio.on('doubt_query')
+def hadle_queryDoubts():
+    currentClass = runningClasses[su.get_class_id(session)]
+    doubtsJson = '{"doubts":['
+    for doubt in currentClass.doubts:
+        doubtsJson += doubt.JSON()
+    doubtsJson += "]}"
+
+    socketio.emit('doubt_query_result', doubtsJson)
