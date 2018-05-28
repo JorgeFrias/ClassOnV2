@@ -153,7 +153,8 @@ def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
     doubtsJson = '{"doubts":['
     for doubt in currentClass.doubts:
-        doubtsJson += doubt.JSON()
+        doubtsJson += doubt.JSON() + ','
+    doubtsJson = doubtsJson[:-1]                            # Remove last comma
     doubtsJson += "]}"
 
     socketio.emit('doubt_query_result', doubtsJson)

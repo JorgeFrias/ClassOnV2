@@ -21,6 +21,15 @@ function appendDoubt( doubtJson )
 function doubt_click(text)
 {
     socket.emit('doubt_post', text);
+
+    // Give a lille time to the server
+    var delayInMilliseconds = 10; //0.01 second
+    setTimeout(function() {
+      //your code to be executed after 0.01 second
+    }, delayInMilliseconds);
+
+    queryDoubts();
+
 }
 
 function queryDoubts()
