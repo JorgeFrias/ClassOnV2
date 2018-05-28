@@ -1,9 +1,5 @@
-socket.on('doubt_new', function(doubt)
-{
-    var doubtJson = JSON.parse(doubt);                          // To JSON
-    appendDoubt(doubtJson);
-});
-
+/* Functions */
+// Add a doubt to the HTML
 function appendDoubt( doubtJson )
 {
     let doubts = $("#doubts");                      // Locate doubts container
@@ -18,6 +14,9 @@ function appendDoubt( doubtJson )
     doubts.append(newDoubtHTML);
 }
 
+/* Socket.io */
+/** Emits  **/
+// Generated new doubt --> upload to server
 function doubt_click(text)
 {
     socket.emit('doubt_post', text);
@@ -29,14 +28,22 @@ function doubt_click(text)
     }, delayInMilliseconds);
 
     queryDoubts();
-
 }
 
+// Ask for doubts
 function queryDoubts()
 {
     socket.emit('doubt_query');
 }
 
+/** Responses **/
+// New doubt from server
+socket.on('doubt_new', function(doubt)
+{
+    var doubtJson = JSON.parse(doubt);              // To JSON
+    appendDoubt(doubtJson);
+});
+// Doubts query result
 socket.on('doubt_query_result', function(doubts)
 {
     var doubtsJson = JSON.parse(doubts);
@@ -48,4 +55,5 @@ socket.on('doubt_query_result', function(doubts)
     }
 })
 
-window.onload = queryDoubts();
+/* Plain JS Code */
+window.onload = queryDoubts();                      // When page loads ask for doubts.
