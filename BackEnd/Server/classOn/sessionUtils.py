@@ -16,12 +16,12 @@ def logOut(session: session):
     session.clear()
 
 def get_isStudent(session : session):
-    return session['logged_in']
+    return session['isStudent']
 def set_isStudent(session : session, bool):
-    session['logged_in'] = bool
+    session['isStudent'] = bool
 
 def get_isProfessor(session : session):
-    return session['isStudent']
+    return session['isProfessor']
 def set_isProfessor(session : session, bool):
     session['isProfessor'] = bool
 
