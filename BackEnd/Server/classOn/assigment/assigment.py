@@ -65,6 +65,7 @@ def assigmentByID(id, page):
     form = forms.PostDoubtForm(request.form)
 
     ## DOUBT ###
+    ### $$$$ Falla porque recarga la página. hay que hacer esto sin recargarla.
     if (request.method == 'POST' and form.validate()):
 
         doubtText = form['text'].data
@@ -126,3 +127,23 @@ def handle_assigmentChangePage(group : StudentGroup):
 
 def handle_newDoubt(doubt : Doubt):
     socketio.emit('doubt_new', doubt.JSON(), broadcast=True)
+
+# @socketio.on('doubt_post')
+def handle_postDoubt(text):
+    # No sabe que usuarui ha mandado la duda
+
+    assigment = DBUtils.getAssigment(id)                    # Get requested assigment (db_id -> id)
+    currentClass = runningClasses[su.get_class_id(session)]
+    currentGroup = currentClass.studentGroups[su.get_grupo_id(session)]
+    page_no = currentGroup.assigmentProgress
+
+    doubtText = text
+    doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
+    doubt.postToDB()
+    currentClass.doubts.append(doubt)
+    currentGroup.doubts.append(doubt)
+
+    flash('Doubt sent', 'success')
+
+    # Notify to Professor and Students
+    handle_newDoubt(doubt)
