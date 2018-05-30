@@ -1,4 +1,5 @@
-socket.on('joinedGroup', function(group){
+function addGroup(group)
+{
     var groupJson = JSON.parse(group);                          // To JSON
 
      // Remove no members list item
@@ -22,6 +23,10 @@ socket.on('joinedGroup', function(group){
 //    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
     // Assigment progress color
     $(jq("progress_" + groupJson.position)).toggleClass('badge-dark badge-success');
+}
+
+socket.on('joinedGroup', function(group){
+    addGroup(group);
 });
 
 socket.on('assigment_changeProgress', function(group){
@@ -55,3 +60,26 @@ function changeProgress(groupJson){
     $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
 }
 
+// Ask for the session state to the server
+function queryDoubts()
+{
+    socket.emit('classroom_query');
+}
+
+// Session query result to interface
+socket.on('classroom_query_result', function(stateResult)
+{
+    var stateJson = JSON.parse(stateResult);
+    var groups = stateJson.groups;
+    var doubts = stateJson.doubts;
+
+    for(var i in groups)
+    {
+        addGroup(groups[i]);
+    }
+
+    for(var i in doubts)
+    {
+        appendDoubt(doubts[i]);
+    }
+})

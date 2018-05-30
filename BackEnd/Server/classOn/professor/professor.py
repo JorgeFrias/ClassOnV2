@@ -140,7 +140,7 @@ def createClassroom():
 
         # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')
-        flash('Internal classroom id = '+ str(id), 'success')
+        # flash('Internal classroom id = '+ str(id), 'success')
 
         return redirect(url_for('professor.classroom'))
 
@@ -158,3 +158,21 @@ def classroom():
 @socketio.on('connection')
 def handle_myEvent(json):
     print('received message: ' + str(json))
+
+@socketio.on('classroom_query')
+def hadle_queryDoubts():
+    currentClass = runningClasses[su.get_class_id(session)]
+
+    stateJson = '{"groups":['
+    for key, group in currentClass.studentGroups:
+        stateJson += group.JSON() + ','
+    stateJson = stateJson[:-1]                            # Remove last comma
+    stateJson += "],\n"
+
+    stateJson = '"doubts":['
+    for doubt in currentClass.doubts:
+        doubt.JSON() + ','
+    stateJson = stateJson[:-1]  # Remove last comma
+    stateJson += "]}"
+
+    socketio.emit('classroom_query_result', stateJson)
