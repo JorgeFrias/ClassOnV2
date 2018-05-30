@@ -1,14 +1,14 @@
 function addGroup(group)
 {
-    var groupJson = JSON.parse(group);                          // To JSON
+//    var groupJson = JSON.parse(group);                          // To JSON
 
      // Remove no members list item
-    var noMembers = "noMembers_"+groupJson.position;
+    var noMembers = "noMembers_"+ group.position;
     $(jq(noMembers)).remove();
 
     // Add students to the list
-    var students = groupJson.students;
-    var membersListSelector = jq("members_" + groupJson.position);
+    var students = group.students;
+    var membersListSelector = jq("members_" + group.position);
     for (var i in students)
     {
         var studentHTML = '<li class=\"list-group-item \" id=\"' + students[i].db_id + '\">' + students[i].name + ' ' + students[i].lastName + '</li>';
@@ -16,37 +16,38 @@ function addGroup(group)
     }
 
     // Black border to new operating group
-    $(jq(groupJson.position)).toggleClass('border-secondary border-dark');
+    $(jq(group.position)).toggleClass('border-secondary border-dark');
 
     // Assigment progress
-    changeProgress(groupJson);
+    changeProgress(group);
 //    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
     // Assigment progress color
-    $(jq("progress_" + groupJson.position)).toggleClass('badge-dark badge-success');
+    $(jq("progress_" + group.position)).toggleClass('badge-dark badge-success');
 }
 
-socket.on('joinedGroup', function(group){
+socket.on('joinedGroup', function(groupJson){
+    var group = JSON.parse(groupJson);
     addGroup(group);
 });
 
-socket.on('assigment_changeProgress', function(group){
-    var groupJson = JSON.parse(group);                          // To JSON
-    changeProgress(groupJson);
+socket.on('assigment_changeProgress', function(groupJson){
+    var group = JSON.parse(groupJson);                          // To JSON
+    changeProgress(group);
 });
 
-socket.on('doubt_new', function(doubt){
-    var doubtJson = JSON.parse(doubt);                          // To JSON
-    appendDoubt(doubtJson);
+socket.on('doubt_new', function(doubtJson){
+    var doubt = JSON.parse(doubtJson);                          // To JSON
+    appendDoubt(doubt);
 });
 
-function appendDoubt( doubtJson ) {
+function appendDoubt( doubt ) {
     let doubts = $("#doubts");                      // Locate doubts container
-    const newDoubtHTML = '<div class=\"list-group-item flex-column align-items-start\" id=\"doubt_' + doubtJson.db_id + '\">' +
+    const newDoubtHTML = '<div class=\"list-group-item flex-column align-items-start\" id=\"doubt_' + doubt.db_id + '\">' +
                          '<p class =\"mb-1\">' +
-                         doubtJson.text +
+                         doubt.text +
                          '</p>' +
                          '<div>' +
-                         '<span class=\"badge badge-info\">' + doubtJson.section + '</span>' +
+                         '<span class=\"badge badge-info\">' + doubt.section + '</span>' +
                          '<button type=\"button\" class=\"btn btn-primary float-right\">Solve doubt</button>' +
                          '<div><div>';
     doubts.append(newDoubtHTML);
@@ -61,17 +62,17 @@ function changeProgress(groupJson){
 }
 
 // Ask for the session state to the server
-function queryDoubts()
+function querySession()
 {
     socket.emit('classroom_query');
 }
 
 // Session query result to interface
-socket.on('classroom_query_result', function(stateResult)
+socket.on('classroom_query_result', function(stateResultJson)
 {
-    var stateJson = JSON.parse(stateResult);
-    var groups = stateJson.groups;
-    var doubts = stateJson.doubts;
+    var state = JSON.parse(stateResultJson);
+    var groups = state.groups;
+    var doubts = state.doubts;
 
     for(var i in groups)
     {
@@ -82,4 +83,7 @@ socket.on('classroom_query_result', function(stateResult)
     {
         appendDoubt(doubts[i]);
     }
-})
+});
+
+/* Plain JS Code */
+window.onload = querySession();                      // When page loads ask for classroom information.

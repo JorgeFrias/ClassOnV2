@@ -164,15 +164,17 @@ def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
 
     stateJson = '{"groups":['
-    for key, group in currentClass.studentGroups:
+    for key, group in currentClass.studentGroups.items():
         stateJson += group.JSON() + ','
-    stateJson = stateJson[:-1]                            # Remove last comma
+    if stateJson.endswith(','):                                 # If there is an ending comma
+        stateJson = stateJson[:-1]                              # Remove last comma
     stateJson += "],\n"
 
-    stateJson = '"doubts":['
+    stateJson += '"doubts":['
     for doubt in currentClass.doubts:
         doubt.JSON() + ','
-    stateJson = stateJson[:-1]  # Remove last comma
+    if stateJson.endswith(','):                                 # If there is an ending comma
+        stateJson = stateJson[:-1]                              # Remove last comma
     stateJson += "]}"
 
     socketio.emit('classroom_query_result', stateJson)
