@@ -81,7 +81,6 @@ def assigmentByID(id, page):
         handle_newDoubt(doubt)
 
 
-
     if assigment is None:
         # Doesn't exist an assigment with the requested id
         flash('Doesn\'t exists an assigment with id: ' + str(id) , 'danger')
@@ -117,6 +116,13 @@ def assigmentByID(id, page):
             flash('No sections in current assigment', 'danger')
 
 def updateGroupAssigmentProgress(groupID, progress):
+    '''
+    Updates the assigment progress to all the interested.
+    IMPROVE: In order to improve this, we can create groups to send the info only to interested clients.
+    :param groupID:
+    :param progress:
+    :return:
+    '''
     selectedRunningClass = runningClasses[su.get_class_id(session)]
     currentGroup = selectedRunningClass.studentGroups[su.get_grupo_id(session)]
     currentGroup.assigmentProgress = progress
@@ -126,11 +132,22 @@ def handle_assigmentChangePage(group : StudentGroup):
     socketio.emit('assigment_changeProgress', group.JSON(), broadcast=True)
 
 def handle_newDoubt(doubt : Doubt):
+    '''
+    Emits a doubt to all other students.
+    NOTE: because of broadcast function the doubt goes to all students, no matter which session they are rolled in.
+    :param doubt:
+    :return:
+    '''
     socketio.emit('doubt_new', doubt.JSON(), broadcast=True)
 
 # @socketio.on('doubt_post')
 def handle_postDoubt(text):
-    # No sabe que usuarui ha mandado la duda
+    '''
+    New doubt from a student. Stores the doubt in the system and send it to all other students
+    :param text:
+    :return:
+    '''
+    # Doesn't know which student sent the doubt.
 
     assigment = DBUtils.getAssigment(id)                    # Get requested assigment (db_id -> id)
     currentClass = runningClasses[su.get_class_id(session)]
