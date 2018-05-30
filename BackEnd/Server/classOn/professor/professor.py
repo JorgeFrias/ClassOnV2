@@ -172,7 +172,7 @@ def hadle_queryDoubts():
 
     stateJson += '"doubts":['
     for doubt in currentClass.doubts:
-        doubt.JSON() + ','
+        stateJson += doubt.JSON() + ','
     if stateJson.endswith(','):                                 # If there is an ending comma
         stateJson = stateJson[:-1]                              # Remove last comma
     stateJson += "]}"
