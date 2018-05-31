@@ -196,11 +196,11 @@ def fulfillDoubtInfo(doubt : Doubt):
     tempDoubt = getDoubt(id)
     doubt._postTime = tempDoubt._postTime
 
-def answerDoubt(doubt : Doubt, resolver):
+def answerDoubt(doubt : Doubt, text : str, resolver):
     cur = mysql.connection.cursor()
     cur.execute(
         "INSERT INTO answers(doubt, text) VALUES(%s, %s)",
-        (doubt.db_id, doubt.answerText))
+        (doubt.db_id, text))
     mysql.connection.commit()               # Commit to DB
     cur.close()                             # Close connection
     putAnswerResolver(resolver, cur.lastrowid)

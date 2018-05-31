@@ -176,3 +176,12 @@ def hadle_queryDoubts():
     doubtsJson += "]}"
 
     socketio.emit('doubt_query_result', doubtsJson)
+
+@socketio.on('answer_post')
+def handle_answerPost(doubtId, answer):
+    solvedDoubt = DBUtils.getDoubt(int(doubtId))
+    # solvedDoubt.answerText is not used
+    # $$$$ Professors are not supported to solve doubts
+    solver = DBUtils.getStudentBy_id(su.get_student_id(session))    # Student solver
+
+    DBUtils.answerDoubt(solvedDoubt, answer, solver)
