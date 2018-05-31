@@ -6,4 +6,4 @@ from wtforms.fields import TextAreaField
 class PostDoubtForm(Form):
     # name = StringField('Name', [validators.Length(min = 1, max=100)])
     # text = StringField(u'Text', widget=TextArea())
-    text = TextAreaField('text', render_kw={"rows": 5  })
+    text = TextAreaField('New doubt:', render_kw={"rows": 5  })

@@ -9,7 +9,8 @@ function appendDoubt( doubtJson )
                          '</p>' +
                          '<div>' +
                          '<span class=\"badge badge-info\">' + doubtJson.section + '</span>' +
-                         '<button type=\"button\" class=\"btn btn-primary float-right\">Solve doubt</button>' +
+                         '<button type=\"button\" class=\"btn btn-primary float-right\"' +
+                         ' data-toggle=\"modal\" data-target=\"#modal_answer\">Solve doubt</button>' +
                          '<div><div>';
     doubts.append(newDoubtHTML);
 }
@@ -36,6 +37,20 @@ function queryDoubts()
     socket.emit('doubt_query');
 }
 
+function answerDoubt()
+{
+    var answ = $("#text_answer").val();
+    if (answ.length > 0)
+    {
+        socket.emit('answer_post', answ);
+        $('#modal_answer').modal('hide');
+    } else
+    {
+        
+    }
+
+}
+
 /** Responses **/
 // New doubt from server
 socket.on('doubt_new', function(doubt)
@@ -57,3 +72,7 @@ socket.on('doubt_query_result', function(doubts)
 
 /* Plain JS Code */
 window.onload = queryDoubts();                      // When page loads ask for doubts.
+
+$(document).ready(function() {
+    $("#btn_answer").click (answerDoubt);
+});

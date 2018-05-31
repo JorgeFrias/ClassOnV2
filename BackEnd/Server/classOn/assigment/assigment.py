@@ -115,6 +115,7 @@ def assigmentByID(id, page):
             # Error
             flash('No sections in current assigment', 'danger')
 
+''' SOCKET.IO '''
 def updateGroupAssigmentProgress(groupID, progress):
     '''
     Updates the assigment progress to all the interested.
