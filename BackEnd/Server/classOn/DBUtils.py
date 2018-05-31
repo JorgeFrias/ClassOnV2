@@ -184,6 +184,7 @@ def getDoubt(id):
         ### Complete doubt object ###
         tmpSection = getSection(data['section'])
         tmpDoubt = Doubt(data['text'], tmpSection, data['time'])
+        tmpDoubt.db_id = data['id']
     else:
         raise RuntimeError('No doubt with id: ' + str(id))
         pass
