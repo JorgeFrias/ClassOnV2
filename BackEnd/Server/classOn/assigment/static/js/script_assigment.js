@@ -6,8 +6,14 @@ $(document).ready(function() {
     queryDoubts();
     $("#btn_answer").click (answerDoubt);
     $('#modal_answer').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget)             // Button that triggered the modal
-        doubtId = button.data('doubtid')                // Extract info from data-* attributes and store in global variable
+        var button = $(event.relatedTarget);            // Button that triggered the modal
+        doubtId = button.data('doubtid');               // Extract info from data-* attributes and store in global variable
+
+        // Add doubt text to the modal
+        var modal = $(this);
+        var doubtSelector = '#doubt_' + doubtId;
+        var doubtText = $(doubtSelector +' >p').text();
+        modal.find(".modal-body #modal_doubt_text").text(doubtText);
     });
 }); 
 
