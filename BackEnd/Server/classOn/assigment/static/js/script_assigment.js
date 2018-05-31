@@ -1,3 +1,16 @@
+/* Global variables */
+var doubtId = 0;
+
+/* Plain JS Code */
+$(document).ready(function() {
+    queryDoubts();
+    $("#btn_answer").click (answerDoubt);
+    $('#modal_answer').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)             // Button that triggered the modal
+        doubtId = button.data('doubtid')                // Extract info from data-* attributes and store in global variable
+    });
+}); 
+
 /* Functions */
 // Add a doubt to the HTML
 function appendDoubt( doubtJson )
@@ -10,13 +23,16 @@ function appendDoubt( doubtJson )
                          '<div>' +
                          '<span class=\"badge badge-info\">' + doubtJson.section + '</span>' +
                          '<button type=\"button\" class=\"btn btn-primary float-right\"' +
-                         ' data-toggle=\"modal\" data-target=\"#modal_answer\">Solve doubt</button>' +
+                         ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
+                         'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +
                          '<div><div>';
     doubts.append(newDoubtHTML);
 }
 
 /* Socket.io */
 /** Emits  **/
+
+
 // Generated new doubt --> upload to server
 function doubt_click(text)
 {
@@ -37,12 +53,13 @@ function queryDoubts()
     socket.emit('doubt_query');
 }
 
-function answerDoubt()
+function answerDoubt(event)
 {
     var answ = $("#text_answer").val();
+
     if (answ.length > 0)
     {
-        socket.emit('answer_post', answ);
+        socket.emit('answer_post', doubtId, answ);
         $('#modal_answer').modal('hide');
     } else
     {
@@ -70,9 +87,3 @@ socket.on('doubt_query_result', function(doubts)
     }
 })
 
-/* Plain JS Code */
-window.onload = queryDoubts();                      // When page loads ask for doubts.
-
-$(document).ready(function() {
-    $("#btn_answer").click (answerDoubt);
-});
