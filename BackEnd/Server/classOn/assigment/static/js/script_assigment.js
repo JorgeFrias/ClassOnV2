@@ -22,16 +22,34 @@ $(document).ready(function() {
 function appendDoubt( doubtJson )
 {
     let doubts = $("#doubts");                      // Locate doubts container
-    const newDoubtHTML = '<div class=\"list-group-item flex-column align-items-start\" id=\"doubt_' + doubtJson.db_id + '\">' +
-                         '<p class =\"mb-1\">' +
-                         doubtJson.text +
-                         '</p>' +
-                         '<div>' +
-                         '<span class=\"badge badge-info\">' + doubtJson.section + '</span>' +
-                         '<button type=\"button\" class=\"btn btn-primary float-right\"' +
-                         ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
-                         'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +
-                         '<div><div>';
+    // const newDoubtHTML = '<div class=\"list-group-item flex-column align-items-start\" id=\"doubt_' + doubtJson.db_id + '\">' +
+    //                     '<span class=\"badge badge-info\"> Section: ' + doubtJson.section + '</span>' +
+    //                     '<p class =\"mb-1\">' +
+    //                      doubtJson.text +
+    //                      '</p>' +
+    //                      '<div>' +
+    //                      '<button type=\"button\" class=\"btn btn-primary float-right\"' +
+    //                      ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
+    //                      'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +
+    //                      '</div></div>';
+    // doubts.append(newDoubtHTML);
+
+    const newDoubtHTML = 
+    '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
+        '<div class="card-body">' +
+            '<span class="badge badge-info">Section: ' + doubtJson.section + '</span>' + 
+            '<p class="card-text">' + doubtJson.text + '</p>' + 
+        '</div>' + 
+        '<ul class="list-group list-group-flush">' +
+            // '<li class="list-group-item list-group-item-secondary">Cras justo odio</li>' +        
+        '</ul>' +
+        '<div class="card-body">' +
+            '<button type=\"button\" class=\"btn btn-primary float-right\"' +
+            ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
+            'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
+        '</div>' +
+    '</div>' +
+    '<br>'
     doubts.append(newDoubtHTML);
 }
 
@@ -62,6 +80,7 @@ function queryDoubts()
 function answerDoubt(event)
 {
     var answ = $("#text_answer").val();
+    $("#text_answer").val('')                           //Clenan field
 
     if (answ.length > 0)
     {
@@ -93,3 +112,16 @@ socket.on('doubt_query_result', function(doubts)
     }
 })
 
+socket.on('new_answer', function(anwserJson)
+{
+    var answer = JSON.parse(anwserJson);
+    var doubtId = answer.doubtid;
+    var text = answer.text;
+    appendAnswer(doubtId, text);
+})
+
+function appendAnswer(doubtId, anwser)
+{
+    var li = '<li class="list-group-item list-group-item-secondary">'+ anwser +'</li>';        
+    $('#doubt_' + doubtId + '> ul').append(li);
+}

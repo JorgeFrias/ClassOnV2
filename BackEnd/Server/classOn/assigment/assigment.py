@@ -172,7 +172,7 @@ def hadle_queryDoubts():
     doubtsJson = '{"doubts":['
     for doubt in currentClass.doubts:
         doubtsJson += doubt.JSON() + ','
-    doubtsJson = doubtsJson[:-1]                            # Remove last comma
+    doubtsJson = doubtsJson[:-1]                                    # Remove last comma
     doubtsJson += "]}"
 
     socketio.emit('doubt_query_result', doubtsJson)
@@ -185,3 +185,6 @@ def handle_answerPost(doubtId, answer):
     solver = DBUtils.getStudentBy_id(su.get_student_id(session))    # Student solver
 
     DBUtils.answerDoubt(solvedDoubt, answer, solver)
+    answerJson = '{"doubtid":' + str(doubtId) + ',' +\
+                 '"text":"' + answer + '"}'
+    socketio.emit('new_answer', answerJson, broadcast=True)
