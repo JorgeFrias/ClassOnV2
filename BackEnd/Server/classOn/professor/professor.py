@@ -6,7 +6,7 @@ from classOn.professor import forms
 import uuid
 from classOn import sessionUtils as su
 from classOn import socketio
-from flask_socketio import send, emit
+from flask_socketio import send, emit, join_room, leave_room
 
 '''Register blueprint'''
 professor = Blueprint('professor',
@@ -113,6 +113,14 @@ def assigmentsTupleList(id_professor):
             assigments.append(tmpTuple)
 
     return assigments
+
+''' Socket.io'''
+@socketio.on('updateCredentials')
+def handle_connection():
+    selectedRunningClass = runningClasses[su.get_class_id(session)]
+    su.set_classRoom(session, selectedRunningClass.id)
+    su.set_ownRoom(session, request.sid)
+    join_room(selectedRunningClass.id)
 
 @professor.route('/create_classroom', methods=['GET', 'POST'])
 @is_logged_in_professor

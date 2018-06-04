@@ -1,3 +1,8 @@
+$(document).ready(function() {
+    socket.emit('updateCredentials');
+    querySession();
+}); 
+
 function addGroup(group)
 {
 //    var groupJson = JSON.parse(group);                          // To JSON
@@ -84,6 +89,3 @@ socket.on('classroom_query_result', function(stateResultJson)
         appendDoubt(doubts[i]);
     }
 });
-
-/* Plain JS Code */
-window.onload = querySession();                      // When page loads ask for classroom information.
