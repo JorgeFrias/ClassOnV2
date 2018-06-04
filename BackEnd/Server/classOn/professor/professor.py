@@ -133,10 +133,9 @@ def createClassroom():
         # Classroom objects initialization
         assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                        # Object assigment
         currentProfessor = DBUtils.getProfessor(su.get_professor_id(session))                           # Object professor
-        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)      # Object ClassRoom
-        id = str(uuid.uuid4())                                                                          # Classroom Universally Unique Identifier (UUID) URN Namespace
-        runningClasses[id] = classroom                                                                  # Add to runningClasses (dict) with id to be able to track different courses
-        su.set_class_id(session, id)                                                                    # Add to professor's session
+        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)      # Object ClassRoom                                                                # Classroom Universally Unique Identifier (UUID) URN Namespace
+        runningClasses[classroom.id] = classroom                                                        # Add to runningClasses (dict) with id to be able to track different courses
+        su.set_class_id(session, classroom.id)                                                          # Add to professor's session
 
         # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')

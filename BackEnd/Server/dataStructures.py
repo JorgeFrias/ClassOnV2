@@ -13,7 +13,7 @@ class Student:
         self.email = email
         self.passwordHash = passwordHash
         self.secondLastName = seccondLastName
-        self.socketRoom = str(uuid.uuid4())
+
 
         if (pictureSrc is not ''):
             try:
@@ -186,6 +186,7 @@ class DoubtAnswer:
 class Classroom:
 
     def __init__(self, classSize: (int, int), professor: Professor, assigment: Assigment, room=''):
+        self.id = str(uuid.uuid4())
         self.classSize = classSize
         self.professor = professor
         self.assigment = assigment
@@ -194,7 +195,6 @@ class Classroom:
         self.doubtsSolved = []
         self.__doubtsIdCounter = 0
         self.room = room
-        self.socketRoom = ''
 
     def addDoubt(self, doubt: Doubt):
         tupleDoubt = (doubt.db_id, doubt)

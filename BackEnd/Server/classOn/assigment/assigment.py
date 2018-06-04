@@ -119,8 +119,9 @@ def assigmentByID(id, page):
 @socketio.on('updateCredentials')
 def handle_connection():
     selectedRunningClass = runningClasses[su.get_class_id(session)]
-    su.set_classRoom(session, selectedRunningClass.socketRoom)
+    su.set_classRoom(session, selectedRunningClass.id)
     su.set_ownRoom(session, request.sid)
+    join_room(selectedRunningClass.id)
 
 def updateGroupAssigmentProgress(groupID, progress):
     '''
@@ -133,10 +134,12 @@ def updateGroupAssigmentProgress(groupID, progress):
     selectedRunningClass = runningClasses[su.get_class_id(session)]
     currentGroup = selectedRunningClass.studentGroups[su.get_grupo_id(session)]
     currentGroup.assigmentProgress = progress
+    su.set_classRoom(session, selectedRunningClass.id)
     handle_assigmentChangePage(currentGroup)
 
 def handle_assigmentChangePage(group : StudentGroup):
-    socketio.emit('assigment_changeProgress', group.JSON(), broadcast=True)
+    room = su.get_classRoom(session)
+    socketio.emit('assigment_changeProgress', group.JSON(), room=room)
 
 @socketio.on('doubt_post')
 def handle_postDoubt(text):
@@ -158,7 +161,8 @@ def handle_postDoubt(text):
     flash('Doubt sent', 'success')
 
     # Notify to Professor and Students
-    socketio.emit('doubt_new', doubt.JSON(), broadcast=True)
+    room = su.get_classRoom(session)
+    socketio.emit('doubt_new', doubt.JSON(), room=room)
 
 @socketio.on('doubt_query')
 def hadle_queryDoubts():
@@ -166,7 +170,8 @@ def hadle_queryDoubts():
     doubtsJson = '{"doubts":['
     for doubt in currentClass.doubts:
         doubtsJson += doubt[1].JSON() + ','
-    doubtsJson = doubtsJson[:-1]                                    # Remove last comma
+    if (len(currentClass.doubts) > 0):
+        doubtsJson = doubtsJson[:-1]                                    # Remove last comma
     doubtsJson += "]}"
 
     room = su.get_ownRoom(session)                                  # Who asked for doubts
@@ -188,4 +193,5 @@ def handle_answerPost(doubtId, answer):
 
     answerJson = '{"doubtid":' + str(doubtId) + ',' +\
                  '"text":"' + answer + '"}'
-    socketio.emit('new_answer', answerJson, broadcast=True)
+    room = su.get_classRoom(session)
+    socketio.emit('new_answer', answerJson, room=room)
