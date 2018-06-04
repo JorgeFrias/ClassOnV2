@@ -114,14 +114,6 @@ def assigmentsTupleList(id_professor):
 
     return assigments
 
-''' Socket.io'''
-@socketio.on('updateCredentials')
-def handle_connection():
-    selectedRunningClass = runningClasses[su.get_class_id(session)]
-    su.set_classRoom(session, selectedRunningClass.id)
-    su.set_ownRoom(session, request.sid)
-    join_room(selectedRunningClass.id)
-
 @professor.route('/create_classroom', methods=['GET', 'POST'])
 @is_logged_in_professor
 def createClassroom():
@@ -162,14 +154,19 @@ def classroom():
     return render_template('classroomMap.html', rows=rows, columns=columns)
 
 ''' Socket.io '''
-@socketio.on('connection')
-def handle_myEvent(json):
-    print('received message: ' + str(json))
+''' Socket.io'''
+@socketio.on('updateCredentials')
+def handle_connection():
+    selectedRunningClass = runningClasses[su.get_class_id(session)]
+    su.set_classRoom(session, selectedRunningClass.id)
+    su.set_ownRoom(session, request.sid)
+    join_room(selectedRunningClass.id)
 
 @socketio.on('classroom_query')
 def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
 
+    # $$$$ Move this JSON builders to class JSON
     stateJson = '{"groups":['
     for key, group in currentClass.studentGroups.items():
         stateJson += group.JSON() + ','
@@ -184,4 +181,5 @@ def hadle_queryDoubts():
         stateJson = stateJson[:-1]                              # Remove last comma
     stateJson += "]}"
 
-    socketio.emit('classroom_query_result', stateJson)
+    room = su.get_ownRoom(session)
+    socketio.emit('classroom_query_result', stateJson, room=room)

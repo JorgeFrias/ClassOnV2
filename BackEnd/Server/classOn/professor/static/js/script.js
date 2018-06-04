@@ -45,17 +45,41 @@ socket.on('doubt_new', function(doubtJson){
     appendDoubt(doubt);
 });
 
-function appendDoubt( doubt ) {
+// Add a doubt to the HTML
+function appendDoubt( doubtJson )
+{
     let doubts = $("#doubts");                      // Locate doubts container
-    const newDoubtHTML = '<div class=\"list-group-item flex-column align-items-start\" id=\"doubt_' + doubt.db_id + '\">' +
-                         '<p class =\"mb-1\">' +
-                         doubt.text +
-                         '</p>' +
-                         '<div>' +
-                         '<span class=\"badge badge-info\">' + doubt.section + '</span>' +
-                         '<button type=\"button\" class=\"btn btn-primary float-right\">Solve doubt</button>' +
-                         '<div><div>';
+    const newDoubtHTML = 
+    '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
+        '<div class="card-body">' +
+            '<span class="badge badge-info">Section: ' + doubtJson.section + '</span>' + 
+            '<p class="card-text">' + doubtJson.text + '</p>' + 
+        '</div>' + 
+        '<ul class="list-group list-group-flush">' +
+            // '<li class="list-group-item list-group-item-secondary">Cras justo odio</li>' +        
+        '</ul>' +
+        '<div class="card-body">' +
+            '<button type=\"button\" class=\"btn btn-primary float-right\"' +
+            ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
+            'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
+        '</div>' +
+    '</div>' +
+    '<br>'
     doubts.append(newDoubtHTML);
+}
+
+socket.on('new_answer', function(anwserJson)
+{
+    var answer = JSON.parse(anwserJson);
+    var doubtId = answer.doubtid;
+    var text = answer.text;
+    appendAnswer(doubtId, text);
+})
+
+function appendAnswer(doubtId, anwser)
+{
+    var li = '<li class="list-group-item list-group-item-secondary">'+ anwser +'</li>';        
+    $('#doubt_' + doubtId + '> ul').append(li);
 }
 
 function jq( myid ) {
