@@ -15,6 +15,7 @@ $(document).ready(function() {
         var doubtText = $(doubtSelector +' >p').text();
         modal.find(".modal-body #modal_doubt_text").text(doubtText);
     });
+    $("#doubt").submit(doubt_click);
 }); 
 
 /* Functions */
@@ -58,17 +59,21 @@ function appendDoubt( doubtJson )
 
 
 // Generated new doubt --> upload to server
-function doubt_click(text)
+function doubt_click(event)
 {
-    socket.emit('doubt_post', text);
+    var text = $.trim($("#doubtText").val());
+    if (text != "")
+    {
+        socket.emit('doubt_post', text);
 
-    // Give a lille time to the server
-    var delayInMilliseconds = 10; //0.01 second
-    setTimeout(function() {
-      //your code to be executed after 0.01 second
-    }, delayInMilliseconds);
-
-    queryDoubts();
+        // Give a lille time to the server
+        var delayInMilliseconds = 10; //0.01 second
+        setTimeout(function() {
+            //your code to be executed after 0.01 second
+        }, delayInMilliseconds);
+        
+        queryDoubts();        
+    }
 }
 
 // Ask for doubts
@@ -101,10 +106,10 @@ socket.on('doubt_new', function(doubt)
     appendDoubt(doubtJson);
 });
 // Doubts query result
-socket.on('doubt_query_result', function(doubts)
+socket.on('doubt_query_result', function(doubtsJson)
 {
-    var doubtsJson = JSON.parse(doubts);
-    var doubts = doubtsJson.doubts;
+    var result = JSON.parse(doubtsJson);
+    var doubts = result.doubts;
 
     for(var i in doubts)
     {

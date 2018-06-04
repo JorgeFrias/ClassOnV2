@@ -1,4 +1,4 @@
-from dataStructures import Assigment, Section, Professor, Student, Doubt, StudentGroup
+from dataStructures import Assigment, Section, Professor, Student, Doubt, StudentGroup, DoubtAnswer
 
 ''' MySQL import '''
 from classOn import mysql
@@ -185,6 +185,8 @@ def getDoubt(id):
         tmpSection = getSection(data['section'])
         tmpDoubt = Doubt(data['text'], tmpSection, data['time'])
         tmpDoubt.db_id = data['id']
+        answers = answersFromDoubt(id)      # Fetch answers
+        tmpDoubt.answers = answers
     else:
         raise RuntimeError('No doubt with id: ' + str(id))
         pass
@@ -196,6 +198,17 @@ def fulfillDoubtInfo(doubt : Doubt):
     id = doubt.db_id
     tempDoubt = getDoubt(id)
     doubt._postTime = tempDoubt._postTime
+
+def answersFromDoubt(doubt_db_id):
+    # Get answers from db
+    answers = []
+    cur = mysql.connection.cursor()
+    result = cur.execute('SELECT * FROM answers WHERE doubt = %s', [doubt_db_id])
+    if result > 0:
+        for row in cur:
+            answers.append(DoubtAnswer(row['id'],row['text']))
+
+    return answers
 
 def answerDoubt(doubt : Doubt, text : str, resolver):
     cur = mysql.connection.cursor()

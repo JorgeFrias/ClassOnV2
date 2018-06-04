@@ -1,15 +1,15 @@
 <div>
     <!--Add server doubts as colum-->
     {% from "includes/_formhelpers.html" import render_field %}
-    <form action="" method="POST">
+    <form id="doubt" action="" method="POST">
         <div class="form-group">
             <!--<label for="comment">New doubt:</label>-->
-
             <div class="form-group">
-                {{render_field(form.text, class_="form-control")}}
+                <textarea class="form-control" id="doubtText" rows="4"></textarea>
+                <!-- {{render_field(form.text, class_="form-control")}} -->
             </div>
             <!--<textarea class="form-control" rows="5" id="comment"></textarea>-->
-            <button type="submit" class="btn btn-warning float-right">Post doubt</button>
+            <button type="submit" class="btn btn-warning float-right" id="doubtPost">Post doubt</button>
         </div>
     </form>
 </div>

@@ -83,78 +83,6 @@ class Professor():
         self.email = email
         self.passwordHash = passwordHash
 
-class Classroom:
-
-    def __init__(self, classSize : (int,int), professor : Professor, assigment : Assigment, room =''):
-        self.classSize = classSize
-        self.professor = professor
-        self.assigment = assigment
-        self.studentGroups = dict()             # Groups in class
-        self.doubts = []
-        self.doubtsSolved = []
-        self.__doubtsIdCounter = 0
-        self.room = room
-
-    def newDoubtID(self) -> int:
-        self.__doubtsIdCounter += 1
-        return self.__doubtsIdCounter
-
-    def resolDoubt(self, id : int):
-        for tupleDoubt in self.doubts:
-            if(tupleDoubt[0] == id):
-                # Resolve doubt
-                tupleDoubt[1].solveDoubt(id)
-                self.doubtsSolved.append(tupleDoubt)
-                self.doubtsSolved.remove(tupleDoubt)
-                break
-
-    def addStudentToPlace(self, student :Student, place : (int, int)):
-        '''
-        Adds an student to a given place in the classroom, if there is a group already assign the student to the
-        group, if not crates the group.
-        :param student:
-        :param place:
-        :return: The group object the student belongs to.
-        '''
-        added = False
-        for group_id, group in self.studentGroups.items():                    # Check if is a group for the desired place
-            tmpPlace = group.positionInClass
-            if tmpPlace == place:
-                added = True
-                # group.students.append(student)            # Add student to
-                group.addStudent(student)
-                return group
-
-        if added == False:                                  # There is no group, create with one student
-            tmpGroup = StudentGroup([student], place)
-            self.studentGroups[tmpGroup.groupID] = tmpGroup         # Add group to global object
-            return tmpGroup
-
-    def filledPlaces(self):
-        rows = self.classSize[0]
-        cols = self.classSize[1]
-        result = []
-        for id, group in self.studentGroups.items():
-            result.append(group.positionInClass)
-        return result
-
-    def filledPlacesStrList(self):
-        rows = self.classSize[0]
-        cols = self.classSize[1]
-        result = []
-        for id, group in self.studentGroups.items():
-            result.append(str(group.positionInClass[0]) + '_' + str(group.positionInClass[1]))
-        return result
-
-    def filledPlacesJSON(self):
-        result = '{ \n'
-        filledPlacesList = self.filledPlaces()
-        for place in filledPlacesList:
-            result += str(place[0]) + '_' + str(place[1]) + ',\n'
-        result = result[:-2]                    # Remove ',\n'
-        result += '\n}'
-        return result
-
 class StudentGroup:
     def __init__(self, students : [Student], position : (int, int) = (0, 0)):
         self.students = students
@@ -204,18 +132,14 @@ class StudentGroup:
 class Doubt:
 
     'Defines a group\'s doubt'
-    def __init__(self, doubtText, section : Section, studentGroup : StudentGroup, postToDB = True, answerText = ''):
+    def __init__(self, doubtText, section : Section, studentGroup : StudentGroup, postToDB = True):
         self.db_id = -1
         self.doubtText = doubtText
         self._section = section
         self._postTime = 0
         self._studentGroup = studentGroup
         self.postTime = 0
-        self.answerText = answerText
-        if (answerText is ''):
-            self._answered = False
-        else:
-            self._answered = True
+        self.answers = []
 
     def JSON(self):
         result = '{\n'
@@ -223,7 +147,14 @@ class Doubt:
         result += '\"text\":\"' + self.doubtText.strip().replace('\n', '\\n').replace('\r', '') + '\", \n'
         result += '\"section\":\"' + str(self._section.order) + '\", \n'
         result += '\"postTime\":\"' + str(self._postTime) + '\", \n'
-        result += '\"group\":\"' + self._studentGroup.positionInClass_str() + '\" \n'
+        result += '\"group\":\"' + self._studentGroup.positionInClass_str() + '\", \n'
+        # Add all answers
+        result += '\"answers\": [ \n'
+        for answ in self.answers:
+            result += answ.JSON() + ',\n'
+        if len(self.answers) > 0:
+            result = result[:-2]                    # Remove last comma
+        result += ']  \n'                           # Close list
         result += '}'
         return result
 
@@ -231,16 +162,95 @@ class Doubt:
         from classOn import DBUtils
         DBUtils.putDoubt(self, self._studentGroup)
 
-    def set_Answer(self, answerText, resolver, postToDB = True):
+    def add_Answer(self, answerText, resolver, postToDB = True):
         from classOn import DBUtils
-
         self._answerText = answerText
-        self._answered = True
-
+        db_id = -1
         if postToDB:
-            DBUtils.answerDoubt(self, resolver)
+            db_id = DBUtils.answerDoubt(self, answerText, resolver)
+        answ = DoubtAnswer(db_id, answerText)
+        self.answers.append(answ)
 
     def _set_UnanseredTime(self):
         'Calculates the difference between post time and now'
         self._unanswerdTime = time.time() - self._postTime
 
+class DoubtAnswer:
+    def __init__(self, db_id = -1, text = ''):
+        self.db_id = db_id
+        self.text = text
+
+    def JSON(self):
+        result = '{\n'
+        result += '\"db_id\":\"' + str(self.db_id) + '\", \n'
+        result += '\"text\":\"' + str(self.text) + '\" \n'
+        result += '}'
+        return result
+
+
+class Classroom:
+
+    def __init__(self, classSize: (int, int), professor: Professor, assigment: Assigment, room=''):
+        self.classSize = classSize
+        self.professor = professor
+        self.assigment = assigment
+        self.studentGroups = dict()  # Groups in class
+        self.doubts = []
+        self.doubtsSolved = []
+        self.__doubtsIdCounter = 0
+        self.room = room
+
+    def addDoubt(self, doubt: Doubt):
+        tupleDoubt = (doubt.db_id, doubt)
+        self.doubts.append(tupleDoubt)
+
+    def getDoubt(self, doubt_id):
+        doubt = [doubt for doubt in self.doubts if doubt[0] == doubt_id]
+        return doubt[0]             # Should be just once
+
+    def addStudentToPlace(self, student: Student, place: (int, int)):
+        '''
+        Adds an student to a given place in the classroom, if there is a group already assign the student to the
+        group, if not crates the group.
+        :param student:
+        :param place:
+        :return: The group object the student belongs to.
+        '''
+        added = False
+        for group_id, group in self.studentGroups.items():  # Check if is a group for the desired place
+            tmpPlace = group.positionInClass
+            if tmpPlace == place:
+                added = True
+                # group.students.append(student)            # Add student to
+                group.addStudent(student)
+                return group
+
+        if added == False:  # There is no group, create with one student
+            tmpGroup = StudentGroup([student], place)
+            self.studentGroups[tmpGroup.groupID] = tmpGroup  # Add group to global object
+            return tmpGroup
+
+    def filledPlaces(self):
+        rows = self.classSize[0]
+        cols = self.classSize[1]
+        result = []
+        for id, group in self.studentGroups.items():
+            result.append(group.positionInClass)
+        return result
+
+    def filledPlacesStrList(self):
+        rows = self.classSize[0]
+        cols = self.classSize[1]
+        result = []
+        for id, group in self.studentGroups.items():
+            result.append(str(group.positionInClass[0]) + '_' + str(group.positionInClass[1]))
+        return result
+
+    def filledPlacesJSON(self):
+        result = '{ \n'
+        filledPlacesList = self.filledPlaces()
+        for place in filledPlacesList:
+            result += str(place[0]) + '_' + str(place[1]) + ',\n'
+        result = result[:-2]  # Remove ',\n'
+        result += '\n}'
+        return result

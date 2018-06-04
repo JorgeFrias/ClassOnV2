@@ -66,19 +66,19 @@ def assigmentByID(id, page):
 
     ## DOUBT ###
     ### $$$$ Falla porque recarga la página. hay que hacer esto sin recargarla.
-    if (request.method == 'POST' and form.validate()):
-
-        doubtText = form['text'].data
-        form['text'].data = ''                              # Clear
-        doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
-        doubt.postToDB()
-        currentClass.doubts.append(doubt)
-        currentGroup.doubts.append(doubt)
-
-        flash('Doubt sent', 'success')
-
-        # Notify to Professor and Students
-        handle_newDoubt(doubt)
+    # if (request.method == 'POST' and form.validate()):
+    #
+    #     doubtText = form['text'].data
+    #     form['text'].data = ''                              # Clear
+    #     doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
+    #     doubt.postToDB()
+    #     currentClass.doubts.append(doubt)
+    #     currentGroup.doubts.append(doubt)
+    #
+    #     flash('Doubt sent', 'success')
+    #
+    #     # Notify to Professor and Students
+    #     handle_newDoubt(doubt)
 
 
     if assigment is None:
@@ -141,16 +141,13 @@ def handle_newDoubt(doubt : Doubt):
     '''
     socketio.emit('doubt_new', doubt.JSON(), broadcast=True)
 
-# @socketio.on('doubt_post')
+@socketio.on('doubt_post')
 def handle_postDoubt(text):
     '''
     New doubt from a student. Stores the doubt in the system and send it to all other students
     :param text:
     :return:
     '''
-    # Doesn't know which student sent the doubt.
-
-    assigment = DBUtils.getAssigment(id)                    # Get requested assigment (db_id -> id)
     currentClass = runningClasses[su.get_class_id(session)]
     currentGroup = currentClass.studentGroups[su.get_grupo_id(session)]
     page_no = currentGroup.assigmentProgress
@@ -158,7 +155,7 @@ def handle_postDoubt(text):
     doubtText = text
     doubt = Doubt(doubtText, currentClass.assigment.sections[page_no - 1], currentGroup)
     doubt.postToDB()
-    currentClass.doubts.append(doubt)
+    currentClass.addDoubt(doubt)
     currentGroup.doubts.append(doubt)
 
     flash('Doubt sent', 'success')
@@ -171,20 +168,25 @@ def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
     doubtsJson = '{"doubts":['
     for doubt in currentClass.doubts:
-        doubtsJson += doubt.JSON() + ','
+        doubtsJson += doubt[1].JSON() + ','
     doubtsJson = doubtsJson[:-1]                                    # Remove last comma
     doubtsJson += "]}"
 
     socketio.emit('doubt_query_result', doubtsJson)
+    print('Doubt query')
 
 @socketio.on('answer_post')
 def handle_answerPost(doubtId, answer):
-    solvedDoubt = DBUtils.getDoubt(int(doubtId))
-    # solvedDoubt.answerText is not used
     # $$$$ Professors are not supported to solve doubts
+    currentClass = runningClasses[su.get_class_id(session)]
+    solvedDoubt = currentClass.getDoubt(doubtId)                    # We are using variables in memory
+    # solvedDoubt = DBUtils.getDoubt(int(doubtId))
     solver = DBUtils.getStudentBy_id(su.get_student_id(session))    # Student solver
 
-    DBUtils.answerDoubt(solvedDoubt, answer, solver)
+    # Update memory currentClass.doubts
+    solvedDoubt.add_Answer(answer, solver)                          # Do not use DBUtils.
+    # DBUtils.answerDoubt(solvedDoubt, answer, solver)
+
     answerJson = '{"doubtid":' + str(doubtId) + ',' +\
                  '"text":"' + answer + '"}'
     socketio.emit('new_answer', answerJson, broadcast=True)
