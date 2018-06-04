@@ -114,6 +114,10 @@ socket.on('doubt_query_result', function(doubtsJson)
     for(var i in doubts)
     {
         appendDoubt(doubts[i]);
+        for(var j in doubts[i].answers)
+        {
+            appendAnswer(doubts[i].db_id, doubts[i].answers[j].text);
+        }
     }
 })
 

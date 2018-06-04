@@ -206,7 +206,7 @@ class Classroom:
 
     def getDoubt(self, doubt_id):
         doubt = [doubt for doubt in self.doubts if doubt[0] == doubt_id]
-        return doubt[0]             # Should be just once
+        return doubt[0][1]             # Should be just once
 
     def addStudentToPlace(self, student: Student, place: (int, int)):
         '''
