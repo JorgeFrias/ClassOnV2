@@ -8,10 +8,21 @@
 </head>
 <body>
     {% include '/includes/_navbar.html' %}
-    <div class="container">
-        <br>
-        {% include 'includes/_messages.html' %}
-        {% block body %}{% endblock %}
-    </div>
+    <main role="main" class="container">
+        <div >
+            <br>
+            {% include 'includes/_messages.html' %}
+            {% block body %}{% endblock %}
+        </div>
+    </main>
+    <footer class="footer bg-secondary">
+        <div class="container ">
+            <div class="row text-muted">
+                <div>
+                    <a href="https://github.com/JorgeFrias/ClassOnV2" role="button" class="btn btn-secondary" aria-pressed="true">Check the project on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
