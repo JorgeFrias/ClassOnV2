@@ -23,18 +23,6 @@ $(document).ready(function() {
 function appendDoubt( doubtJson )
 {
     let doubts = $("#doubts");                      // Locate doubts container
-    // const newDoubtHTML = '<div class=\"list-group-item flex-column align-items-start\" id=\"doubt_' + doubtJson.db_id + '\">' +
-    //                     '<span class=\"badge badge-info\"> Section: ' + doubtJson.section + '</span>' +
-    //                     '<p class =\"mb-1\">' +
-    //                      doubtJson.text +
-    //                      '</p>' +
-    //                      '<div>' +
-    //                      '<button type=\"button\" class=\"btn btn-primary float-right\"' +
-    //                      ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
-    //                      'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +
-    //                      '</div></div>';
-    // doubts.append(newDoubtHTML);
-
     const newDoubtHTML = 
     '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
         '<div class="card-body">' +
@@ -56,8 +44,6 @@ function appendDoubt( doubtJson )
 
 /* Socket.io */
 /** Emits  **/
-
-
 // Generated new doubt --> upload to server
 function doubt_click(event)
 {
@@ -102,7 +88,7 @@ function answerDoubt(event)
 // New doubt from server
 socket.on('doubt_new', function(doubt)
 {
-    var doubtJson = JSON.parse(doubt);              // To JSON
+    var doubtJson = JSON.parse(doubt);                  // To JSON
     appendDoubt(doubtJson);
 });
 // Doubts query result
