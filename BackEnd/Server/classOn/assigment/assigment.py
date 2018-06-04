@@ -8,7 +8,7 @@ from classOn import DBUtils
 from classOn import sessionUtils as su
 from classOn.assigment import forms
 from classOn import sessionUtils as su
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 
 '''Register blueprint'''
 assigment = Blueprint('assigment',
@@ -116,6 +116,12 @@ def assigmentByID(id, page):
             flash('No sections in current assigment', 'danger')
 
 ''' SOCKET.IO '''
+@socketio.on('updateCredentials')
+def handle_connection():
+    selectedRunningClass = runningClasses[su.get_class_id(session)]
+    su.set_classRoom(session, selectedRunningClass.socketRoom)
+    su.set_ownRoom(session, request.sid)
+
 def updateGroupAssigmentProgress(groupID, progress):
     '''
     Updates the assigment progress to all the interested.
@@ -131,15 +137,6 @@ def updateGroupAssigmentProgress(groupID, progress):
 
 def handle_assigmentChangePage(group : StudentGroup):
     socketio.emit('assigment_changeProgress', group.JSON(), broadcast=True)
-
-def handle_newDoubt(doubt : Doubt):
-    '''
-    Emits a doubt to all other students.
-    NOTE: because of broadcast function the doubt goes to all students, no matter which session they are rolled in.
-    :param doubt:
-    :return:
-    '''
-    socketio.emit('doubt_new', doubt.JSON(), broadcast=True)
 
 @socketio.on('doubt_post')
 def handle_postDoubt(text):
@@ -161,7 +158,7 @@ def handle_postDoubt(text):
     flash('Doubt sent', 'success')
 
     # Notify to Professor and Students
-    handle_newDoubt(doubt)
+    socketio.emit('doubt_new', doubt.JSON(), broadcast=True)
 
 @socketio.on('doubt_query')
 def hadle_queryDoubts():
@@ -172,8 +169,10 @@ def hadle_queryDoubts():
     doubtsJson = doubtsJson[:-1]                                    # Remove last comma
     doubtsJson += "]}"
 
-    socketio.emit('doubt_query_result', doubtsJson)
-    print('Doubt query')
+    room = su.get_ownRoom(session)                                  # Who asked for doubts
+
+    print('Doubt query to: ' + room)
+    socketio.emit('doubt_query_result', doubtsJson, room=room)
 
 @socketio.on('answer_post')
 def handle_answerPost(doubtId, answer):

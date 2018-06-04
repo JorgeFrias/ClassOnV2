@@ -3,6 +3,7 @@ var doubtId = 0;
 
 /* Plain JS Code */
 $(document).ready(function() {
+    socket.emit('updateCredentials');
     queryDoubts();
     $("#btn_answer").click (answerDoubt);
     $('#modal_answer').on('show.bs.modal', function (event) {

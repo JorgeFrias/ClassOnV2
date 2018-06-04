@@ -5,12 +5,6 @@ import uuid
 
 class Student:
     'Represents a student'
-    name = ''
-    lastName = ''
-    secondLastName = ''
-    NIA = ''
-    picture : Image
-
     def __init__(self, db_id, nia, name, lastName, seccondLastName = '', email = '', passwordHash = '', pictureSrc = ''):
         self.db_id = db_id
         self.NIA = nia
@@ -19,6 +13,7 @@ class Student:
         self.email = email
         self.passwordHash = passwordHash
         self.secondLastName = seccondLastName
+        self.socketRoom = str(uuid.uuid4())
 
         if (pictureSrc is not ''):
             try:
@@ -199,6 +194,7 @@ class Classroom:
         self.doubtsSolved = []
         self.__doubtsIdCounter = 0
         self.room = room
+        self.socketRoom = ''
 
     def addDoubt(self, doubt: Doubt):
         tupleDoubt = (doubt.db_id, doubt)

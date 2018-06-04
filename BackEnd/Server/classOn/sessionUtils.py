@@ -69,7 +69,20 @@ def get_page(session: session):
 def set_page(session: session, page):
     session['page'] = page
 
-def set_socketioConected(bool : bool):
+''' Socket.io '''
+def set_socketioConected(session: session, bool : bool):
     session['socket_io'] = bool
-def get_socketioConected():
+def get_socketioConected(session: session):
     return session['socket_io']
+
+def set_ownRoom(session: session, room : str):
+    session['socket_io_own_room'] = room
+
+def get_ownRoom(session: session):
+    return session['socket_io_own_room']
+
+def set_classRoom(session: session, room : str):
+    session['socket_io_class_room'] = room
+
+def get_classRoom(session: session):
+    return session['socket_io_class_room']
