@@ -8,9 +8,10 @@
       <div class="progress-bar" style="width:{{ progress }}%"></div>
     </div>
 
-    <div class="row">
+    <!-- <div class="row"> -->
+        <div>
         <!--Assigment column-->
-        <div class="col">
+        <!-- <div class="col"> -->
             <h2>{{ section.name }}</h2>
             <p>
                 {{ section.text }}
@@ -42,7 +43,9 @@
             </ul>
         </div>
         <!--Doubts column-->
-        <div class="col">
+        <!-- <div class="col"> -->
+        <div>
+            <hr class="my-4">
             <h2>Doubts</h2>
             <!--Doubts container-->
             <div class="list-group" id="doubts">
@@ -61,13 +64,15 @@
                     </div>
                 </div>
                 <br> -->
-
             </div>
         </div>
+        <hr class="my-4">
+        <h3>Post a new doubt</h3>
+        {% include "doubt.html" %}
+        <hr class="my-4">
     </div>
 
-    <hr class="my-4">
-    {% include "doubt.html" %}
+
 
     {% include "modal.html" %}
 
