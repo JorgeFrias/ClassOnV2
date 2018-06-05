@@ -167,12 +167,14 @@ def handle_postDoubt(text):
 @socketio.on('doubt_query')
 def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
-    doubtsJson = '{"doubts":['
-    for doubt in currentClass.doubts:
-        doubtsJson += doubt[1].JSON() + ','
-    if (len(currentClass.doubts) > 0):
-        doubtsJson = doubtsJson[:-1]                                    # Remove last comma
-    doubtsJson += "]}"
+    # doubtsJson = '{"doubts":['
+    # for doubt in currentClass.doubts:
+    #     doubtsJson += doubt[1].JSON() + ','
+    # if (len(currentClass.doubts) > 0):
+    #     doubtsJson = doubtsJson[:-1]                                    # Remove last comma
+    # doubtsJson += "]}"
+
+    doubtsJson = currentClass.JSON()
 
     room = su.get_ownRoom(session)                                  # Who asked for doubts
 

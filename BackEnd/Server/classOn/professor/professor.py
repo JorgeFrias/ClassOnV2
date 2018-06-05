@@ -92,7 +92,6 @@ def addSections():
 
     ### Fetch info to render ###
     order_in_assigment = su.get_orderInAssigment(session) + 1                   # Do not update here because user can reload the page
-
     sections = DBUtils.getSections(su.get_assigment_id(session))                # Get sections
     tmpAssigment = dataStructures.Assigment(sections)                           # Create a temporal
     dicSections = tmpAssigment.sections_dict()                                  # Create dict from temporal to render later
@@ -166,20 +165,7 @@ def handle_connection():
 def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
 
-    # $$$$ Move this JSON builders to class JSON
-    stateJson = '{"groups":['
-    for key, group in currentClass.studentGroups.items():
-        stateJson += group.JSON() + ','
-    if stateJson.endswith(','):                                 # If there is an ending comma
-        stateJson = stateJson[:-1]                              # Remove last comma
-    stateJson += "],\n"
-
-    stateJson += '"doubts":['
-    for doubt in currentClass.doubts:
-        stateJson += doubt.JSON() + ','
-    if stateJson.endswith(','):                                 # If there is an ending comma
-        stateJson = stateJson[:-1]                              # Remove last comma
-    stateJson += "]}"
+    stateJson = currentClass.JSON()
 
     room = su.get_ownRoom(session)
     socketio.emit('classroom_query_result', stateJson, room=room)

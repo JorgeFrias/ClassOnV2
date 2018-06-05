@@ -14,7 +14,6 @@ class Student:
         self.passwordHash = passwordHash
         self.secondLastName = seccondLastName
 
-
         if (pictureSrc is not ''):
             try:
                 self.picture = Image.open(pictureSrc)
@@ -59,8 +58,8 @@ class Assigment:
     'Defines an assigment'
     def __init__(self, sections : Sequence[Section], course : Course = None, name : str = '', db_id = 0):
         self.name = name
-        self.sections = sections            # : List[Sections]
-        self.course = course                # : String
+        self.sections = sections                            # : List[Sections]
+        self.course = course                                # : String
         self.db_id = db_id
 
     def sections_dict(self):
@@ -87,7 +86,7 @@ class StudentGroup:
         self.doubts = []
         self.doubtsSolved = []
         self.unansweredDoubt = False
-        self.groupID = str(uuid.uuid4())        # Generates an ID
+        self.groupID = str(uuid.uuid4())                    # Generates an ID
 
     def JSON(self):
         result = '{\n'
@@ -97,7 +96,7 @@ class StudentGroup:
         result += '\"students\": [ \n'
         for student in self.students:
             result += student.JSON() + ','
-        result = result[:-1]                    # Remove last comma
+        result = result[:-1]                                # Remove last comma
         result += ' ] \n'
         result += '}'
 
@@ -148,8 +147,8 @@ class Doubt:
         for answ in self.answers:
             result += answ.JSON() + ',\n'
         if len(self.answers) > 0:
-            result = result[:-2]                    # Remove last comma
-        result += ']  \n'                           # Close list
+            result = result[:-2]                            # Remove last comma
+        result += ']  \n'                                   # Close list
         result += '}'
         return result
 
@@ -182,19 +181,34 @@ class DoubtAnswer:
         result += '}'
         return result
 
-
 class Classroom:
-
     def __init__(self, classSize: (int, int), professor: Professor, assigment: Assigment, room=''):
         self.id = str(uuid.uuid4())
         self.classSize = classSize
         self.professor = professor
         self.assigment = assigment
-        self.studentGroups = dict()  # Groups in class
+        self.studentGroups = dict()                         # Groups in class
         self.doubts = []
         self.doubtsSolved = []
         self.__doubtsIdCounter = 0
         self.room = room
+
+    def JSON(self):
+        stateJson = '{"groups":['
+        for key, group in self.studentGroups.items():
+            stateJson += group.JSON() + ','
+        if stateJson.endswith(','):                         # If there is an ending comma
+            stateJson = stateJson[:-1]                      # Remove last comma
+        stateJson += "],\n"
+
+        stateJson += '"doubts":['
+        for doubt in self.doubts:
+            stateJson += doubt[1].JSON() + ','
+        if stateJson.endswith(','):                         # If there is an ending comma
+            stateJson = stateJson[:-1]                      # Remove last comma
+        stateJson += "]}"
+
+        return stateJson
 
     def addDoubt(self, doubt: Doubt):
         tupleDoubt = (doubt.db_id, doubt)
@@ -221,9 +235,9 @@ class Classroom:
                 group.addStudent(student)
                 return group
 
-        if added == False:  # There is no group, create with one student
+        if added == False:                                  # There is no group, create with one student
             tmpGroup = StudentGroup([student], place)
-            self.studentGroups[tmpGroup.groupID] = tmpGroup  # Add group to global object
+            self.studentGroups[tmpGroup.groupID] = tmpGroup # Add group to global object
             return tmpGroup
 
     def filledPlaces(self):
@@ -247,6 +261,6 @@ class Classroom:
         filledPlacesList = self.filledPlaces()
         for place in filledPlacesList:
             result += str(place[0]) + '_' + str(place[1]) + ',\n'
-        result = result[:-2]  # Remove ',\n'
+        result = result[:-2]                                # Remove ',\n'
         result += '\n}'
         return result

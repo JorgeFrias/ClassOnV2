@@ -12,9 +12,9 @@ def putStudent(name, lastName, lastNameSecond, nia, email, password):
         "INSERT INTO students(name, last_name, last_name_second, NIA, email, password) VALUES(%s, %s, %s, %s, %s, %s)",
         (name, lastName, lastNameSecond, nia, email, password))
 
-    mysql.connection.commit()       # Commit to DB
-    id = cur.lastrowid              # DB row id
-    cur.close()                     # Close connection
+    mysql.connection.commit()                               # Commit to DB
+    id = cur.lastrowid                                      # DB row id
+    cur.close()                                             # Close connection
     return id
 
 def putProfessor(name, lastName, lastNameSecond, email, password):
@@ -26,9 +26,9 @@ def putProfessor(name, lastName, lastNameSecond, email, password):
         "INSERT INTO professors(name, last_name, last_name_second, email, password) VALUES(%s, %s, %s, %s, %s)",
         (name, lastName, lastNameSecond, email, password))
 
-    mysql.connection.commit()       # Commit to DB
-    id = cur.lastrowid              # DB row id
-    cur.close()                     # Close connection
+    mysql.connection.commit()                               # Commit to DB
+    id = cur.lastrowid                                      # DB row id
+    cur.close()                                             # Close connection
     return id
 
 def getProfessor(id):
@@ -36,7 +36,7 @@ def getProfessor(id):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM professors WHERE id = %s', [id])
     if result > 0:
-        data = cur.fetchone()  # Fetches the first one "should be just one"
+        data = cur.fetchone()                               # Fetches the first one "should be just one"
         professor = Professor(id, data['name'], data['last_name'], data['last_name_second'], data['email'])
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
@@ -50,7 +50,7 @@ def getStudentBy_id(id):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM students WHERE id = %s', [id])
     if result > 0:
-        data = cur.fetchone()  # Fetches the first one "should be just one"
+        data = cur.fetchone()                               # Fetches the first one "should be just one"
         student = Student(id, data['NIA'], data['name'], data['last_name'],
                           data['last_name_second'], data['email'], data['password'])
     else:
@@ -65,7 +65,7 @@ def getStudentBy_email(email):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM students WHERE email = %s', [email])
     if result > 0:
-        data = cur.fetchone()   # Fetches the first one "should be just one"
+        data = cur.fetchone()                               # Fetches the first one "should be just one"
         student = Student(data['id'], data['NIA'], data['name'], data['last_name'],
                           data['last_name_second'], data['email'], data['password'])
     else:
@@ -80,7 +80,7 @@ def getProfessorBy_email(email):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM professors WHERE email = %s', [email])
     if result > 0:
-        data = cur.fetchone()  # Fetches the first one "should be just one"
+        data = cur.fetchone()                               # Fetches the first one "should be just one"
         student = Professor(data['id'], data['name'], data['last_name'],
                             data['last_name_second'], data['email'], data['password'])
     else:
@@ -95,7 +95,7 @@ def getAssigment(id):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM assigments WHERE id = %s', [id])
     if result > 0:
-        data = cur.fetchone()  # Fetches the first one "should be just one"
+        data = cur.fetchone()                               # Fetches the first one "should be just one"
 
         ### Create assigment object ###
         sections = getSections(data['id'])                                          # First we need to fetch the sections
@@ -110,14 +110,12 @@ def getAssigment(id):
 def getSections(assigment_id):
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM sections WHERE id_assigment = %s', [assigment_id])
-
     sections = []
 
     if result > 0:
         # Using the cursor as iterator
         for row in cur:
             tmpSection = Section(row['id'], row['name'], row['order_in_assigment'], row['text'],)
-            # assigments[row['id']] = row['name']
             sections.append(tmpSection)
 
     cur.close()
@@ -137,7 +135,7 @@ def putSection(id_assigment, order_in_assigment, name, text):
     cur.execute(
         "INSERT INTO sections(id_assigment, order_in_assigment, name, text) VALUES(%s, %s, %s, %s)",
         (id_assigment, order_in_assigment, name, text))
-    mysql.connection.commit()               # Commit to DB
+    mysql.connection.commit()                               # Commit to DB
     id = cur.lastrowid
 
     cur.close()
@@ -149,10 +147,10 @@ def putAssigment(course, name, id_professor):
     cur.execute(
         "INSERT INTO assigments(name, course, id_professor) VALUES(%s, %s, %s)",
         (name, course, id_professor))
-    mysql.connection.commit()               # Commit to DB
+    mysql.connection.commit()                               # Commit to DB
     id = cur.lastrowid
 
-    cur.close()                             # Close connection
+    cur.close()                                             # Close connection
     return id
 
 def putDoubt(doubt : Doubt, studentGroup : StudentGroup):
@@ -162,7 +160,7 @@ def putDoubt(doubt : Doubt, studentGroup : StudentGroup):
     cur.execute(
         "INSERT INTO doubts(text, section) VALUES(%s, %s)",
         (doubt.doubtText, doubt._section.db_id))
-    mysql.connection.commit()               # Commit to DB
+    mysql.connection.commit()                               # Commit to DB
     doubt.db_id = cur.lastrowid
     fulfillDoubtInfo(doubt)
 
@@ -171,21 +169,21 @@ def putDoubt(doubt : Doubt, studentGroup : StudentGroup):
         cur.execute(
             "INSERT INTO doubt_student(doubt, student) VALUES(%s, %s)",
             (doubt.db_id, student.db_id))
-        mysql.connection.commit()           # Commit to DB
+        mysql.connection.commit()                           # Commit to DB
 
-    cur.close()                             # Close connection
+    cur.close()                                             # Close connection
 
 def getDoubt(id):
     tmpDoubt = None
     cur = mysql.connection.cursor()
     result = cur.execute('SELECT * FROM doubts WHERE id = %s', [id])
     if result > 0:
-        data = cur.fetchone()               # Fetches the first one "should be just one"
+        data = cur.fetchone()                               # Fetches the first one "should be just one"
         ### Complete doubt object ###
         tmpSection = getSection(data['section'])
         tmpDoubt = Doubt(data['text'], tmpSection, data['time'])
         tmpDoubt.db_id = data['id']
-        answers = answersFromDoubt(id)      # Fetch answers
+        answers = answersFromDoubt(id)                      # Fetch answers
         tmpDoubt.answers = answers
     else:
         raise RuntimeError('No doubt with id: ' + str(id))
@@ -215,8 +213,8 @@ def answerDoubt(doubt : Doubt, text : str, resolver):
     cur.execute(
         "INSERT INTO answers(doubt, text) VALUES(%s, %s)",
         (doubt.db_id, text))
-    mysql.connection.commit()               # Commit to DB
-    cur.close()                             # Close connection
+    mysql.connection.commit()                               # Commit to DB
+    cur.close()                                             # Close connection
     putAnswerResolver(resolver, cur.lastrowid)
     return cur.lastrowid
 
@@ -231,6 +229,6 @@ def putAnswerResolver(resolver, answer_id):
             "INSERT INTO answer_resolvers(answer, student) VALUES(%s, %s)",
             (answer_id, resolver.db_id))
 
-    mysql.connection.commit()               # Commit to DB
-    cur.close()                             # Close connection
+    mysql.connection.commit()                               # Commit to DB
+    cur.close()                                             # Close connection
     return cur.lastrowid
