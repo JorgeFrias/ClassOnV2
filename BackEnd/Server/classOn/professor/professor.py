@@ -138,10 +138,8 @@ def createClassroom():
 
         # Messages
         flash('Classroom created for assigment id = ' + str(selectedAssigmentID), 'success')
-        # flash('Internal classroom id = '+ str(id), 'success')
 
         return redirect(url_for('professor.classroom'))
-
     return render_template('createClassroom.html', form=form)
 
 @professor.route('/classroom')
@@ -164,8 +162,6 @@ def handle_connection():
 @socketio.on('classroom_query')
 def hadle_queryDoubts():
     currentClass = runningClasses[su.get_class_id(session)]
-
     stateJson = currentClass.JSON()
-
     room = su.get_ownRoom(session)
     socketio.emit('classroom_query_result', stateJson, room=room)

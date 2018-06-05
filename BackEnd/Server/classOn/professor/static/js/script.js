@@ -58,11 +58,12 @@ function appendDoubt( doubtJson )
         '<ul class="list-group list-group-flush">' +
             // '<li class="list-group-item list-group-item-secondary">Cras justo odio</li>' +        
         '</ul>' +
-        '<div class="card-body">' +
-            '<button type=\"button\" class=\"btn btn-primary float-right\"' +
-            ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
-            'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
-        '</div>' +
+        // Professors are not supported to solve doubts
+        // '<div class="card-body">' +
+        //     '<button type=\"button\" class=\"btn btn-primary float-right\"' +
+        //     ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
+        //     'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
+        // '</div>' +
     '</div>' +
     '<br>'
     doubts.append(newDoubtHTML);
