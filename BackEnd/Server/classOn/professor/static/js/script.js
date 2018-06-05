@@ -5,8 +5,6 @@ $(document).ready(function() {
 
 function addGroup(group)
 {
-//    var groupJson = JSON.parse(group);                          // To JSON
-
      // Remove no members list item
     var noMembers = "noMembers_"+ group.position;
     $(jq(noMembers)).remove();
@@ -25,7 +23,6 @@ function addGroup(group)
 
     // Assigment progress
     changeProgress(group);
-//    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
     // Assigment progress color
     $(jq("progress_" + group.position)).toggleClass('badge-dark badge-success');
 }
@@ -36,19 +33,19 @@ socket.on('joinedGroup', function(groupJson){
 });
 
 socket.on('assigment_changeProgress', function(groupJson){
-    var group = JSON.parse(groupJson);                          // To JSON
+    var group = JSON.parse(groupJson);                      // To JSON
     changeProgress(group);
 });
 
 socket.on('doubt_new', function(doubtJson){
-    var doubt = JSON.parse(doubtJson);                          // To JSON
+    var doubt = JSON.parse(doubtJson);                      // To JSON
     appendDoubt(doubt);
 });
 
 // Add a doubt to the HTML
 function appendDoubt( doubtJson )
 {
-    let doubts = $("#doubts");                      // Locate doubts container
+    let doubts = $("#doubts");                              // Locate doubts container
     const newDoubtHTML = 
     '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
         '<div class="card-body">' +
@@ -58,7 +55,7 @@ function appendDoubt( doubtJson )
         '<ul class="list-group list-group-flush">' +
             // '<li class="list-group-item list-group-item-secondary">Cras justo odio</li>' +        
         '</ul>' +
-        // Professors are not supported to solve doubts
+        // Professors are not supported to solve doubts (yet)
         // '<div class="card-body">' +
         //     '<button type=\"button\" class=\"btn btn-primary float-right\"' +
         //     ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +

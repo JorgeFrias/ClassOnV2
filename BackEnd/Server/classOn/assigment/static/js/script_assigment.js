@@ -7,8 +7,8 @@ $(document).ready(function() {
     queryDoubts();
     $("#btn_answer").click (answerDoubt);
     $('#modal_answer').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);            // Button that triggered the modal
-        doubtId = button.data('doubtid');               // Extract info from data-* attributes and store in global variable
+        var button = $(event.relatedTarget);                // Button that triggered the modal
+        doubtId = button.data('doubtid');                   // Extract info from data-* attributes and store in global variable
 
         // Add doubt text to the modal
         var modal = $(this);
@@ -23,7 +23,7 @@ $(document).ready(function() {
 // Add a doubt to the HTML
 function appendDoubt( doubtJson )
 {
-    let doubts = $("#doubts");                      // Locate doubts container
+    let doubts = $("#doubts");                              // Locate doubts container
     const newDoubtHTML = 
     '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
         '<div class="card-body">' +
@@ -72,7 +72,7 @@ function queryDoubts()
 function answerDoubt(event)
 {
     var answ = $("#text_answer").val();
-    $("#text_answer").val('')                           //Clenan field
+    $("#text_answer").val('')                               //Clenan field
 
     if (answ.length > 0)
     {
@@ -89,7 +89,7 @@ function answerDoubt(event)
 // New doubt from server
 socket.on('doubt_new', function(doubt)
 {
-    var doubtJson = JSON.parse(doubt);                  // To JSON
+    var doubtJson = JSON.parse(doubt);                      // To JSON
     appendDoubt(doubtJson);
 });
 // Doubts query result
