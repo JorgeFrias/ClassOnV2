@@ -25,7 +25,6 @@ def get_isProfessor(session : session):
 def set_isProfessor(session : session, bool):
     session['isProfessor'] = bool
 
-
 '''   Variable extraction  '''
 def get_isLoggedIn(session : session):
     return session['logged_in']

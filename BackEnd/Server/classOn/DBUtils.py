@@ -41,7 +41,6 @@ def getProfessor(id):
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
         pass
-
     cur.close()
     return professor
 
@@ -56,7 +55,6 @@ def getStudentBy_id(id):
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
         pass
-
     cur.close()
     return student
 
@@ -71,7 +69,6 @@ def getStudentBy_email(email):
     else:
         raise RuntimeError('No student with email: ' + str(email))
         pass
-
     cur.close()
     return student
 
@@ -86,7 +83,6 @@ def getProfessorBy_email(email):
     else:
         raise RuntimeError('No student with email: ' + str(email))
         pass
-
     cur.close()
     return student
 
@@ -103,7 +99,6 @@ def getAssigment(id):
     else:
         raise RuntimeError('No assigment with id: ' + str(id))
         pass
-
     cur.close()
     return assigment
 
@@ -117,7 +112,6 @@ def getSections(assigment_id):
         for row in cur:
             tmpSection = Section(row['id'], row['name'], row['order_in_assigment'], row['text'],)
             sections.append(tmpSection)
-
     cur.close()
     return sections
 
@@ -137,7 +131,6 @@ def putSection(id_assigment, order_in_assigment, name, text):
         (id_assigment, order_in_assigment, name, text))
     mysql.connection.commit()                               # Commit to DB
     id = cur.lastrowid
-
     cur.close()
     return id
 
@@ -149,7 +142,6 @@ def putAssigment(course, name, id_professor):
         (name, course, id_professor))
     mysql.connection.commit()                               # Commit to DB
     id = cur.lastrowid
-
     cur.close()                                             # Close connection
     return id
 
@@ -170,7 +162,6 @@ def putDoubt(doubt : Doubt, studentGroup : StudentGroup):
             "INSERT INTO doubt_student(doubt, student) VALUES(%s, %s)",
             (doubt.db_id, student.db_id))
         mysql.connection.commit()                           # Commit to DB
-
     cur.close()                                             # Close connection
 
 def getDoubt(id):
@@ -188,7 +179,6 @@ def getDoubt(id):
     else:
         raise RuntimeError('No doubt with id: ' + str(id))
         pass
-
     cur.close()
     return tmpDoubt
 
@@ -205,7 +195,6 @@ def answersFromDoubt(doubt_db_id):
     if result > 0:
         for row in cur:
             answers.append(DoubtAnswer(row['id'],row['text']))
-
     return answers
 
 def answerDoubt(doubt : Doubt, text : str, resolver):
@@ -228,7 +217,6 @@ def putAnswerResolver(resolver, answer_id):
         cur.execute(
             "INSERT INTO answer_resolvers(answer, student) VALUES(%s, %s)",
             (answer_id, resolver.db_id))
-
     mysql.connection.commit()                               # Commit to DB
     cur.close()                                             # Close connection
     return cur.lastrowid
