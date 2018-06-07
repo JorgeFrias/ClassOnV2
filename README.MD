@@ -105,3 +105,8 @@ The decorator ``@assigment.route()`` is ussed to define pages to serve with a de
 
 The decorator ``@socketio.on()`` is ussed to attend to socket events, when is used no page refresh is needed. This functions allows comunication between the server an the client dynamicaly.
 
+### Database
+The system uses an MySQL database, the libraries are wrote to use MySQL databse. In order to migrate to another DB is needed to modify just DBUtils.py.  
+
+### Front 
+The system it's based on [Bootstrap 4](https://getbootstrap.com), which makes the pages generated responsive eassily.
