@@ -1,6 +1,43 @@
 $(document).ready(function() {
     socket.emit('updateCredentials');
     querySession();
+    $('#modal_answer').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);                // Button that triggered the modal
+        doubtId = button.data('doubtid');                   // Extract info from data-* attributes and store in global variable
+
+        // Add doubt text to the modal
+        var modal = $(this);
+        var doubtSelector = '#doubt_' + doubtId;
+        var doubtText = $(doubtSelector + '.card .card-body .card-text').text()
+        modal.find(".modal-body #modal_doubt_text").text(doubtText);
+    });
+
+    /* ----- Time control code ----- */
+    /* Functions */
+    // Add a doubt to the HTML
+    var timer = new Timer();
+    $('#chronoExample .startButton').click(function () {
+        timer.start();
+    });
+    $('#chronoExample .pauseButton').click(function () {
+        timer.pause();
+    });
+    $('#chronoExample .stopButton').click(function () {
+        timer.stop();
+    });
+    $('#chronoExample .resetButton').click(function () {
+        timer.reset();
+    });
+    timer.addEventListener('secondsUpdated', function (e) {
+        $('#chronoExample .values').html(timer.getTimeValues().toString());
+    });
+    timer.addEventListener('started', function (e) {
+        $('#chronoExample .values').html(timer.getTimeValues().toString());
+    });
+    timer.addEventListener('reset', function (e) {
+        $('#chronoExample .values').html(timer.getTimeValues().toString());
+    });
+
 }); 
 
 function addGroup(group)
@@ -56,11 +93,11 @@ function appendDoubt( doubtJson )
             // '<li class="list-group-item list-group-item-secondary">Cras justo odio</li>' +        
         '</ul>' +
         // Professors are not supported to solve doubts (yet)
-        // '<div class="card-body">' +
-        //     '<button type=\"button\" class=\"btn btn-primary float-right\"' +
-        //     ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
-        //     'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
-        // '</div>' +
+        '<div class="card-body">' +
+            '<button type=\"button\" class=\"btn btn-primary float-right\"' +
+            ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
+            'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
+        '</div>' +
     '</div>' +
     '<br>'
     doubts.append(newDoubtHTML);
@@ -111,3 +148,4 @@ socket.on('classroom_query_result', function(stateResultJson)
         appendDoubt(doubts[i]);
     }
 });
+
