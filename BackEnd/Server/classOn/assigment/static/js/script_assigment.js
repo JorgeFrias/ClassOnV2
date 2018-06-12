@@ -13,7 +13,7 @@ $(document).ready(function() {
         // Add doubt text to the modal
         var modal = $(this);
         var doubtSelector = '#doubt_' + doubtId;
-        var doubtText = $(doubtSelector +' >p').text();
+        var doubtText = $(doubtSelector + '.card .card-body .card-text').text()
         modal.find(".modal-body #modal_doubt_text").text(doubtText);
     });
     $("#doubt").submit(doubt_click);
