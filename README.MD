@@ -9,17 +9,17 @@ Project name: Your project’s name is the first thing people will see upon scro
 This is a class management application for professors. The students can see a assignment text ant the professor can check the progress of the students for the given assignment. Students can post doubts, the professor is offered a list of waiting groups with doubts so he can answer in a given order.
 
 ## Installation
-## Usage
 
+## Usage
 ### Professor 
-1. Logs in
+1. Logs in.
 2. Creates a classroom for a given assigment, with a fixed size, and a given room.
 3. It's redirected to a page where the professor can see the seats whith which estudents are in which place, the progress in the assigment, the doubts they have, and the solutions to the doubt from the students.
 
 The professor can also upload assigments after be logged in.
 
 ### Student
-1. Logs in
+1. Logs in.
 2. Selects one of the running sessions.
 3. Gets the assigment. He can see the different pages, upload doubts and solve doubts from others.
 
@@ -106,7 +106,7 @@ The decorator ``@assigment.route()`` is ussed to define pages to serve with a de
 The decorator ``@socketio.on()`` is ussed to attend to socket events, when is used no page refresh is needed. This functions allows comunication between the server an the client dynamicaly.
 
 ### Database
-The system uses an MySQL database, the libraries are wrote to use MySQL databse. In order to migrate to another DB is needed to modify just DBUtils.py.  
+The system uses an [MySQL](https://www.mysql.com) database, the libraries are wrote to use MySQL databse. In order to migrate to another DB is needed to modify just DBUtils.py.  
 
 ### Front 
 The system it's based on [Bootstrap 4](https://getbootstrap.com), which makes the pages generated responsive eassily.
