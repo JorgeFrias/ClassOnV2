@@ -1,9 +1,13 @@
+var timer;
+
 $(document).ready(function() {
     socket.emit('updateCredentials');
     querySession();
+    $("#btn_answer").click (answerDoubt);
     $('#modal_answer').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);                // Button that triggered the modal
         doubtId = button.data('doubtid');                   // Extract info from data-* attributes and store in global variable
+        timer.start();                                      // Timing start
 
         // Add doubt text to the modal
         var modal = $(this);
@@ -15,16 +19,16 @@ $(document).ready(function() {
     /* ----- Time control code ----- */
     /* Functions */
     // Add a doubt to the HTML
-    var timer = new Timer();
+    timer = new Timer();
     $('#chronoExample .startButton').click(function () {
         timer.start();
     });
     $('#chronoExample .pauseButton').click(function () {
         timer.pause();
     });
-    $('#chronoExample .stopButton').click(function () {
-        timer.stop();
-    });
+    // $('#chronoExample .stopButton').click(function () {
+    //     timer.stop();
+    // });
     $('#chronoExample .resetButton').click(function () {
         timer.reset();
     });
@@ -37,8 +41,23 @@ $(document).ready(function() {
     timer.addEventListener('reset', function (e) {
         $('#chronoExample .values').html(timer.getTimeValues().toString());
     });
-
 }); 
+
+function answerDoubt(event)
+{
+    timer.stop();                                           // Stop timer
+    time = timer.getTimeValues().toString()                 // Get time
+    socket.emit('professor_time', doubtId, time);           // Send time to server
+    $('#modal_answer').modal('hide');                       // Hide he modal
+
+    // var answ = $("#text_answer").val();
+    // $("#text_answer").val('')                            //Clenan field
+    // if (answ.length > 0)
+    // {
+    //     socket.emit('answer_post', doubtId, answ);
+    //     $('#modal_answer').modal('hide');
+    // } else {}
+}
 
 function addGroup(group)
 {
@@ -146,6 +165,10 @@ socket.on('classroom_query_result', function(stateResultJson)
     for(var i in doubts)
     {
         appendDoubt(doubts[i]);
+
+        for(var j in doubts[i].answers)
+        {
+            appendAnswer(doubts[i].db_id, doubts[i].answers[j].text);
+        }
     }
 });
-

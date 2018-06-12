@@ -82,7 +82,6 @@ function answerDoubt(event)
     {
         
     }
-
 }
 
 /** Responses **/
