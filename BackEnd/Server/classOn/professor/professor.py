@@ -132,7 +132,7 @@ def createClassroom():
         # Classroom objects initialization
         assigmentObj = DBUtils.getAssigment(selectedAssigmentID)                                        # Object assigment
         currentProfessor = DBUtils.getProfessor(su.get_professor_id(session))                           # Object professor
-        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)      # Object ClassRoom                                                                # Classroom Universally Unique Identifier (UUID) URN Namespace
+        classroom = dataStructures.Classroom((rows,columns), currentProfessor, assigmentObj, room)      # Object ClassRoom
         runningClasses[classroom.id] = classroom                                                        # Add to runningClasses (dict) with id to be able to track different courses
         su.set_class_id(session, classroom.id)                                                          # Add to professor's session
 
@@ -165,3 +165,7 @@ def hadle_queryDoubts():
     stateJson = currentClass.JSON()
     room = su.get_ownRoom(session)
     socketio.emit('classroom_query_result', stateJson, room=room)
+
+@socketio.on('professor_time')
+def handle_time(doubtId, time):
+    print(str(doubtId) + ', ' + time)

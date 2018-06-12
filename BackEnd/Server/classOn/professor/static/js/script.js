@@ -41,12 +41,18 @@ $(document).ready(function() {
     timer.addEventListener('reset', function (e) {
         $('#chronoExample .values').html(timer.getTimeValues().toString());
     });
+
+    // Card click
+    $('.card').on('click', function(event) {
+        alert('You clicked the Bootstrap Card');
+   });
+   
 }); 
 
 function answerDoubt(event)
 {
-    timer.stop();                                           // Stop timer
     time = timer.getTimeValues().toString()                 // Get time
+    timer.stop();                                           // Stop timer
     socket.emit('professor_time', doubtId, time);           // Send time to server
     $('#modal_answer').modal('hide');                       // Hide he modal
 
@@ -106,6 +112,7 @@ function appendDoubt( doubtJson )
     '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
         '<div class="card-body">' +
             '<span class="badge badge-info">Section: ' + doubtJson.section + '</span>' + 
+            '<span class="badge">Group: ' + doubtJson.group + '</span>' + 
             '<p class="card-text">' + doubtJson.text + '</p>' + 
         '</div>' + 
         '<ul class="list-group list-group-flush">' +
@@ -172,3 +179,4 @@ socket.on('classroom_query_result', function(stateResultJson)
         }
     }
 });
+
