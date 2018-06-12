@@ -150,7 +150,6 @@ def classroom():
     columns = runningClasses[su.get_class_id(session)].classSize[1]
     return render_template('classroomMap.html', rows=rows, columns=columns)
 
-''' Socket.io '''
 ''' Socket.io'''
 @socketio.on('updateCredentials')
 def handle_connection():

@@ -1,24 +1,33 @@
 var timer;
 
 $(document).ready(function() {
-    socket.emit('updateCredentials');
-    querySession();
-    $("#btn_answer").click (answerDoubt);
+    /* Stuff needed when the page loads */
+    // Request credentials
+    socket.emit('updateCredentials');                       
+    
+    // Query state information
+    querySession();       
+
+    // To solve a doubt
+    $("#btn_answer").click (answerDoubt);                   
+
+    /* 
+       Dialog with doubt information:
+       - Doubt text
+       - Time counter and utils
+    */
     $('#modal_answer').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);                // Button that triggered the modal
         doubtId = button.data('doubtid');                   // Extract info from data-* attributes and store in global variable
         timer.start();                                      // Timing start
 
-        // Add doubt text to the modal
-        var modal = $(this);
+        var modal = $(this);                                // Add doubt text to the modal
         var doubtSelector = '#doubt_' + doubtId;
         var doubtText = $(doubtSelector + '.card .card-body .card-text').text()
         modal.find(".modal-body #modal_doubt_text").text(doubtText);
     });
 
     /* ----- Time control code ----- */
-    /* Functions */
-    // Add a doubt to the HTML
     timer = new Timer();
     $('#chronoExample .startButton').click(function () {
         timer.start();
@@ -26,9 +35,6 @@ $(document).ready(function() {
     $('#chronoExample .pauseButton').click(function () {
         timer.pause();
     });
-    // $('#chronoExample .stopButton').click(function () {
-    //     timer.stop();
-    // });
     $('#chronoExample .resetButton').click(function () {
         timer.reset();
     });
@@ -41,38 +47,40 @@ $(document).ready(function() {
     timer.addEventListener('reset', function (e) {
         $('#chronoExample .values').html(timer.getTimeValues().toString());
     });
+    // $('#chronoExample .stopButton').click(function () {
+    //     timer.stop();
+    // });
+    /* ----- Time control code ----- */
 
-    // Card click
+    /* Student position click */
     $('.card').on('click', function(event) {
         alert('You clicked the Bootstrap Card');
    });
-   
 }); 
 
+/**
+ * Sets the interface "pop-up" window for the professor to answer a doubt and measure the time spent.
+ * @param {*} event 
+ */
 function answerDoubt(event)
 {
+    // Only God and I did know from where doubtId comes from.
+    // Now only God knows.
     time = timer.getTimeValues().toString()                 // Get time
     timer.stop();                                           // Stop timer
     socket.emit('professor_time', doubtId, time);           // Send time to server
     $('#modal_answer').modal('hide');                       // Hide he modal
-
-    // var answ = $("#text_answer").val();
-    // $("#text_answer").val('')                            //Clenan field
-    // if (answ.length > 0)
-    // {
-    //     socket.emit('answer_post', doubtId, answ);
-    //     $('#modal_answer').modal('hide');
-    // } else {}
 }
 
+/**
+ * Adds a group to a given place in the UI
+ */
 function addGroup(group)
 {
-     // Remove no members list item
-    var noMembers = "noMembers_"+ group.position;
+    var noMembers = "noMembers_"+ group.position;           // Remove no members list item
     $(jq(noMembers)).remove();
 
-    // Add students to the list
-    var students = group.students;
+    var students = group.students;                          // Add students to the list
     var membersListSelector = jq("members_" + group.position);
     for (var i in students)
     {
@@ -83,8 +91,7 @@ function addGroup(group)
     // Black border to new operating group
     $(jq(group.position)).toggleClass('border-secondary border-dark');
 
-    // Assigment progress
-    changeProgress(group);
+    changeProgress(group);                                  // Assigment progress
     // Assigment progress color
     $(jq("progress_" + group.position)).toggleClass('badge-dark badge-success');
 }
@@ -94,20 +101,27 @@ socket.on('joinedGroup', function(groupJson){
     addGroup(group);
 });
 
+/**
+ * Listens to students progress changes.
+ */
 socket.on('assigment_changeProgress', function(groupJson){
-    var group = JSON.parse(groupJson);                      // To JSON
+    var group = JSON.parse(groupJson);                      // obj from JSON
     changeProgress(group);
 });
 
+/**
+ * Listens to students new doubts.
+ */
 socket.on('doubt_new', function(doubtJson){
-    var doubt = JSON.parse(doubtJson);                      // To JSON
+    var doubt = JSON.parse(doubtJson);                      // obj from JSON
     appendDoubt(doubt);
 });
 
-// Add a doubt to the HTML
+/**
+ *  Renders doubt HTML.
+ */
 function appendDoubt( doubtJson )
 {
-    let doubts = $("#doubts");                              // Locate doubts container
     const newDoubtHTML = 
     '<div class="card" id=\"doubt_' + doubtJson.db_id + '\">' + 
         '<div class="card-body">' +
@@ -118,17 +132,20 @@ function appendDoubt( doubtJson )
         '<ul class="list-group list-group-flush">' +
             // '<li class="list-group-item list-group-item-secondary">Cras justo odio</li>' +        
         '</ul>' +
-        // Professors are not supported to solve doubts (yet)
         '<div class="card-body">' +
             '<button type=\"button\" class=\"btn btn-primary float-right\"' +
             ' data-toggle=\"modal\" data-target=\"#modal_answer\" ' +
             'data-doubtid=\"'+ doubtJson.db_id + '\">Solve doubt</button>' +            
         '</div>' +
     '</div>' +
-    '<br>'
-    doubts.append(newDoubtHTML);
+    '<br>';
+    let doubts = $("#doubts");                              // Locate doubts container
+    doubts.append(newDoubtHTML);                            // Add doubt to doubts container
 }
 
+/**
+ * Listens to new answers.
+ */
 socket.on('new_answer', function(anwserJson)
 {
     var answer = JSON.parse(anwserJson);
@@ -137,6 +154,9 @@ socket.on('new_answer', function(anwserJson)
     appendAnswer(doubtId, text);
 })
 
+/**
+ * Renders answer HTML.
+ */
 function appendAnswer(doubtId, anwser)
 {
     var li = '<li class="list-group-item list-group-item-secondary">'+ anwser +'</li>';        
@@ -151,29 +171,33 @@ function changeProgress(groupJson){
     $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
 }
 
-// Ask for the session state to the server
+/**
+ * Ask for the session state to the server.
+ */
 function querySession()
 {
     socket.emit('classroom_query');
 }
 
-// Session query result to interface
+/** 
+ * Session query result to interface.
+ */
 socket.on('classroom_query_result', function(stateResultJson)
 {
     var state = JSON.parse(stateResultJson);
     var groups = state.groups;
     var doubts = state.doubts;
 
-    for(var i in groups)
+    for(var i in groups)                                    // Render groups
     {
         addGroup(groups[i]);
     }
 
-    for(var i in doubts)
+    for(var i in doubts)                                    // Render doubts
     {
         appendDoubt(doubts[i]);
 
-        for(var j in doubts[i].answers)
+        for(var j in doubts[i].answers)                     // Render doubts' answers
         {
             appendAnswer(doubts[i].db_id, doubts[i].answers[j].text);
         }
