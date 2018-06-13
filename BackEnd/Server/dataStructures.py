@@ -132,8 +132,8 @@ class Doubt:
         self._section = section
         self._postTime = 0
         self._studentGroup = studentGroup
-        self.postTime = 0
         self.answers = []
+        self.professorSolved = False
 
     def JSON(self):
         result = '{\n'
