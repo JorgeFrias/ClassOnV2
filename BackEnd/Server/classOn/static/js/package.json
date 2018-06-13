@@ -1,0 +1,16 @@
+{
+  "name": "classonv2",
+  "version": "2.0.0",
+  "description": "Classroom session manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jquery": "^3.3.2",
+    "@types/socket.io": "^1.4.34",
+    "easytimer.js": "^2.2.2"
+  }
+}

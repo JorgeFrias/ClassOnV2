@@ -11,3 +11,9 @@ BackEnd/Server/classOn/assigment/__pycache__/assigment.cpython-36.pyc
 BackEnd/Server/classOn/student/__pycache__/forms.cpython-36.pyc
 BackEnd/Server/classOn/assigment/__pycache__/
 .idea/
+BackEnd/Server/classOn/static/js/node_modules/
+BackEnd/Server/classOn/.vs/slnx.sqlite
+BackEnd/Server/.vs/ProjectSettings.json
+BackEnd/Server/.vs/slnx.sqlite
+BackEnd/Server/.vs/
+BackEnd/Server/classOn/.vs/
