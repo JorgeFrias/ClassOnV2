@@ -1,4 +1,7 @@
+/* Global variables */
 var timer;
+var dictDoubtGroup = {}
+var dictGroupDoubt = {}
 
 $(document).ready(function() {
     /* Stuff needed when the page loads */
@@ -114,8 +117,26 @@ socket.on('assigment_changeProgress', function(groupJson){
  */
 socket.on('doubt_new', function(doubtJson){
     var doubt = JSON.parse(doubtJson);                      // obj from JSON
+    appendDoubtStudent(doubt);
     appendDoubt(doubt);
 });
+/**
+ * Keeps updated global variables
+ * dictDoubtGroup
+ * dictGroupDoubt
+ */
+function appendDoubtStudent(doubt)
+{
+    let id = doubt.db_id;
+    let group =  doubt.group;
+    dictDoubtGroup[id.toString()] = group;
+    dictGroupDoubt[group.toString()] = id;
+}
+function getGroup(doubt_id)
+{
+    let group = dictDoubtGroup[doubt_id.toString()]
+    return group;
+}
 
 /**
  *  Renders doubt HTML.
