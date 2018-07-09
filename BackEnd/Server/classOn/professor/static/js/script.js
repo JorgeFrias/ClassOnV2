@@ -99,7 +99,6 @@ function addGroup(group)
     // Assigment progress color
     // $(jq("progress_" + group.position)).toggleClass('badge-dark badge-success');
     $(jq("progress_" + group.position)).removeClass('badge-dark').addClass('badge-success');
-
 }
 
 socket.on('joinedGroup', function(groupJson){
@@ -107,6 +106,20 @@ socket.on('joinedGroup', function(groupJson){
     addGroup(group);
 });
 
+function removeGroup(group)
+{
+    var membersListSelector = jq("members_" + group.position);
+    $(membersListSelector).empty();
+    var emptyText = '<li class=\"list-group-item\" id=\"noMembers_' + group.row + '_' + group.column + '\"><small>Empty</small></li>';
+    $(membersListSelector).append(emptyText);
+    // $(jq(group.position)).toggleClass('border-secondary border-dark');
+    $(jq("progress_" + group.position)).removeClass('badge-success').addClass('badge-dark');
+    defineProgress(group, 0);
+}
+
+socket.on('removeGroup', function(groupJson){
+    var group = JSON.parse(groupJson);
+    removeGroup(group);})
 /**
  * Listens to students progress changes.
  */
@@ -191,8 +204,12 @@ function jq( myid ) {
     return "#" + myid.replace( /(:|\.|\[|\]|,|=|@)/g, "\\$1" );
 }
 
-function changeProgress(groupJson){
-    $(jq("progress_" + groupJson.position)).text(groupJson.assigmentProgress);
+function changeProgress(group){
+    $(jq("progress_" + group.position)).text(group.assigmentProgress);
+}
+
+function defineProgress(group, progress){
+    $(jq("progress_" + group.position)).text(progress);
 }
 
 /**

@@ -10,6 +10,7 @@ from classOn import accessController as ac
 from classOn import runningClasses
 from classOn.student import student as StudentClass
 from classOn import DBUtils
+from classOn import socketio
 
 
 
@@ -109,10 +110,24 @@ def login():
 @home.route('/logout')
 @is_logged_in                   # Uses the flask decorator to check if is logged in
 def logout():
+    # Cleaning procedures
+    selectedRunningClass = runningClasses[su.get_class_id(session)]
+    groupIsIn = selectedRunningClass.studentGroups[su.get_grupo_id(session)]
+
+    # Delete the group from the memory
+    del selectedRunningClass.studentGroups[su.get_grupo_id(session)]
+    # Notify to the professor the changes
+    removeGroup(groupIsIn)
+
     su.logOut(session)
     flash('You are now logged out', 'success')
     return redirect(url_for('home.login'))
 
+def removeGroup(group):
+    currentClass = runningClasses[su.get_class_id(session)]
+    # stateJson = currentClass.JSON()
+    room = su.get_classRoom(session)
+    socketio.emit('removeGroup', group.JSON(), room=room)
 
 @home.route('/add_new_member', methods=['GET', 'POST'])
 @is_logged_in
