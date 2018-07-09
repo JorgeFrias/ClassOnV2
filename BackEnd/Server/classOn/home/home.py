@@ -3,9 +3,15 @@ from wtforms import Form, StringField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import dataStructures
 from classOn import DBUtils
-from classOn.decorators import is_logged_in
+from classOn.decorators import is_logged_in, is_in_group
 from classOn.home.forms import RegisterFormStudent, RegisterFormProfessor
-from classOn import sessionUtils
+from classOn import sessionUtils as su
+from classOn import accessController as ac
+from classOn import runningClasses
+from classOn.student import student as StudentClass
+from classOn import DBUtils
+
+
 
 '''Register blueprint'''
 home = Blueprint('home',
@@ -60,47 +66,36 @@ def registerGeneral():
 def login():
     if (request.method == 'POST'):
         # Data structures to store the information
-        student = None
-        professor = None
+        studentPasswordIncorrect = None
+        professorPasswordIncorrect = None
 
-        # Check the button pressed, and tries to fetch the information from DB
+        # Check the button pressed, and tries to log in
         if request.form['btn'] == 'isStudent':
-            # Logging in as student
-            email = request.form['email']
-            password_candidate = request.form['password']
-            student = DBUtils.getStudentBy_email(email)         # Load student information from DB if exists (None if not)
+            studentPasswordIncorrect = ac.access.loginStudent(request,session)
+
         elif request.form['btn'] == 'isProfessor':
-            # Logging in as professor
-            email = request.form['email']
-            password_candidate = request.form['password']
-            professor = DBUtils.getProfessorBy_email(email)     # Load professor information from DB if exists (None if not)
+            professorPasswordIncorrect = ac.access.loginProfessor(request, session)
+
         else:
-            flash('Error fetching user from DB', 'danger')
+            flash('Error', 'danger')
             raise IOError('login error')
             pass
 
         # Logging
-        if student is not None:                     # Professor found
-            if (sha256_crypt.verify(password_candidate, student.passwordHash)):         # Correct password
-                # Session variables
-                # Store information while the user is logged in
-                sessionUtils.studentLogIn(session, student)
-
+        if studentPasswordIncorrect is not None:                        # Professor found
+            if (not studentPasswordIncorrect):                          # Correct password
                 flash('You are now logged in', 'success')
                 return redirect(url_for('student.index'))
-            else:                                                                       # Incorrect password
+            else:                                                       # Incorrect password
                 error = 'Password Not matched'
                 return render_template('login.html', error=error)
 
-        elif professor is not None:
-            if (sha256_crypt.verify(password_candidate, professor.passwordHash)):         # Correct password
-                # Session variables
-                # Store information while the user is logged in
-                sessionUtils.professorLogIn(session, professor)
+        elif professorPasswordIncorrect is not None:
+            if (not professorPasswordIncorrect):                        # Correct password
 
                 flash('You are now logged in as professor', 'success')
                 return redirect(url_for('professor.index'))
-            else:                                                                       # Incorrect password
+            else:                                                       # Incorrect password
                 error = 'Password Not matched'
                 return render_template('login.html', error=error)
 
@@ -114,6 +109,54 @@ def login():
 @home.route('/logout')
 @is_logged_in                   # Uses the flask decorator to check if is logged in
 def logout():
-    sessionUtils.logOut(session)
+    su.logOut(session)
     flash('You are now logged out', 'success')
     return redirect(url_for('home.login'))
+
+
+@home.route('/add_new_member', methods=['GET', 'POST'])
+@is_logged_in
+@is_in_group
+def addNewMember():
+    if (request.method == 'POST'):
+        # Data structures to store the information
+        studentPasswordIncorrect = None
+
+        # Check the button pressed, and tries to log in
+        if request.form['btn'] == 'isStudent':
+            studentPasswordIncorrect = ac.access.loginStudent(request, session)
+        else:
+            flash('Error', 'danger')
+            raise IOError('login error')
+            pass
+
+        # Logging
+        if studentPasswordIncorrect is not None:                        # Professor found
+            if (not studentPasswordIncorrect):                          # Correct password
+                flash('You are now logged in', 'success')
+                # Success now join the desired group
+                selectedRunningClass = runningClasses[su.get_class_id(session)]
+                groupIsIn = selectedRunningClass.studentGroups[su.get_grupo_id(session)]
+                studentid = su.get_students_id_group(session)[-1]         # last student to join the group
+                student = DBUtils.getStudentBy_id(studentid)
+                selectedRunningClass.addStudentToPlace(student, groupIsIn.positionInClass)
+
+                # Redirect for assigment page
+                assigmentID = selectedRunningClass.assigment.db_id  # Current assigment id
+
+                ''' Socket.io notification'''
+                StudentClass.handle_joinGroup(groupIsIn)
+
+                # Render de selected assigment at the start page
+                return redirect(url_for('assigment.assigmentByID', id=assigmentID, page=su.get_page(session)))
+
+            else:                                                       # Incorrect password
+                error = 'Password Not matched'
+                return render_template('login.html', error=error)
+
+        else:
+            error = 'Email not found'
+            return render_template('login.html', error=error)
+
+    # By default render Login template
+    return render_template('appendStudent.html')

@@ -59,9 +59,16 @@ def set_grupo_id(session : session, id):
     session['group_id'] = id
 
 def get_student_id(session: session):
-    return session['db_id']
+    return session['db_id'][0]                  # Retrocompatibility before been able to support gropus
 def set_student_id(session : session, id):
-    session['db_id'] = id
+    if not "db_id" in session:
+        session['db_id'] = [id]
+    else:
+        session['db_id'].append(id)
+
+def get_students_id_group(session : session):
+    return session['db_id']
+
 
 def get_page(session: session):
     return session['page']

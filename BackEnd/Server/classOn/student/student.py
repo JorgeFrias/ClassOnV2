@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for, session, request, Blueprint
-from classOn.decorators import is_logged_in
+from classOn.decorators import is_logged_in, is_in_group
 from classOn import DBUtils
 from classOn import sessionUtils as su
 from flask_socketio import emit, send
@@ -96,3 +96,4 @@ def selectPlace():
 
 def handle_joinGroup(group : StudentGroup):
     socketio.emit('joinedGroup', group.JSON(), broadcast=True)
+

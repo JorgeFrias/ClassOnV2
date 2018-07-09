@@ -31,3 +31,13 @@ def defined_session(f):
             flash('Unauthorized, please create classroom session', 'danger')
             return redirect(url_for('professor.dashboard'))
     return wrap
+
+def is_in_group(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'group_id' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, please select a course and a place', 'danger')
+            return redirect(url_for('student.dashboard'))
+    return wrap

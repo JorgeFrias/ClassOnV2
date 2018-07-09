@@ -18,7 +18,10 @@
                             {% endif %}
                         {% endfor %}
                         {% if ns.repeated %}
+                            <!-- I you want only one student for each place, uncomment the line below -->
                             <button type="button" class="btn btn-primary" disabled>Took</button>
+                            <!-- And comment the line below -->
+                            <!-- <button type="submit" name="place" class="btn btn-primary active" value="{{ row ~ '_' ~ column }}">Select</button> -->
                         {% else %}
                             <button type="submit" name="place" class="btn btn-primary active" value="{{ row ~ '_' ~ column }}">Select</button>
                         {% endif %}

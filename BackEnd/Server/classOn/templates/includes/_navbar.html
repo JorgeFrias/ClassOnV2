@@ -21,9 +21,16 @@
                 </li>
             {% endif %}
 
+            {% if 'group_id' in session %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/add_new_member">Add student to group<span class="sr-only">(current)</span></a>
+                </li>
+            {% endif %}
+
             <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout<span class="sr-only">(current)</span></a>
             </li>
+
         {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="/login">Login<span class="sr-only">(current)</span></a>
