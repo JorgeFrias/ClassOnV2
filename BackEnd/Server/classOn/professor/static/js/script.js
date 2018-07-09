@@ -82,9 +82,10 @@ function addGroup(group)
 {
     var noMembers = "noMembers_"+ group.position;           // Remove no members list item
     $(jq(noMembers)).remove();
-
     var students = group.students;                          // Add students to the list
     var membersListSelector = jq("members_" + group.position);
+    $(membersListSelector).empty();
+
     for (var i in students)
     {
         var studentHTML = '<li class=\"list-group-item \" id=\"' + students[i].db_id + '\">' + students[i].name + ' ' + students[i].lastName + '</li>';
@@ -96,7 +97,9 @@ function addGroup(group)
 
     changeProgress(group);                                  // Assigment progress
     // Assigment progress color
-    $(jq("progress_" + group.position)).toggleClass('badge-dark badge-success');
+    // $(jq("progress_" + group.position)).toggleClass('badge-dark badge-success');
+    $(jq("progress_" + group.position)).removeClass('badge-dark').addClass('badge-success');
+
 }
 
 socket.on('joinedGroup', function(groupJson){
