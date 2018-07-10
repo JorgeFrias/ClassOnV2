@@ -17,3 +17,4 @@ BackEnd/Server/.vs/ProjectSettings.json
 BackEnd/Server/.vs/slnx.sqlite
 BackEnd/Server/.vs/
 BackEnd/Server/classOn/.vs/
+BackEnd/Server/config/development.py
