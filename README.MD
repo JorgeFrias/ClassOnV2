@@ -7,7 +7,13 @@ This is a class management application for professors. The students can see a as
 ## Usage
 In order to run the code you need to execute the app.py script with ``runserver`` command.  
 
-In ordet to run it for debugging you have to use the command ``PYTHONUNBUFFERED=1;APP_CONFIG_FILE=C:\*Your Route*\ClassOnV2\BackEnd\Server\config\development.py``
+Once the code is running you can go to the deployment address of the system and use it.
+
+### Configuration before running
+Before you'll have to:
+1. Install all code dependences specified in ````requiriments.txt```` file.
+2. Config the DB runing the SQL scripts inside ````MySQL_schema```` in order to have the schema.
+3. Config the DB connection credentials (steps specified in DB section).
 
 ### Professor 
 1. Logs in.
@@ -105,6 +111,20 @@ The decorator ``@socketio.on()`` is ussed to attend to socket events, when is us
 
 ### Database
 The system uses an [MySQL](https://www.mysql.com) database, the libraries are wrote to use MySQL databse. In order to migrate to another DB is needed to modify just DBUtils.py.  
+
+In order to connect to you DB instance you need a config file inside config folder. Yoy can name the file as you want. For example ```development.py``` you will have to fulfill al the fields required with the connection information.
+
+````
+SECRET_KEY = 'your key'
+MYSQL_HOST = 'your host'
+MYSQL_USER = 'your user'
+MYSQL_PASSWORD = 'your pass'
+MYSQL_DB = 'my DB instance, just kidding your DB instance'
+MYSQL_CURSORCLASS = 'your cursor class'
+````
+And use the command In ordet to run it for debugging you have to use the command ``PYTHONUNBUFFERED=1;APP_CONFIG_FILE=C:\*Your Route*\ClassOnV2\BackEnd\Server\config\development.py``
+
+If you want to debbug the code (in pycharm for example) you'll have to add a new line with ````DEBUG = True````.
 
 ### Front 
 The system it's based on [Bootstrap 4](https://getbootstrap.com), which makes the pages generated responsive eassily.
