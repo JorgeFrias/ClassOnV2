@@ -12,8 +12,6 @@ from classOn.student import student as StudentClass
 from classOn import DBUtils
 from classOn import socketio
 
-
-
 '''Register blueprint'''
 home = Blueprint('home',
                  __name__,
