@@ -1,6 +1,6 @@
 from typing import Mapping, Sequence
 import time
-from PIL import Image
+# from PIL import Image
 import uuid
 
 class Student:
@@ -14,11 +14,11 @@ class Student:
         self.passwordHash = passwordHash
         self.secondLastName = seccondLastName
 
-        if (pictureSrc is not ''):
-            try:
-                self.picture = Image.open(pictureSrc)
-            except:
-                raise Exception('error opening picture: ' + pictureSrc)
+        # if (pictureSrc is not ''):
+        #     try:
+        #         self.picture = Image.open(pictureSrc)
+        #     except:
+        #         raise Exception('error opening picture: ' + pictureSrc)
 
     def __dict__(self):
         result = {}

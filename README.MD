@@ -122,6 +122,7 @@ MYSQL_PASSWORD = 'your pass'
 MYSQL_DB = 'my DB instance, just kidding your DB instance'
 MYSQL_CURSORCLASS = 'your cursor class'
 ````
+[Check here for more information](http://flask-mysqldb.readthedocs.io/en/latest/).
 And use the command In ordet to run it for debugging you have to use the command ``PYTHONUNBUFFERED=1;APP_CONFIG_FILE=C:\*Your Route*\ClassOnV2\BackEnd\Server\config\development.py``
 
 If you want to debbug the code (in pycharm for example) you'll have to add a new line with ````DEBUG = True````.
