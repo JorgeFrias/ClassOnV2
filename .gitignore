@@ -18,5 +18,11 @@ BackEnd/Server/.vs/slnx.sqlite
 BackEnd/Server/.vs/
 BackEnd/Server/classOn/.vs/
 BackEnd/Server/config/development.py
+<<<<<<< HEAD
 mysqlclient-1.3.13-cp27-cp27m-win_amd64.whl
 BackEnd/Server/config/__pycache__/
+=======
+venv/
+BackEnd/Server/config/__pycache__/
+BackEnd/Server/config/developer.py
+>>>>>>> 5fee509032780eaf953da71636f989e8c8228fa8
