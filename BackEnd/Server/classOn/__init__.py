@@ -21,7 +21,6 @@ from flask_socketio import SocketIO, emit
 socketio = SocketIO(app)
 
 ''' Global information '''
-from dataStructures import Classroom
 runningClasses = {}
 
 ''' Blueprints - register '''
