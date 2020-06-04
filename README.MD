@@ -12,26 +12,26 @@ Once the code is running you can go to the deployment address of the system and 
 ### Configuration before running
 Before you'll have to:
 1. Install all code dependences specified in ````requiriments.txt```` file.
-2. Config the DB runing the SQL scripts inside ````MySQL_schema```` in order to have the schema.
+2. Config the DB running the SQL scripts inside ````MySQL_schema```` in order to have the schema.
 3. Config the DB connection credentials (steps specified in DB section).
 
 ### Professor 
 1. Logs in.
-2. Creates a classroom for a given assigment, with a fixed size, and a given room.
-3. It's redirected to a page where the professor can see the seats whith which estudents are in which place, the progress in the assigment, the doubts they have, and the solutions to the doubt from the students.
+2. Creates a classroom for a given assignment, with a fixed size, and a given room.
+3. It's redirected to a page where the professor can see the seats which students are in which place, the progress in the assignment, the doubts they have, and the solutions to the doubt from the students.
 
-The professor can also upload assigments after be logged in.
+The professor can also upload assignment after be logged in.
 
 ### Student
 1. Logs in.
 2. Selects one of the running sessions.
-3. Gets the assigment. He can see the different pages, upload doubts and solve doubts from others.
+3. Gets the assignment. He can see the different pages, upload doubts and solve doubts from others.
 
 ## Developer guide  
 The system it's based on [Flask server](http://flask.pocoo.org), it's a microframework python based to serve pages built in the server. 
-Also uses JavaScript and [Socket.io](https://socket.io) to comunicate when no refreshing is allowed, well a special version desinged to work with [flask](http://flask-socketio.readthedocs.io/en/latest/).
+Also uses JavaScript and [Socket.io](https://socket.io) to communicate when no refreshing is allowed, well a special version designed to work with [flask](http://flask-socketio.readthedocs.io/en/latest/).
 
-The project uses a structure of folders with a folder for each page or section of pages with common responsabilities. 
+The project uses a structure of folders with a folder for each page or section of pages with common responsibilities. 
 
 ```
 ├───classOn  
@@ -102,17 +102,17 @@ There are two types of user professor and student. The pages they can acess are 
     - Professor
 - Student 
     - Home
-    - Assigment
+    - Assignment
     - Student
 
-The decorator ``@assigment.route()`` is ussed to define pages to serve with a defined route, so page refresh is needed.
+The decorator ``@assigment.route()`` is used to define pages to serve with a defined route, so page refresh is needed.
 
-The decorator ``@socketio.on()`` is ussed to attend to socket events, when is used no page refresh is needed. This functions allows comunication between the server an the client dynamicaly.
+The decorator ``@socketio.on()`` is used to attend to socket events, when is used no page refresh is needed. This functions allows communication between the server an the client dynamically.
 
 ### Database
-The system uses an [MySQL](https://www.mysql.com) database, the libraries are wrote to use MySQL databse. In order to migrate to another DB is needed to modify just DBUtils.py.  
+The system uses an [MySQL](https://www.mysql.com) database, the libraries are wrote to use MySQL database. In order to migrate to another DB is needed to modify just DBUtils.py.  
 
-In order to connect to you DB instance you need a config file inside config folder. Yoy can name the file as you want. For example ```development.py``` you will have to fulfill al the fields required with the connection information.
+In order to connect to you DB instance you need a config file inside config folder. You can name the file as you want. For example ```development.py``` you will have to fulfill al the fields required with the connection information.
 
 ````
 SECRET_KEY = 'your key'
@@ -123,9 +123,9 @@ MYSQL_DB = 'my DB instance, just kidding your DB instance'
 MYSQL_CURSORCLASS = 'your cursor class'
 ````
 [Check here for more information](http://flask-mysqldb.readthedocs.io/en/latest/).
-And use the command In ordet to run it for debugging you have to use the command ``PYTHONUNBUFFERED=1;APP_CONFIG_FILE=C:\*Your Route*\ClassOnV2\BackEnd\Server\config\development.py``
+And use the command in order to run it for debugging you have to use the command ``PYTHONUNBUFFERED=1;APP_CONFIG_FILE=C:\*Your Route*\ClassOnV2\BackEnd\Server\config\development.py``
 
-If you want to debbug the code (in pycharm for example) you'll have to add a new line with ````DEBUG = True````.
+If you want to debug the code (in pycharm for example) you'll have to add a new line with ````DEBUG = True````.
 
 ### Front 
-The system it's based on [Bootstrap 4](https://getbootstrap.com), which makes the pages generated responsive eassily.
+The system it's based on [Bootstrap 4](https://getbootstrap.com), which makes the pages generated responsive easily.
